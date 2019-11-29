@@ -1,0 +1,17 @@
+# Lists for usernames
+
+## General
+- SecLists/Usernames/top-usernames-shortlist.txt           (17);; short common names
+- SecLists/Usernames/Names/names.txt                    (10163);; common names
+- SecLists/Usernames/xato-net-10-million-usernames.txt    (10M);;
+
+## Specific
+- SecLists/Usernames
+    find SecLists/Usernames/ -type f | xargs wc -l | sort -n
+- metasploit-framework/data/wordlists/
+    find metasploit-framework/data/wordlists/ -type f | xargs wc -l | sort -n
+
+
+
+
+

@@ -1,9 +1,9 @@
 # Ivan
-- cewl (password)
-- crunch (password)
-- proxychains
+- cewl (password) -- ok --
+- crunch (password) -- ok --
+- proxychains -- ok --
 - package management ruby/python/perl/go/js
-- netdiscover
+- netdiscover -- ok --
 - masscan
 
 # Giuseppe
@@ -13,8 +13,6 @@
 - bash (for, if, loops, string manip)
 - metasploit
 - smbscan
-- hping
-- rpc commands
 - tcpdump
 - ssh
 - hydra

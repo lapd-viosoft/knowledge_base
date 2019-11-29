@@ -57,17 +57,17 @@ localnet 127.0.0.0/255.0.0.0
 #
 #        Examples:
 #
-#            	socks5	192.168.67.78	1080	lamer	secret
-#		http	192.168.89.3	8080	justu	hidden
-#	 	socks4	192.168.1.49	1080
-#	        http	192.168.39.93	8080	
-#		
+#       socks5  192.168.67.78   1080    lamer   secret
+#       http    192.168.89.3    8080    justu   hidden
+#       socks4  192.168.1.49    1080
+#       http    192.168.39.93   8080
 #
 #       proxy types: http, socks4, socks5
-#        ( auth types supported: "basic"-http  "user/pass"-socks )
+#       ( auth types supported: "basic"-http  "user/pass"-socks )
 #
 
 [ProxyList]
-http	151.22.181.253	8080
+http    151.22.181.253  8080
+socks5  31.146.179.50   9999
 
 

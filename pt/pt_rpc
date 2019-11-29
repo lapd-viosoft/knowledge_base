@@ -6,5 +6,5 @@
 rpcinfo -p IP
 OR 
 rcpclient -U "" IP
-O$
+OR
 enum4linux -a $IP

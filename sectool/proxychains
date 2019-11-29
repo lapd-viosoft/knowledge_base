@@ -13,8 +13,8 @@ tags: [proxy, pivoting]
 /usr/bin/proxyresolv
 
 # A list of proxies can be found at
-# https://www.proxynova.com/
-# http://www.gatherproxy.com/sockslist
+https://www.proxynova.com/
+http://www.gatherproxy.com/sockslist
 
 # Sample config file if using Tor
 cheat proxychains_extra/torconf
