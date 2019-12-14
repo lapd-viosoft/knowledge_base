@@ -1,0 +1,5 @@
+# Connect to an RDP server with user "bob"
+xfreerdp /u:bob /v:<remote_ip>:3389
+
+# Share a directory between client and the server
+xfreerdp  /u:joe /v:192.168.101.20:3389 /drive:home,/home/giuseppe/MOVIES
