@@ -48,17 +48,36 @@ git filter-branch --env-filter \
          export GIT_COMMITTER_DATE="Sat May 19 01:01:01 2007 -0700"
      fi'
 
-# To removed staged and working directory changes
+# To remove staged, and modified files (but keeps unntracked files)
 git reset --hard
 
-# To go 2 commits back
+# To go 2 commits back by removing staged and modified files (keeping untracked files)
 git reset --hard HEAD~2
+
+# To just discard the staging area but keeps modified and untracked
+# files while going back to the X commit (it's the --mixed default mode)
+git reset 
+
+# To go X commits behind but keeps the current working directory, staging area
+# modified files
+git reset --soft HEAD~2
 
 # To remove untracked files
 git clean -f -d
 
+# To completely restore the status of a project to commit X we can do
+git log; #to check out the commit id we are interested in
+git reset --hard <commit_ID>
+git clean -f -d
+
 # To remove untracked and ignored files
 git clean -f -d -x
+
+# To explore a commit
+git checkout <commit_ID>
+
+# To go back to the HEAD commit after a git checkout
+git switch -
 
 # To push to the tracked master branch:
 git push origin master
@@ -146,7 +165,7 @@ git checkout -p HEAD^ -- /path/to/file
 # Revert a commit and keep the history of the reverted change as a separate revert commit
 git revert <commit SHA>
 
-# Pich a commit from a branch to current branch. This is different than merge as
+# Pick a commit from a branch to current branch. This is different than merge as
 # this just applies a single commit from a branch to current branch
 git cherry-pick <commit SHA1>
 

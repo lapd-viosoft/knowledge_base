@@ -1,0 +1,46 @@
+# Add a task
+task add Read Taskwarrior documents later
+
+# List tasks
+task 
+
+
+# Add a task with a high priority
+task add priority:H Pay bills
+
+# Set a task as completed
+task <ID> done
+
+# Delete a task
+task <ID> delete
+
+# Modify a task by setting the project it belongs to
+task <ID> project:"PhD Thesis"
+
+# Modify a task by setting it as next
+task <ID> project:"PhD Thesis" +next
+
+# Add a task with a high (H) priority
+task add "Wash the bicycle" priority:H # other priorities are Low (L) and Medium (M)
+
+# Insert a recurring task
+task add Pay Rent due:24th recur:monthly
+
+# Add a birthday, but wait to notice until november
+task add MCC Birthday \
+    due:2016-11-08 \
+    scheduled:2016-11-04 \
+    wait:november
+
+# Add a birthday by also adding a recurring and a "birthday" tab
+task add "Birthday: Diletta Frascerra" due:2020-02-20 wait:2020-02-10 +birthday recur:yearly
+
+# List tasks in the "waiting" status
+task waiting
+
+# See a Calendar
+task calendar
+
+
+# Set a task with a due date and time
+task add "Lunch" due:tomorrow due:12:30:00

@@ -25,3 +25,10 @@ echo ${PIPESTATUS[0]}  # replace 0 with N
 
 # To create a lockfile:
 ( set -o noclobber; echo > my.lock ) || echo 'Failed to create lock file'
+
+# To loop through lines of a file and execute a command
+while read -r line; do for i in $line; do curl -v "$i" > out.log; done; done < urls.txt
+
+# To loop through lines and execute a command on each field of each line except the first field
+while read -ra line; do unset line[0]; for field in $line; do curl -v "$field" > out.log; done; done < urls.txt
+
