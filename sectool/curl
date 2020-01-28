@@ -13,6 +13,9 @@ curl -XPOST 'http://localhost:9200/_count?pretty' -d '{ "query": { "match_all": 
 # To make a POST request and send custom header
 curl -XPOST -H "Content-Type: application/json" -d '{ "query": { "match_all": {} } }'
 
+# Banner Grabbing
+curl -LIN 'http://example.com'
+
 # To make a POST request by sending in body the content of a file
 curl -data '@<filename>' <url>
 

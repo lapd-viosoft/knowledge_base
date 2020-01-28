@@ -1,0 +1,13 @@
+# This is equivalent to psexec
+
+# General syntax
+./winexe -U [Domain/]User%Password //host command
+
+# Execute cmd shell
+./winexe -U HOME/Administrator%Pass123 //192.168.0.1 "cmd.exe"
+
+# Execute powershell
+./winexe -U HOME/Administrator%Pass123 //192.168.0.1 "powershell.exe"
+
+# Execute a command
+./winexe -U HOME/Administrator%Pass123 //192.168.0.1 "netstat -a"
