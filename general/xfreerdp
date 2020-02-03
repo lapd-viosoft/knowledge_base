@@ -10,6 +10,11 @@ xfreerdp  /u:joe /v:192.168.101.20:3389 /f +clipboard
 # Login with a specified resolution
 xfreerdp  /u:joe /v:192.168.101.20:3389 /size:1024x768 +clipboard
 
+# Login within a domain
+xfreerdp  /u:"DOMAINNAME\joe" /v:192.168.101.20:3389 /f +clipboard
+or
+xfreerdp  /u:joe /d:DOMAINNAME /v:192.168.101.20:3389 /f +clipboard
+
 
 ## Other flags
 https://github.com/FreeRDP/FreeRDP/wiki/CommandLineInterface
