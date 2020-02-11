@@ -1,4 +1,19 @@
-# We can try to use a couple of clients here:
+# Identify SMB versions
+Metasploit module `scanner/smb/smb_version`
+
+# Try to Bruteforce User
+Metasploit module `auxiliary/scanner/smb/smb_login` 
+(to find windows users credentials)
+
+# We can also try to execute commands with the psexec module
+Metasploit module `exploit/windows/smb/psexec`
+## remember to show targets and set it to native '2'
+
+# In general impacket/psexec is more reliant as of 2020
+python psexec.py <domainname>/<username>@<ip-address> cmd.exe
+python psexec.py <username>@<ip-address> cmd.exe
+
+# SMB Information Gathering, is usually done with:
 # - smbmap (more advanced)
 # - smbclient
 

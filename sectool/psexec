@@ -1,0 +1,58 @@
+## Sysinternals
+
+# Shell 
+psexec \\192.168.122.66 -u Administrator -p 123456Ww cmd.exe
+
+# Command
+psexec \\192.168.122.66 -u DOMAINNAME\Administrator -p 123456Ww ipconfig
+
+# Command to multiple Computers
+psexec \\REMOTECOMPUTER1,REMOTECOMPUTER2,REMOTECOMPUTER3 -u Administrator cmd.exe
+
+# Command to all Computers in domain
+psexec \\* hostname
+
+# Run Command as SYSTEM
+psexec \\192.168.122.66 -u Administrator -p 123456Ww -s regedit.exe
+
+# Run Command copied from local machine (Copy file and execute)
+psexec \\192.168.122.66 -u Administrator -p 123456Ww -c C:\tools\program.exe
+
+# Pass-The-Hash
+psexec \\192.168.122.66 -u Administrator -p q23q34t34twd3w34t34wtw34t cmd.exe
+
+# Enable Powershell Remoting on a remote Computer (Option 1)
+$computerName = 'REMOTECOMPUTER'
+psexec "\\$Computername" -s c:\windows\system32\winrm.cmd quickconfig -quiet 2>&1> $null
+
+# Enable Powershell Remoting on a remote Computer (Option 2)
+## we can combine psexec with Enable-PSRemoting
+
+
+
+## Impacket
+
+# Shell
+python psexec.py peppe@192.168.1.20 cmd.exe
+
+# Shell as a Domain Account
+python psexec.py CARONTE/brandon@192.168.1.20 cmd.exe
+
+# Shell as a Domain Admin
+python psexec.py CARONTE/Administrator@192.168.1.20 cmd.exe
+
+
+## Enabling PsExec
+
+# Download psexec
+Invoke-WebRequest -Uri 'https://download.sysinternals.com/files/PSTools.zip' -OutFile 'pstools.zip'
+Expand-Archive -Path 'pstools.zip' -DestinationPath "$env:TEMP\pstools"
+Move-Item -Path "$env:TEMP\pstools\psexec.exe" .
+Remove-Item -Path "$env:TEMP\pstools" -Recurse
+
+# Enable psexec with cmd
+netsh advfirewall firewall set rule group="File and Printer Sharing" new enable=Yes
+
+# Enable psexec with Powershell
+Set-NetFirewallRule -DisplayGroup "File And Printer Sharing" -Enabled True -Profile Private
+

@@ -1,6 +1,7 @@
-
-# We can perform some RPC Bind enumeration which resides generally on port 111 with:
-
+# RPC Bind enumeration is possible when RPC ports are exposed
+# most likely we can see this happen on port 111 (which may also indicate
+# the presence of an NFS server) or on port 135 on Microsoft Windows
+# systems.
 
 # Get Information with IP address
 rpcinfo -p IP
@@ -8,3 +9,26 @@ OR
 rcpclient -U "" IP
 OR
 enum4linux -a $IP
+
+
+# Port 135 TCP is used in general for remote inter-process communication,
+# where some processes can publish some functions and other
+# processes can call those functions.
+# It is remote, since this makes it possible to interact from
+# different machines.
+
+# In particular port 135 TCP works as service mapper, so that
+# we can query the system to understand which services are running
+# on that host.
+
+# We can use enum4linux to get some information, such as
+# operating system info:
+```sh
+enum4linux -o <ip-address>
+```
+# If we have username/password we could get much more information.
+
+# We can also use a very useful metasploit module:
+`auxiliary/scanner/dcerpc/endpoint_mapper` 
+# to get a lot of information on the RPC interface.
+
