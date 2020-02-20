@@ -3,12 +3,29 @@
 # the presence of an NFS server) or on port 135 on Microsoft Windows
 # systems.
 
+# Nmap Scan
+nmap INSERTIPADDRESS --script=msrpc-enum
+
+# If vulnerable
+msf > use exploit/windows/dcerpc/ms03_026_dcom
+
 # Get Information with IP address
-rpcinfo -p IP
+rpcinfo  IP
 OR 
 rcpclient -U "" IP
-OR
+# Once inside we can issue diffferent commands, such as:
+srvinfo
+enumdomusers
+getdompwinfo
+querydominfo
+netshareenum
+netshareenumall
+
+
+# Get Information about IP Address
 enum4linux -a $IP
+
+
 
 
 # Port 135 TCP is used in general for remote inter-process communication,

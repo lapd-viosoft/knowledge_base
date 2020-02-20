@@ -1,0 +1,10 @@
+# Nmap Scan
+nmap -vv -sV -sU -Pn -p 161,162 --script=snmp-netstat,snmp-processes INSERTIPADDRESS
+
+# Public string check
+snmp-check -t INSERTIPADDRESS -c public
+
+# Common community strings
+public
+private
+community

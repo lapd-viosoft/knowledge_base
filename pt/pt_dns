@@ -1,0 +1,74 @@
+### DNS service enumeration
+
+
+```sh
+whois domain.com
+dig {a|txt|ns|mx} domain.com
+dig {a|txt|ns|mx} domain.com @ns1.domain.com
+host -t {a|txt|ns|mx} domain.com
+host -a domain.com
+host -l domain.com ns1.domain.com
+for sub in $(cat subdomains.txt);do host $sub.domain.com|grep "has.address";done
+```
+
+If we find that a DNS server (tcp) is listening on the host we can try to
+enumerate starting from that nameserver by doing:
+```sh
+nsloookup
+SERVER <ip_address_of_nameserver>
+127.0.0.1 # we try to resolve 127.0.0.1, sometimes a hostname may be leaked
+<ip_address_of_nameserver> # sometimes this leaks other hostnames
+# keep into account that reverse lookups may not be enabled
+<hostname_of_machine> # we can double check the ip address of the machine if we
+# know its hostname
+```
+
+Another thing we can do to perform enumeration on DNS servers is:
+```sh
+dnsrecon -r 127.0.0.0/24 -n <ip_address_of_nameserver>
+dnsrecon -r 127.0.1.0/24 -n <ip_address_of_nameserver>
+# both these commands are used to check if there are other hosts on the nameserver machine
+```
+We may also attempt to find domain names belonging to the same LAN network in
+which the nameserver resides, and this can be done by providing LAN addresses to
+tools such as dnsrecon like this:
+```sh
+dnsrecon -r 10.0.0.0/8 -n <ip_address_of_nameserver> --db database.db
+dnsrecon -r 172.16.0.0/12 -n <ip_address_of_nameserver> --db database.db
+dnsrecon -r 192.168.0.0/16 -n <ip_address_of_nameserver> --db database.db
+```
+
+We can also attempt to perform zone transfers.
+
+Windows DNS zone transfer
+```sh
+nslookup
+set type=any
+ls -d blah.com
+```
+
+Linux DNS zone transfer:
+```sh
+# We can attempt a zone transfer from the root zone in this way:
+dig axfr @<ip_address_of_nameserver>
+# or
+dig axfr @ns1.blah.com # so by putting the hostname
+```
+
+Many times zone transfers are not enabled from the root zone, so we must have
+more specific and try to perform zone transfer from a specific zone, this can be
+done in this way:
+```sh
+dig axfr example.com @ns1.blah.com
+# where in this case example.com is the zone from where we are attempting the 
+# zone transfer
+```
+
+Notice that some older/misconfigured versions of bind show their version number
+when askekd for. We can request the version number by doing:
+```sh
+dig -t txt -c chaos VERSION.BIND @<dns_server_ip_or_hostname>
+# remember that to find the DNS server of a domain we have to obtain its NS
+# records, so we can do that by doing dig -t NS <domainname.com>
+```
+

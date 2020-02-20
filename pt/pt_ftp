@@ -2,6 +2,9 @@
 tags: [pentest, ftp]
 ---
 
+# Test for common FTP vulnerabilities with nmap
+nmap --script=ftp-anon,ftp-bounce,ftp-libopie,ftp-proftpd-backdoor,ftp-vsftpd-backdoor,ftp-vuln-cve2010-4221,tftp-enum -p 21 <target-ip>
+
 # Common commands list:
  cd <directory> - change remote directory
  lcd <directory> - change local directory
@@ -57,8 +60,6 @@ RETR <file></file>
 QUIT
 # 221 Goodbye.
 
-# Test for common FTP vulnerabilities with nmap
-nmap --script=ftp-anon,ftp-bounce,ftp-libopie,ftp-proftpd-backdoor,ftp-vsftpd-backdoor,ftp-vuln-cve2010-4221,tftp-enum -p 21 <target-ip>
 
 # Spawn shell using FTP
 # Once inside the victim machine, get root access through FTP

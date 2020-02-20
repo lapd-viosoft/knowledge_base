@@ -1,0 +1,4 @@
+rdesktop -u guest -p guest INSERTIPADDRESS -g 94%
+
+# Brute force
+ncrack -vv --user Administrator -P /root/oscp/passwords.txt rdp://INSERTIPADDRESS

