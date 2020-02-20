@@ -1,14 +1,9 @@
-```sh
-wpscan --url "target" --verbose
 # basic usage
-```
+wpscan --url "target" --verbose
 
-```sh
-wpscan --url "target" --enumerate vp,u,vt,tt --plugins-detection --follow-redirection --verbose --log target.log
 # enumerate vulnerable plugins, users, vulrenable themes, timthumbs
-```
-If we want to be stealthier we can do:
-```sh
+wpscan --url "target" --enumerate vp,u,vt,tt --plugins-detection --follow-redirection --verbose --log target.log
+
+# stealthier scan
 wpscan --stealthy --url myblog.com
-```
 
