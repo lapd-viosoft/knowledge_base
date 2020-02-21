@@ -4,16 +4,23 @@
 # systems.
 
 # Nmap Scan
-nmap INSERTIPADDRESS --script=msrpc-enum
+nmap -n -v -sV -Pn -p 135 --script=msrpc-enum 192.168.1.10 
 
 # If vulnerable
 msf > use exploit/windows/dcerpc/ms03_026_dcom
 
+# We can also use a very useful metasploit module:
+`auxiliary/scanner/dcerpc/endpoint_mapper` 
+# to get a lot of information on the RPC interface.
+
+
 # Get Information with IP address
 rpcinfo  IP
 OR 
-rcpclient -U "" IP
-# Once inside we can issue diffferent commands, such as:
+rpcclient -U "" IP
+OR 
+rpcclient -U "DOMAINNAME.LOCAL\username" 10.10.10.175
+# Once inside we can issue different commands, such as:
 srvinfo
 enumdomusers
 getdompwinfo
@@ -45,7 +52,4 @@ enum4linux -o <ip-address>
 ```
 # If we have username/password we could get much more information.
 
-# We can also use a very useful metasploit module:
-`auxiliary/scanner/dcerpc/endpoint_mapper` 
-# to get a lot of information on the RPC interface.
 

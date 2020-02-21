@@ -1,12 +1,23 @@
-# SMB Information Gathering, is usually done with:
-# - smbmap (more advanced)
-# - smbclient
-
 # Enumerate an SMB Share
 smbmap -H <ip_address>
 
 # Enumerate an SMB share with a null session
 smbmap -H <ip_address> -u anonymous 
+
+# Enumerate an SMB share with a guest
+smbmap -H <ip_address> -u whateveruser 
+
+# Specify custom domain and credentials
+smbmap -H <ip_address> -d DOMAINNAME.LOCAL -u <username> -p <password>
+
+# Specify no domain at all
+smbmap -H <ip_address> -d localhost -u <username> -p <password>
+
+# List content of share recursively
+smbmap -H <ip_address> -R SYSVOL
+
+# Download a file, wherever it is
+smbmap -R <sharename> -H <ip_address> -A Groups.xml -q
 
 # Enumerate an SMB share wiwth a null session
 # -N for a null authentication
@@ -15,6 +26,9 @@ smbclient -N -L //<ip_address>
 
 # Connect to a share
 smbclient -N '//<ip_address>/<share_name>'
+smbclient \\192.168.1.10\ipc$ -U administrator
+smbclient //192.168.1.10/ipc$ -U administrator
+smbclient //192.168.1.10/admin$ -U administrator
 
 # Check permissions inside SMB share
 # if this retuens the error `ACCESS_DENIED`, it means that the share is not
@@ -26,6 +40,8 @@ ls
 # Notice that the mounted files will have permissions which are not reliable
 # this happens since there is no easy mapping between linux and windows files
 mount -t cifs //<ip_address>/<share_name> /mnt
+
+mount -o username=<usertologin> -t cifs //<ip_address>/<share_name> /mnt
 
 # Mount C share (if permissions are good)
 smbmount //X.X.X.X/c$ /mnt/remote/ -o username=user,password=pass,rw
@@ -40,23 +56,44 @@ for i in ($ls); do echo $i; smbcacls -N //<ip_address>/<share_name> $i; done
 # Other reconnaissance techniques that can be used with SMB are:
 nmblookup -A <ip_target>
 smbclient //MOUNT/share -I <ip_target> -N
+
 rpcclient -U "" <target>
+rpcclient -U "DOMAINNAME.LOCAL\fsmith" 10.10.10.175
+
+# Enum4Linux Enumeration
 enum4linux <ip_target>
 
-# Scan with nmap
+# Scan with nmap for vulnerabilieis
 nmap --script=smb-enum-shares.nse,smb-ls.nse,smb-enum-users.nse,smb-mbenum.nse,smb-os-discovery.nse,smb-security-mode.nse,smbv2-enabled.nse,smb-vuln-cve2009-3103.nse,smb-vuln-ms06-025.nse,smb-vuln-ms07-029.nse,smb-vuln-ms08-067.nse,smb-vuln-ms10-054.nse,smb-vuln-ms10-061.nse,smb-vuln-regsvc-dos.nse,smbv2-enabled.nse INSERTIPADDRESS -p 445
 
 # Identify SMB versions
 Metasploit module `scanner/smb/smb_version`
 
-# Try to Bruteforce Credentials
+
+
+# Try to Bruteforce Windows Credentials
 Metasploit module `auxiliary/scanner/smb/smb_login` 
-(to find windows users credentials)
 
 # We can also try to execute commands with the psexec module
 Metasploit module `exploit/windows/smb/psexec`
-## remember to show targets and set it to native '2'
+# IMPORTANT: remember to show targets and set it to native '2'
 
-# In general impacket/psexec is more reliant as of 2020
+# Other MSF Modules
+
+auxiliary/scanner/smb/psexec_loggedin_users
+auxiliary/scanner/smb/smb_enumshares
+auxiliary/scanner/smb/smb_enumusers
+auxiliary/scanner/smb/smb_enumusers_domain
+auxiliary/scanner/smb/smb_login
+auxiliary/scanner/smb/smb_lookupsid
+auxiliary/scanner/smb/smb_ms17_010
+auxiliary/scanner/smb/smb_version
+
+
+# Connect with impacket/psexec
 python psexec.py <domainname>/<username>@<ip-address> cmd.exe
 python psexec.py <username>@<ip-address> cmd.exe
+
+# Connect with impacket/wmiexec
+python psexec.py <domainname>/<username>@<ip-address> cmd.exe
+python wmiexec.py <username>@<ip-address> cmd.exe

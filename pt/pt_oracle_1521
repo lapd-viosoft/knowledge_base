@@ -1,2 +1,17 @@
-tnscmd10g version -h INSERTIPADDRESS
-tnscmd10g status -h INSERTIPADDRESS
+# Oracle DB
+
+nmap -n -v -sV -Pn -p 1521 --script=oracle-enum-users --script-args sid=ORCL,userdb=users.txt 192.168.1.10
+nmap -n -v -sV -Pn -p 1521 --script=oracle-sid-brute 192.168.1.10
+tnscmd10g version -h 192.168.1.10
+tnscmd10g status -h 192.168.1.10
+
+
+# Metasploit Modules
+
+auxiliary/scanner/oracle/emc_sid
+auxiliary/scanner/oracle/oracle_login 
+auxiliary/scanner/oracle/sid_brute
+auxiliary/scanner/oracle/sid_enum
+auxiliary/scanner/oracle/tnslsnr_version
+auxiliary/scanner/oracle/tnspoison_checker
+

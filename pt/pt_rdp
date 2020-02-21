@@ -3,3 +3,9 @@ rdesktop -u guest -p guest INSERTIPADDRESS -g 94%
 
 # Brute force
 ncrack -vv --user Administrator -P /root/oscp/passwords.txt rdp://INSERTIPADDRESS
+
+
+# Metasploit Modules
+auxiliary/scanner/rdp/ms12_020_check
+auxiliary/scanner/rdp/rdp_scanner 
+
