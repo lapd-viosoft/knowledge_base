@@ -5,7 +5,7 @@ smbmap -H <ip_address>
 smbmap -H <ip_address> -u anonymous 
 
 # Enumerate an SMB share with a guest
-smbmap -H <ip_address> -u whateveruser 
+smbmap -H <ip_address> -u whateveruser  
 
 # Specify custom domain and credentials
 smbmap -H <ip_address> -d DOMAINNAME.LOCAL -u <username> -p <password>
@@ -39,9 +39,11 @@ ls
 # Mount a share
 # Notice that the mounted files will have permissions which are not reliable
 # this happens since there is no easy mapping between linux and windows files
+mount -o username=usernameonserver,uid=localusername -t cifs '\\192.168.1.220\Video' /mnt/winshare/
+mount -t cifs -o username=user,password=pass,domain=xxx //192.168.1.X/share-name /mnt/cifs
+mount -o username=<usertologin> -t cifs //<ip_address>/<share_name> /mnt
 mount -t cifs //<ip_address>/<share_name> /mnt
 
-mount -o username=<usertologin> -t cifs //<ip_address>/<share_name> /mnt
 
 # Mount C share (if permissions are good)
 smbmount //X.X.X.X/c$ /mnt/remote/ -o username=user,password=pass,rw
