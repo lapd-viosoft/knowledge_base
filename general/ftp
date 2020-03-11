@@ -1,4 +1,4 @@
-# ftp client commands
+# FTP client commands
 binary - set binary transfer type
 cd - change remote working directory
 lcd - change local working directory
