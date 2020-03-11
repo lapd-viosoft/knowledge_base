@@ -1,0 +1,81 @@
+# Wfuzz
+# -c makes the output colorful
+# -d sends data specified in the body of the request
+# -w chooses the wordlist, it is an alias for '-z file,wordlist'
+# -v is used to have a more verbose output
+# -H is used to specify a header
+# -b uses a cookie, -b '<payload>' is equivalent to -H 'Cookie: <payload>'
+# We can use "hide" or "show" commands to filter output responses
+# -h means hide and can be coupled with other options:
+# --hc : hides response containing the specified status codes (e.g., --hc 400,402,404)
+# --hl : hides response containing the specified number of lines (e.g., --hl 13)
+# --hw : hides response containing the specified number of words (e.g., --hw 8211)
+# --hh : hides response containing the specified number of chars (e.g., --hh 29239)
+# --hs : hides response containing the specified regex (e.g., --hs "invalid credential")
+# -s means show and can be coupled with other options:
+# --sc : shows response containing the specified status codes (e.g., --sc 200,301,302)
+# --sl : shows response containing the specified number of lines (e.g., --sl 13)
+# --sw : shows response containing the specified number of words (e.g., --sw 8211)
+# --sh : hides response containing the specified number of chars (e.g., --sh 29239)
+# --ss : shows response containing the specified regex (e.g., --ss "success")
+# the FUZZ,FUZ2Z,FUZ3Z,... strings are placeholders where our wordlist strings will be put
+
+# Resource bruteforcing
+wfuzz -c -v -w /usr/share/wfuzz/wordlist/dir/common.txt --hc 400,404,403 <url>/FUZZ
+wfuzz -c -v -z file,wordlist/general/big.txt --hc 404 http://192.168.79.165/FUZZ.php 
+
+# Fuzz data inside POST
+wfuzz -c -v -z file,/usr/share/wordlists/words.txt --hs Invalid -d "log=FUZZ&pwd=aaaaa" http://192.168.240.129/wp-login.php
+
+# Bruteforce a login which is successful when status code equals 200
+wfuzz -c -v -z file,users.txt -z file,pass.txt --sc 200 http://www.site.com/log.asp?user=FUZZ&pass=FUZ2Z
+
+# Fuzz with multiple payloads
+wfuzz -w wordlist/general/common.txt -w wordlist/general/common.txt -w wordlist/general/extensions_common.txt \
+--hc 404 http://testphp.vulnweb.com/FUZZ/FUZ2ZFUZ3Z
+
+# Bruteforce using the same file twice
+## here we hide all the responses containing the strings "Invalid" or "incorrect"
+wfuzz -c -v -z file,/root/Documents/MrRobot/fsoc.dic -z file,/root/Documents/MrRobot/fsoc.dic \
+--hs Invalid --hs incorrect -d "log=FUZZ&pwd=FUZ2Z" http://192.168.240.129/wp-login.php
+
+# Brutefoce directories
+wfuzz -c -v -z file,/root/wordlists/thing.txt --hc 404 http://192.168.56.102/webrootexample/FUZZ
+
+# Brutefoce with numbers
+wfuzz -c -z range,1-10  -z range,100-200 http://www.site.com/FUZZ/FUZ2Z
+
+# Nested Bruteforce
+wfuzz -c -v -z file,/root/necromancer/thing.txt \
+-z file,/usr/share/wordlists/rockyou.txt --hc 404 \
+http://192.168.56.102/amagicbridgeappearsatthechasm/FUZZ/FUZ2Z
+
+# Fuzz with specific header
+wfuzz -c -v -z file,/usr/share/wordlists/rockyou.txt --hc 403,404 \
+-H "User-Agent: Android-UA" http://192.168.1.21:8008/administration/FUZZ
+
+# Encode payload in md5 before making request
+# Other options are possible, we can also use base64 which is quite common
+wfuzz -c -v -z file,/usr/share/wordlists/part3-1.txt -z file,/usr/share/wordlists/part3-2.txt,md5 -d \
+"login=FUZZ&pwd=FUZ2Z" http://localhost:8080/login
+
+# Check the list of available encoders
+wfuzz -e encoders
+
+# Generate HTML reports
+wfuzz -c -o HTML -z file,fuzzfile/part3-1.txt -z file,fuzzfile/part3-2.txt,md5 \
+-d "login=FUZZ&pwd=FUZ2Z" http://localhost:8080/login
+
+# Bruteforce subdomains on a specific IP address (substitute domainname)
+wfuzz -w /infosec/wordlists/SecLists/Discovery/DNS/subdomains-list-5000.txt \
+-H "Host: FUZZ.<domain_name>.com" -u https://10.10.10.173
+
+# Send request through a proxy (e.g., ZAP/Burp)
+wfuzz -c -v -w /usr/share/wfuzz/wordlist/dir/common.txt --hc 400,404,403 -p 127.0.0.1:8080 <url>/FUZZ
+
+# Find hidden parameter
+wfuzz -w /wordlists/SecLists/Discovery/Web_Content/burp-parameter-names.txt 'https://10.10.1.21/secret/download.php?FUZZ=randomstring'
+
+# Find forbidden characters
+wfuzz -w /wordlists/SecLists/Fuzzing/special_chars.txt 'https://10.10.1.21/opt?command=FUZZ'
+

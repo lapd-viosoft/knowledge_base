@@ -99,10 +99,10 @@ auxiliary/scanner/smb/smb_ms17_010
 auxiliary/scanner/smb/smb_version
 
 
-# Connect with impacket/psexec
+# Connect with impacket/psexec (uses port TCP 445)
 python psexec.py <domainname>/<username>@<ip-address> cmd.exe
 python psexec.py <username>@<ip-address> cmd.exe
 
-# Connect with impacket/wmiexec
-python psexec.py <domainname>/<username>@<ip-address> cmd.exe
+# Connect with impacket/wmiexec (uses port TCP 135)
+python wmiexec.py <domainname>/<username>@<ip-address> cmd.exe
 python wmiexec.py <username>@<ip-address> cmd.exe

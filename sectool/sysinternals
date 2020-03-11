@@ -1,0 +1,2 @@
+# Dump a Process Memory
+.\procdump64.exe -ma <PID>
