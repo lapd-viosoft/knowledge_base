@@ -30,5 +30,10 @@ use auxiliary/server/ftp
 auxiliary/server/tftp
 
 # Open an SMB Server
-python smbserver.py WORKSPACE /dir
+python smbserver.py SHARENAME /dir
+python smbserver.py SHARENAME $(pwd)
 smbserver.py devel /root/Desktop/htb/devel 
+On the client:
+net use z: \\<serverIP>\<sharename>
+or
+copy filename \\<serverIP>\<sharename>

@@ -1,0 +1,6 @@
+# Generate Dataset
+.\SharpHound.exe -c All 
+
+# Generate Dataset
+# Remember to use as DNS server the Domain Controller IP
+.\SharpHound.exe -c All -d <domain_name> -domaincontroller <ip_of_domain_controller>
