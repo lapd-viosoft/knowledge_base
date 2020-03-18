@@ -1,0 +1,8 @@
+# List supported languages with CODES
+trans -T
+
+# Convert from English to Italian a word
+trans en:it "chisels"
+
+# Convert from English to Italian a word and listen audio
+trans en:it "chisels" -p
