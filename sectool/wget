@@ -19,6 +19,18 @@ wget -i url_list.txt
 # To mirror a whole page locally:
 wget -pk <url>
 
+# To mirror a website and all directly connected webpages (depth = 1)
+wget -r -l 1 "https://example.com/index.html"
+
+# To mirror a website and all directly connected webpages (depth = 2)
+wget -r -l 2 "https://example.com/index.html"
+
+# To mirror a website infinitely
+wget -r --mirror "https://example.com/index.html"
+
+# To download all files with a certain extension (e.g, PDF)
+wget -r -A.pdf http://url-to-webpage-with-pdfs/
+
 # To mirror a whole site locally:
 wget -mk <url>
 
