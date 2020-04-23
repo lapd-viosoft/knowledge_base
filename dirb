@@ -1,0 +1,13 @@
+# DirB
+# by default dirb uses common.txt
+# -r Disable recursive mode
+# -o Generate output log
+# -X .html test files with '.html' extension
+# -z adds delay in ms
+
+
+# Bruteforce a website in a non-recursive mode 
+dirb http://10.10.10.10 -r -o log.dirb
+
+# Bruteforce a website using .html and .php extensions (note that blank is not included)
+dirb http://172.28.128.17 -X .html,.php

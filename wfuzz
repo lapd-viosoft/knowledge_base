@@ -19,6 +19,11 @@
 # --sh : hides response containing the specified number of chars (e.g., --sh 29239)
 # --ss : shows response containing the specified regex (e.g., --ss "success")
 # the FUZZ,FUZ2Z,FUZ3Z,... strings are placeholders where our wordlist strings will be put
+#
+# LISTS FOR BRUTEFORCE:
+#   - dirb/common.txt
+#   - dirb/shortlist.txt
+#   - dirbuster/medium.txt
 
 # Resource bruteforcing
 wfuzz -c -v -w /usr/share/wfuzz/wordlist/dir/common.txt --hc 400,404,403 <url>/FUZZ

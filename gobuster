@@ -1,0 +1,17 @@
+# Bruteforce Directory/Files
+# dir bruteforce directories/files
+# -u target
+# -w wordlists
+# -e print full path for web resources https://...
+# -l prints length for each web resource
+# -x adds extensions to all resources in the wordlists
+# -t choose number of threads
+# -to timeout (default 10s)
+
+# Bruteforce Directory/Files
+gobuster dir -u http://172.28.128.17 -w ~/wordlists/common.txt -l
+
+
+# Bruteforce php files
+gobuster dir -u http://172.28.128.17 -w ~/wordlists/common.txt -l -x .php
+
