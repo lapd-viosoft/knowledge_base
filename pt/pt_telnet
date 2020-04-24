@@ -1,0 +1,4 @@
+msf > use auxiliary/scanner/telnet/telnet_login
+nmap -p 23 --script telnet-brute --script-args userdb=myusers.lst,passdb=mypwds.lst,telnet-brute.timeout=8s target
+nmap -p 23 --script telnet-encryption target
+nmap -p 23 --script telnet-ntlm-info target

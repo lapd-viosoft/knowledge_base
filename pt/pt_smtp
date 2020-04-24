@@ -35,3 +35,14 @@ If the request is accepted, the SMTP server responds with code 250, 251 or 252.
 250 user is valid
 251 typically means that email to that address is forwarded
 252 means that the server doesn't know wether the address is valid or not.
+
+
+## Other
+nmap -p 25 --script smtp-brute target
+nmap --script smtp-commands.nse [--script-args smtp-commands.domain=domain] -pT:25,465,587 target
+nmap -p 25,465,587 --script smtp-ntlm-info --script-args smtp-ntlm-info.domain=domain.com target
+nmap --script smtp-open-relay.nse [--script-args smtp-open-relay.domain=domain,smtp-open-relay.ip=address,...] -p 25,465,587 target
+nmap --script=smtp-vuln-cve2010-4344 --script-args="smtp-vuln-cve2010-4344.exploit" -pT:25,465,587 target
+nmap --script=smtp-vuln-cve2010-4344 --script-args="exploit.cmd='uname -a'" -pT:25,465,587 target
+nmap --script=smtp-vuln-cve2011-1720 --script-args='smtp.domain=domain' -pT:25,465,587 target
+nmap --script=smtp-vuln-cve2011-1764 -pT:25,465,587 target

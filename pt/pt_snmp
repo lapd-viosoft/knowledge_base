@@ -40,3 +40,8 @@ auxiliary/scanner/snmp/snmp_enumshares
 auxiliary/scanner/snmp/snmp_enumusers
 auxiliary/scanner/snmp/snmp_login
 
+
+## Other
+snmpcheck -p 161 -c public -t target
+snmpwalk -v1 -c public target
+msf > use auxiliary/scanner/snmp/snmp_enum

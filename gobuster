@@ -12,6 +12,8 @@
 gobuster dir -u http://172.28.128.17 -w ~/wordlists/common.txt -l
 
 
-# Bruteforce php files
+# Bruteforce php files (and blank files)
 gobuster dir -u http://172.28.128.17 -w ~/wordlists/common.txt -l -x .php
 
+# Bruteforce php and html files (and blank files)
+gobuster dir -u http://172.28.128.17 -w /usr/share/dirb/wordlists/common.txt -l -x .php,.asp

@@ -1,0 +1,4 @@
+ntpdc -n -c monlist target
+nmap -sU -p 123 -Pn -n --script ntp-info target
+nmap -sU -p 123 -Pn -n --script ntp-monlist target
+msf > use auxiliary/scanner/ntp/ntp_readvar

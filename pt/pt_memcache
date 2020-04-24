@@ -1,0 +1,3 @@
+msf > use auxiliary/gather/memcached_extractor
+$ nc x.x.x.x 11211
+stats\r\n

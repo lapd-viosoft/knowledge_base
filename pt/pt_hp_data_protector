@@ -1,0 +1,1 @@
+msf > use exploit/windows/misc/hp_dataprotector_cmd_exec

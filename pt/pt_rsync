@@ -1,0 +1,7 @@
+rsync -a user@host::tools/
+
+nmap -p 873 --script rsync-brute --script-args 'rsync-brute.module=www' target
+
+nmap -p 873 --script rsync-list-modules target
+
+msf >use auxiliary/scanner/rsync/modules_list

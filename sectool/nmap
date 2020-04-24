@@ -7,6 +7,12 @@ nmap [target]
 # Scan from a list of targets:
 nmap -iL [list.txt]
 
+# TCP Scan
+nmap -sC -sV <ip> -oA report
+
+# Speed up TCP scan of all ports
+nmap -T5 --open -sS -vvv --min-rate=1000 --max-retries=2 -p- IP
+
 # iPv6:
 nmap -6 [target]
 

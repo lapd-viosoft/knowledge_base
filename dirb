@@ -11,3 +11,6 @@ dirb http://10.10.10.10 -r -o log.dirb
 
 # Bruteforce a website using .html and .php extensions (note that blank is not included)
 dirb http://172.28.128.17 -X .html,.php
+
+# Bruteforce a website using .html and .php extensions (blank is included)
+dirb http://172.28.128.17 -X .html,.asp,.jsp,,

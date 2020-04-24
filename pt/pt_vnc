@@ -1,0 +1,5 @@
+msf > use auxiliary/scanner/vnc/vnc_none_auth
+msf > use auxiliary/scanner/vnc/vnc_login
+msf > use exploit/multi/vnc/vnc_keyboard_exec
+nmap --script vnc-brute -p 5900
+nmap --script vnc-info -p 5900 

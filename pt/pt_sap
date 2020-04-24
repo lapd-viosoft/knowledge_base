@@ -1,0 +1,1 @@
+msf > use auxiliary/scanner/sap/sap_router_portscanner

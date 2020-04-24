@@ -1,5 +1,14 @@
-# To display public shares on the server:
+# To display public shares on the server
 smbclient -L <host> -U%
+or
+smbclient -L '\\192.168.1.220'
 
-# To connect to a share:
+# To display public shares on the server with a null session
+smbclient -N -L '\\192.168.1.220'
+
+# To connect to a share
 smbclient //<host>/<share> -U<user>%<password>
+or 
+smbclient '\\192.168.1.220\MusicShare'
+
+

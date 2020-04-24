@@ -1,0 +1,4 @@
+msf >use auxiliary/scanner/mongodb/mongodb_login
+$ mongo host:port/database
+MongoDB shell version: 2.6.12
+> help

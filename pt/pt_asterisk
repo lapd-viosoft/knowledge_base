@@ -1,0 +1,14 @@
+http://code.google.com/p/sipvicious/
+
+$ ncat -v 192.168.108.196 5038
+Ncat: Version 6.47 ( http://nmap.org/ncat )
+Ncat: Connected to 192.168.108.196:5038.
+Asterisk Call Manager/1.1
+action: login
+username: admin
+secret: amp111
+
+Response: Success
+Message: Authentication accepted
+action: command
+command: core show help

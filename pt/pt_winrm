@@ -1,0 +1,5 @@
+msf >use exploit/windows/winrm/winrm_script_exec
+msf >use auxiliary/scanner/winrm/winrm_auth_methods
+msf >use auxiliary/scanner/winrm/winrm_cmd
+msf >use auxiliary/scanner/winrm/winrm_login
+msf >use auxiliary/scanner/winrm/winrm_wql

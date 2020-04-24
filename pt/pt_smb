@@ -22,11 +22,17 @@ smbmap -R <sharename> -H <ip_address> -A Groups.xml -q
 # Enumerate an SMB share wiwth a null session
 # -N for a null authentication
 # -L to list the available shares
-smbclient -N -L //<ip_address>
+smbclient -N -L '\\<ip_address>'
+
+# List shares (creds required)
+smbclient -L '\\<ip_address>'
 
 # Connect to a share
-smbclient -N '//<ip_address>/<share_name>'
-smbclient \\192.168.1.10\ipc$ -U administrator
+# with a null session
+smbclient -N '\\<ip_address>\<share_name>'
+
+# with creds
+smbclient '\\192.168.1.10\ipc$' -U administrator
 smbclient //192.168.1.10/ipc$ -U administrator
 smbclient //192.168.1.10/admin$ -U administrator
 
@@ -86,6 +92,9 @@ Metasploit module `auxiliary/scanner/smb/smb_login`
 # We can also try to execute commands with the psexec module
 Metasploit module `exploit/windows/smb/psexec`
 # IMPORTANT: remember to show targets and set it to native '2'
+
+# Symlink Traversal Vulnerability
+# msf > auxiliary/admin/smb/samba_symlink_traversal
 
 # Other MSF Modules
 

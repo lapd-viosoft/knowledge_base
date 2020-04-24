@@ -33,8 +33,6 @@ netshareenumall
 enum4linux -a $IP
 
 
-
-
 # Port 135 TCP is used in general for remote inter-process communication,
 # where some processes can publish some functions and other
 # processes can call those functions.
@@ -53,3 +51,6 @@ enum4linux -o <ip-address>
 # If we have username/password we could get much more information.
 
 
+# RPC on port 111
+rpcinfo -p 192.168.1.111
+msf >use auxiliary/scanner/nfs/nfsmount
