@@ -119,8 +119,17 @@ navigate-to example.com
 
 ### EXAMPLES ###
 
+# Good Starter Policy
+# This policy allows images, scripts, AJAX, form actions, and CSS from the
+# same origin, and does not allow any other resources to load (eg object,
+# frame, media, etc). It is a good starting point for many sites.
+default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self';base-uri 'self';form-action 'self'
+
 # All content must come from site's own origin
 Content-Security-Policy: default-src 'self'
+
+# Only allow scripts from the same origin
+script-src 'self';
 
 # Allow content from a strusted domain and all of its subdomains
 Content-Security-Policy: default-src 'self' *.trusted.com
@@ -144,7 +153,3 @@ Content-Security-Policy: default-src https://onlinebanking.jumbobank.com
 ## CSP, this site uses the setting specified by the default-src directive,
 ## which means that scripts can be loaded only from the originating server.
 Content-Security-Policy: default-src 'self' *.mailsite.com; img-src *
-
-
-
-
