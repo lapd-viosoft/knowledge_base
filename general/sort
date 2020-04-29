@@ -9,3 +9,9 @@ sort -r <file>
 
 # To sort a file randomly:
 sort -R <file>
+
+# in questo caso viene usato come
+# separatore il carattere "," attraverso il flag "-t" e il
+# riordinamento avviene in funzione della colonna 1 e della
+# colonna 3 sul file chiamato "test.txt"
+sort -t"," -k1,3 test.txt

@@ -7,6 +7,9 @@ wget <url>...
 # To download <url> and change its name:
 wget <url> -O <outfile>
 
+# To output downloaded page to stdin (e.g., to be processed by other tools)
+wget -O- -o /dev/null | ...
+
 # To download <url> into <dir>:
 wget -P <dir> <url>
 

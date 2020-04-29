@@ -1,0 +1,21 @@
+Look here:
+https://www.hillelwayne.com/post/learning-a-language/
+
+and add:
+1) manipolazione del filesystem (magari in modo OS independent)
+    come listo i file
+    come controllo se un file esiste
+    come scrivo in un file ? come faccio append?
+
+2) come gestire gli argomenti e le opzioni command line, fondamentnale
+per me che faccio principalmente cose da riga di comando
+
+3) come si esplorano le librerie/moduli senza doc, cioe' come elenco tutti
+i metodi all'interno di un modulo? come elenco le costanti che esporta?
+
+4) creare un template per un app di esempio (ad esempio in python io
+uso cookiecutter e mi son fatto il template per le app da riga di comando)
+
+5) come manipolo file di testo/tabella? principalmente voglio esserer
+in grado di fare tutto quello che faccio con bash/sed/awk/grep con quel
+linguaggio di programmazione

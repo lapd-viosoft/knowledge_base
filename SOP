@@ -1,0 +1,68 @@
+# SOP
+
+Same-origin policy is a security enforcement implemented by browsers
+that restricts the way a document or script (or other data) that gets
+loaded from one origin can communicate and associate with properties of
+another origin.
+SOP is a security measure thought for CSRF attacks, anyway keep in mind
+that SOP alone is good but not enough to protect our applications
+from all forms of CSRF attacks and generally anti-csrf tokens are
+also adviced.
+
+Origin is considered on the basis of protocol, port number, and, more
+importantly, the hostname of the webpage.
+
+SOP is valid not only for JS but for also for cookies, AJAX,
+Flash, and so on.
+
+To understand the same-origin policy better, let us consider an
+example. Imagine that you're logged into your webmail, such as Gmail,
+in one browser tab. You open a page in another browser tab that has some
+pieces of JavaScript (JS) that attempts to read your Gmail messages. This
+is when the same-origin policy kicks in: as soon as an attempt is made to
+access Gmail from some other domain that is not Gmail then the same-origin
+policy will prevent this interaction from happening. So, basically, the
+same-origin policy prevented a random web page which was not a part of
+Gmail from performing actions on your behalf on an actual Gmail web page.
+
+## Concept of Origin
+
+Generally to understand if given two URLs they belong to the same origin
+we have to take into account that we have to look at the domain, port
+and protocol and that the path does not matter:
+- Different domain/subdomain gives different origins
+- Different ports gives different origins
+- Different protocol gives different origins
+- Path does not matter
+
+If we take the origin http://example.com then we can consider:
+- http://example.com/random/derp.html       (same origin)
+- http://example.com/other/meme/derp.html   (same origin)
+- http://www.example.com/meme/derp.html     (different origin)
+- http://example.com:8081/meme/derp.html    (different origin)
+- ftp://example.com/meme/derp.html          (different origin)
+- https://example.com/meme/derp.html        (different origin)
+- http://packtpub.com/meme/derp.html        (different origin)
+
+
+## Switching Origins
+
+JS provides a way to change origins if certain conditions are met. The
+document.  domain property allows the origin of the current page to change
+into a different origin, for example origin A can switch to origin B;
+this will only work if the current page is the subset of the main domain.
+
+Let me explain the mentioned concept with an example. Consider a page
+running under example.com, which has two iframes, abc.example.com and
+xyz.example.  com. If either of these iframes issues document.domain
+= 'example.com' then further same origin checks will be based on
+example.com. However, as I mentioned, a page can't misuse this
+functionality to impersonate a completely different domain.  So,
+malicious.com cannot issue an origin to change to bankofamerica.com and
+access the data of it.
+
+We can try to change origin by doing from a JS console:
+document.domain
+# this will give an error unless we are on example.com or subdomains
+document.domain = "example.com" 
+

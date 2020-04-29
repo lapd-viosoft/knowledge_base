@@ -1,0 +1,18 @@
+# Reg Windows Utilities
+
+
+# Query a single key value
+reg query  [domain]\[key] /v [value]       
+
+# Query a single key value recursively
+reg query  [domain]\[key] /v [value] /s    
+
+# Add a key
+reg add    [domain]\[key]              
+
+# Export subtree to file
+reg export [domain]\[key] output.reg   
+
+# Import keys from file
+reg import output.reg                  
+

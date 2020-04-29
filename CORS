@@ -1,0 +1,28 @@
+# CORS
+
+# The HTTP headers that relate to CORS are:
+
+## Request Headers
+Origin
+Access-Control-Request-Method
+Access-Control-Request-Headers
+
+## Response headers
+
+Access-Control-Allow-Origin
+Access-Control-Allow-Credentials
+Access-Control-Expose-Headers
+Access-Control-Max-Age
+Access-Control-Allow-Methods
+Access-Control-Allow-Headers
+
+## Sending a Preflight CORS Request
+curl -H "Origin: http://example.com" \
+-H "Access-Control-Request-Method: POST" \
+-H "Access-Control-Request-Headers: X-Requested-With" \
+-X OPTIONS --verbose \
+https://www.googleapis.com/discovery/v1/apis?fields=
+
+## Sending a Simple CORS Request
+curl -H "Origin: http://example.com" --verbose \
+https://www.googleapis.com/discovery/v1/apis?fields=

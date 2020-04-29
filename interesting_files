@@ -1,0 +1,8 @@
+# Interesting Files
+For a list of interesting files on any operating system check out
+the File Inclusion intruder payloads of "PayloadsAllTheThings":
+[](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/File%20Inclusion/Intruders)
+
+or for windows, do:
+kb windows_interesting_files
+

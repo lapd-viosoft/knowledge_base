@@ -36,6 +36,11 @@ tags: [ tools ]
  p / P display found credentials
  ? print a runtime interaction help screen
 
+# Good password lists to use are:
+# - 10_million_password_list_top_1000.txt 
+# - ...
+# - rockyou (this is too much in general for e.g., ssh)
+
 
 # Shows the ncrack version and supported modes
 ncrack -V

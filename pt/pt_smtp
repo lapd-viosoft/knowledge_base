@@ -46,3 +46,9 @@ nmap --script=smtp-vuln-cve2010-4344 --script-args="smtp-vuln-cve2010-4344.explo
 nmap --script=smtp-vuln-cve2010-4344 --script-args="exploit.cmd='uname -a'" -pT:25,465,587 target
 nmap --script=smtp-vuln-cve2011-1720 --script-args='smtp.domain=domain' -pT:25,465,587 target
 nmap --script=smtp-vuln-cve2011-1764 -pT:25,465,587 target
+
+
+## MailCatcher
+In case we need a fast tool to implement a web server we can use
+mail catcher that can be found here:
+[](https://mailcatcher.me/)

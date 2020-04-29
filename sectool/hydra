@@ -115,6 +115,7 @@ hydra -l <username> -P <password_file> telnet://targetname
 
 # SSH Login 1
 hydra -l root -M /path/to/ip/list.txt -P /path/to/passwordlist.txt ssh -t 4
+hydra -L users -P 10_million_password_list_top_1000.txt -t 4 192.168.1.69 ssh -vv
 # Notice that with some services, we may need to use the recommended
 # number of tasks. In case of SSH if we use more than 4 tasks we may get
 # errors

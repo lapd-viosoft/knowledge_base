@@ -1,0 +1,150 @@
+# CSPs set a policy of what content can run on the
+# current site. For example, if JavaScript can be executed inline, or
+# which domains .js files can be loaded from. This can be beneficial to
+# act as another line of defence against XSS attacks, where the attacker
+# will try and inject script into the HTML page. Normally output would
+# be encoded, however say the developer had forgotten only on one output
+# field. Because the policy is preventing in-line script from executing,
+# the attack is thwarted.
+
+
+# REFERENCE: https://content-security-policy.com/
+# Note that for many of the specfications listed in this cheatsheet
+# we will have specific arguments, meaning:
+# - 'self' only apply to same-origin (subdomain, protocol, host, port)
+# - 'none' prevents loading from any source
+# - * means any URL except data: blob, filesystem, schemes
+# - *.example.com allows loading from any subdomain of example.com
+# - sub1.example.com allows loading from the subdomain sub1.example.com
+# Note that we may put together more directives, for example if we want
+# to allow same-origin + all subdomains related to the origin domain
+# we can do:
+# - 'self' *.example.com
+# or if we want to specify specific subdomains we can do:
+# - 'self' sub1.example.com sub2.example.com
+
+# default-src
+# The default-src directive defines the default policy for fetching
+# resources such as JavaScript, Images, CSS, Fonts, AJAX requests, Frames,
+# HTML5 Media. Not all directives fallback to default-src. See the Source
+# List Reference for possible values.
+default-src 'self' cdn.example.com;
+
+# script-src
+# Defines valid sources of javascript
+script-src 'self' js.example.com;
+
+# style-src
+# Defines valid sources of stylesheets or CSS
+style-src 'self' css.example.com;
+
+# img-src
+# Defines valid sources of images
+img-src 'self' img.example.com;
+
+# connect-src
+# Applies to XMLHttpRequest (AJAX), WebSocket, fetch(), <a ping> or EventSource.
+# If not allowed the browser emulates a 400 HTTP status code
+connect-src 'self';
+
+# font-src
+# Defines valid sources of font resources (loaded via @font-face)
+font-src font.example.com;
+
+# object-src
+# Defines valid sources of plugins, eg <object>, <embed> or <applet>
+object-src 'self';
+
+# media-src
+# Defines valid sources of audio and video, eg HTML5 <audio>, <video> elements
+media-src media.example.com;
+
+# frame-src
+# Defines valid sources for loading frames. In CSP Level 2 frame-src
+# was deprecated in favor of the child-src directive. CSP Level 3, has
+# undeprecated frame-src and it will continue to defer to child-src if
+# not present
+frame-src 'self';
+
+# sandbox
+# Enables a sandbox for the requested resource similar to the iframe
+# sandbox attribute. The sandbox applies a same origin policy, prevents
+# popups, plugins and script execution is blocked. You can keep the
+# sandbox value empty to keep all restrictions in place, or add values:
+# allow-forms allow-same-origin allow-scripts allow-popups, allow-modals,
+# allow-orientation-lock, allow-pointer-lock, allow-presentation,
+# allow-popups-to-escape-sandbox, and allow-top-navigation
+sandbox allow-forms allow-scripts;
+
+
+# report-uri
+# Instructs the browser to POST a reports of policy failures to this
+# URI. You can also use Content-Security-Policy-Report-Only as the HTTP
+# header name to instruct the browser to only send reports (does not block
+# anything). This directive is deprecated in CSP Level 3 in favor of the
+# report-to directive
+report-uri /some-report-uri;
+
+# child-src
+# Defines valid sources for web workers and nested browsing contexts
+# loaded using elements such as <frame> and <iframe>
+child-src 'self'
+
+# form-action
+# Defines valid sources that can be used as an HTML <form> action
+form-action 'self';
+
+# frame-ancestors
+# Defines valid sources for embedding the resource using <frame> <iframe>
+# <object> <embed> <applet>. Setting this directive to 'none' should be
+# roughly equivalent to X-Frame-Options: DENY
+frame-ancestors 'none';
+
+# plugin-types
+# Defines valid MIME types for plugins invoked via <object> and
+# <embed>. To load an <applet> you must specify application/x-java-applet.
+plugin-types application/pdf;
+
+# base-uri
+# Defines a set of allowed URLs which can be used in the src attribute
+# of a HTML base tag.
+base-uri 'self';
+
+# navigate-to
+# Restricts the URLs that the document may navigate to by any means. For
+# example when a link is clicked, a form is submitted, or window.location
+# is invoked. If form-action is present then this directive is ignored
+# for form submissions
+navigate-to example.com
+
+### EXAMPLES ###
+
+# All content must come from site's own origin
+Content-Security-Policy: default-src 'self'
+
+# Allow content from a strusted domain and all of its subdomains
+Content-Security-Policy: default-src 'self' *.trusted.com
+
+# Allow users to include images from any origin, but restrict audio/video to trusted providers
+# and all scripts only to specific server that hosts trusted code
+## Here, by default, content is only permitted from the document's origin, with the following exceptions:
+## - Images may load from anywhere (note the "*" wildcard).
+## - Media is only allowed from media1.com and media2.com (and not from subdomains of those sites).
+## - Executable script is only allowed from userscripts.example.com.
+Content-Security-Policy: default-src 'self'; img-src *; media-src media1.com media2.com; script-src userscripts.example.com
+
+# Ensure that all content is loaded using TLS
+## The server only permits access to documents being loaded specifically over HTTPS
+## through the single origin onlinebanking.jumbobank.com
+Content-Security-Policy: default-src https://onlinebanking.jumbobank.com
+
+
+# Allow HTML and images in email but not javascript or other dangerous content
+## Note that this example doesn't specify a script-src; with the example
+## CSP, this site uses the setting specified by the default-src directive,
+## which means that scripts can be loaded only from the originating server.
+Content-Security-Policy: default-src 'self' *.mailsite.com; img-src *
+
+
+
+
