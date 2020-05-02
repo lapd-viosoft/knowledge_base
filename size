@@ -1,0 +1,13 @@
+# The tool size shows the size of the runtime image of an object/executable which is not
+# directly related to the size of the file (bss uses no bytes in the file no
+# matter how large, the file may contain debugging information that is not part of
+# the runtime image, etc.)
+# Other kinds of info on size can be gathered by using:
+# - ls -> show size of the file (when you open and read it, that's how many bytes you will get)
+# - du -> shows actual disk usage which can be smaller than the file size due to holes
+
+
+# To get size of different sections of an executable
+size <filename>
+
+# 

@@ -1,4 +1,4 @@
-# Domain Enumeration with Powerview
+## Domain
 
 # Get current domain information
 Get-NetDomain
@@ -51,7 +51,7 @@ Get-UserProperty -Properties logoncount
 
 # Search for a particular string in user's attribute
 Find-UserField -SearchField Description -SearchTerm "built" # many shared accounts put passwords in description
-Find-UserField -SearchField Description -SearchTerm "pass"  # many shared accounts put passwords in description
+Find-UserField -SearchField Description -SearchTerm "pass" # many shared accounts put passwords in description
 
 # Get logged on users on a computer
 Get-NetLoggedon -ComputerName <computername>

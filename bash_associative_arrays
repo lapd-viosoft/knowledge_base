@@ -1,0 +1,27 @@
+# Bash Associative Arrays
+
+# Create an associative array
+declare -A my_assoc
+my_assoc[name]="giovanni"
+my_assoc[surname]="rossi"
+
+# Create an associative array 2
+declare -A my_assoc
+my_assoc=([name]="giuseppe" [surname]="nebbione" [address]="Italy, Napoli")
+
+# Append an element to associative arrays
+var="random string"
+aa=([hello]="world")
+aa+=([b]="$var")   
+
+# Associative array in conditional
+if [[ ${my_assoc[name]} == "giuseppe" ]]; then
+    printf "%s" "They are equal"
+else
+    printf "%s" "They are not equal"
+fi
+
+# Loop over the keys of an associative array:
+for key in "${!my_assoc[@]}"; do
+    printf "%s" "$key"
+done

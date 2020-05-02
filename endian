@@ -1,0 +1,38 @@
+# Historically, various methods of endianness have been used in computing,
+# including exotic forms such as middle-endianness. Today, however, big-endianness
+# is the dominant ordering in networking protocols (IP, TCP, UDP). Conversely,
+# little-endianness is the dominant ordering for processor architectures (x86,
+# most ARM implementations) and their associated memory. File formats can use
+# either ordering; some formats use a mixture of both. 
+
+# The sequence of byte '0a 0b 0c 0d' becomes:
+# - big    endian: '0a 0b 0c 0d'
+# - little endian: '0d 0c 0b 0a'
+# - middle endian: '0b 0a 0d 0c'
+
+# To check out byteorder on GNU/Linux
+lscpu | grep -i order
+printf '\1' | od -dAn # prints 1 for little-endian and 256 for big-endian
+
+# To check out byteorder on systems with dpkg
+dpkg-architecture | grep -i end
+
+# To check out byteorder of a machine with perl
+## (if it starts with 1.. -> little endian)
+perl -e 'use Config; print $Config{byteorder}'
+
+# To check out byteorder of a machine with python
+## (if it prints 'little' -> little endian)
+python -c 'from sys import byteorder;print(byteorder)'
+
+# To check out byteorder of a machine with C
+int main() { 
+    union {
+        int i;
+        char c[sizeof(int)];
+    } x;
+    x.i = 1;
+    if(x.c[0] == 1) printf("little-endian\n");
+    else printf("big-endian\n");
+}
+

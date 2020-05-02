@@ -1,0 +1,130 @@
+## Domain
+
+# Get Domain Information
+Get-ADDomain
+
+# Get other domain information
+Get-ADDomain -Identity myforest.local
+
+# Get domain SID for the current domain
+(Get-ADDomain).DomainSID
+
+# Get domain controller for current domain
+Get-ADDomainController
+
+# Get domain controller for other domain
+Get-ADDomainController -DomainName myforest.local -Discover
+
+## Users
+
+# List users in domain
+Get-ADUser -Filter * -Properties *
+Get-ADUser -Filter * -Properties * | select name # to view the list of usernames
+Get-ADUser -Identity testusername1
+Get-ADUser -Identity testusername1 -Properties * # to view all properties of a user
+
+# Get list of all properties for users in the current domain
+Get-ADUser -Filter * -Properties * | Select -First 1 | Get-Member -MemberType *property | select name
+Get-ADUser -Filter * -Properties * | Select name, @{expression={[datetime]::fromFileTime($_.pwdlastset)}}
+Get-ADUser -Filter * -Properties * | Select name, @{expression={[datetime]::fromFileTime($_.badpwdcount)}}
+Get-ADUser -Filter * -Properties * | Select name, @{expression={[datetime]::fromFileTime($_.logoncount)}}
+
+# Search for a particular string in user's attribute
+Get-ADUser -Filter 'Description -like "*built*"' -Properties Description | select name,Description
+Get-ADUser -Filter 'Description -like "*pass*"' -Properties Description | select name,Description
+
+
+## Computers
+
+# List computers in domain
+Get-ADComputer -Filter * | select Name
+Get-ADComputer -Filter * -Properties *
+
+# Search for specific OS computers
+Get-ADComputer -Filter 'OperatingSystem -like "*Server 2016*"' -Properties OperatingSystem | select Name,OperatingSystem
+Get-ADComputer -Filter 'OperatingSystem -like "*XP*"' -Properties OperatingSystem | select Name,OperatingSystem
+
+# List available computers
+Get-ADComputer -Filter * -Properties DNSHostName | %{Test-Connection -Count 1 -ComputerName $_.DNSHostName}
+
+## Groups
+
+# List current domain groups
+Get-ADGroup -Filter * | select Name
+Get-ADGroup -Filter * -Properties *
+
+# List groups from another domain
+Get-ADGroup -Domainname myforest.local
+
+# List all groups containing the word "admin" in name
+Get-ADGroup -Filter 'Name -like "*admin*"' | select Name
+
+# Get members within a group
+Get-ADGroupMember -Identity "Domain Admins" -Recursive
+
+# Get the group membership for a user
+Get-ADPrincipalGroupMembership -Identity testuser1
+
+
+## GPO
+
+# List GPOs in current domain
+Get-GPO -All # Group Policy Module
+Get-GPResultantSetOfPolicy -ReportType Html -Path C:\Users\Administrator\report.html # provides RSoP
+
+
+## OU
+
+# Get OUs in a domain
+Get-ADOrganizationalUnit -Filter * -Properties *
+
+# Get GPO applied on an OU
+;; read GPOname from gplink attribute from Get-NetOU
+Get-GPO -Guid AB392439424-334-43324-328DSKND9
+
+
+## ACL
+
+# Enumerate ACLs
+(Get-Acl 'AD:\CN=Administrator,CN=Users,DC=dollarcorp,DC=money,DC=local').Access
+
+
+## Trust
+
+# Get a list of all domain trusts for the domain
+Get-ADTrust -Filter *
+Get-ADTrust -Filter * -Identity child1.myforest.local
+
+# Get details about the forest
+Get-ADForest
+Get-ADForest -Identity child1.myforest.local
+
+# Get all domains in the forest
+(Get-ADForest).Domains
+
+# Get all global catalogs for the forest
+Get-ADForest | select -ExpandProperty GlobalCatalogs
+
+# Get trusts related to the forest
+Get-ADTrust -Filter 'msDS-TrustForestTrustInfo -new "$null"'
+
+
+## Interesting Stuff for Attacks
+
+# Get all Kerberoastable accounts (user accounts used as service accounts)
+Get-ADUser -Filter {ServicePrincipalName -ne "$null"} -Properties ServicePrincipalName
+
+# Request a TGS (remember that first we must have a valid TGT)
+Add-Type -AssemblyName System.IdentityModel \
+New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList "MSSQLSvc/lab1.myforest.local"
+
+# Get all domain computers which have unconstrained delegation enabled
+Get-ADComputer -Filter {TrustedForDelegation -eq $True}
+Get-ADUser -Filter {TrustedForDelegation -eq $True}
+
+# Get all domain users/computers which have constrained delegation enabled
+Get-DomainComputer -TrustedToAuth
+Get-DomainUser -TrustedToAuth
+
+# Get members of the DNSAdmins group
+Get-ADGroupMember -Identity DNSAdmins

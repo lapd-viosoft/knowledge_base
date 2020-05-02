@@ -1,7 +1,6 @@
 # Find
 # Remember that `-name` is for case-sensitive search
 # while         `-iname` is for case-INsensitive search
-#
 
 # Find files by case-insensitive extension (ex: .jpg, .JPG, .jpG)
 find . -iname "*.jpg"

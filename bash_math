@@ -1,0 +1,45 @@
+# Bash Math
+
+# Increment a variable
+count=$(( $count + 1 ))
+
+# Read two numbers and perform all basic arithmetic operations
+read x
+read y
+echo "$((x + y))"
+echo "$((x - y))"
+echo "$((x * y))"
+echo "$((x / y))" # returns the integer part of the division
+echo "$((x % y))" # returns the module of division
+
+# Read an arbitrary math expression and compute it with 3 precision digits
+## read an arbitrary math expression
+read expression
+## perform the operation with bc -l using 3 precision digits
+res=$(bc -l <<<"scale=3; "$expression"")
+## print the result
+printf "%s" "$res"
+
+# Math and Conditionals
+read x
+read y
+z="$((x - y))"
+if  ((z == 0)); then
+    echo "X is equal to Y"
+elif ((z > 0 )); then
+    echo "X is greater than Y"
+else
+    echo "X is less than Y"
+fi
+
+# Math and Conditionals 2
+read x
+read y
+read z
+if (( (x==y) && (x==z) ));then
+    echo "EQUILATERAL"
+elif (( (x!=y) && (y!=z) && (x!=z)  ));then
+    echo "SCALENE"
+else
+    echo "ISOSCELES"
+fi

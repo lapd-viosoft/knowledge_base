@@ -1,17 +1,28 @@
-# To sort a file:
+# sort
+# sort by default works on strings sorting but we can have
+# - `-n`: numeric sorting
+# - `-h`: human-readable format sorting (e.g., 2G, 1K)
+
+# To sort a file
 sort <file>
 
-# To sort a file by keeping only unique:
+# To sort a file ignoring case (equivalent to --ignore-case)
+sort -f <file>
+
+# To sort a file by keeping only unique results
 sort -u <file>
 
-# To sort a file and reverse the result:
+# To sort a file and reverse the result
 sort -r <file>
 
-# To sort a file randomly:
+# To sort a file randomly
 sort -R <file>
 
-# in questo caso viene usato come
-# separatore il carattere "," attraverso il flag "-t" e il
-# riordinamento avviene in funzione della colonna 1 e della
-# colonna 3 sul file chiamato "test.txt"
-sort -t"," -k1,3 test.txt
+# To sort a csv file numerically by using column 1 and 3
+sort -t"," -n -k1,3 <file>
+
+# To sort results of du in the "human-readable numeric" format
+du -sh * | sort -h -k1
+
+# To reverse the results of du in the "human-readable numeric" format
+du -sh * | sort -h -r -k1

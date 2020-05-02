@@ -1,7 +1,27 @@
-# To implement a for loop:
+# Bash Scripting
+#
+# For common Tests used in bash conditionals look at:
+# bash_conditionals
+#
+# For string manipulation look at:
+# bash_strings
+
+
+# For loop on files
 for file in *;
 do 
     echo $file found;
+done
+
+# For loop on directories
+for dir in */;
+do 
+    echo $dir found;
+done
+
+# For loop on fields of an array
+for x in "${my_array[@]}"; do
+    printf "$x";
 done
 
 # To implement a case command:
@@ -12,6 +32,15 @@ in
     2) echo "two found";;
     3*) echo "something beginning with 3 found";;
 esac
+
+# If/Elif/Else
+if   [[ condition ]]; then
+    echo "inside if"
+elif [[ condition ]]; then
+    echo "inside elif"
+else
+    echo "inside else"
+fi
 
 # To turn on debugging:
 set -x
@@ -32,3 +61,32 @@ while read -r line; do for i in $line; do curl -v "$i" > out.log; done; done < u
 # To loop through lines and execute a command on each field of each line except the first field
 while read -ra line; do unset line[0]; for field in $line; do curl -v "$field" > out.log; done; done < urls.txt
 
+# To create a temporary file
+my_file=$(mktemp)
+printf "%s" "ciao" > "$my_file"
+rm "$my_file"
+
+# Loop through a file delimited by newlines
+while IFS=$'\n' read -r line; do
+    echo "$line"
+done < $file_name
+
+# Loop through a multiline variable delimited by newlines
+while IFS=$'\n' read -r line; do
+    echo "$line"
+done <<< $variable_name
+;; or with modern bash 
+mapfile -t newarr <<< "$multilinestring"
+
+# Insert data separated by blanks in an array and loop through them
+data="gatto cane mamma papa lol"
+read -a myarray <<< $data; 
+for field in "${myarray[@]}"; do
+    echo "$field"
+    echo "\n"
+done
+
+# Loop through fileds separate by another character such as comma
+lol="ciao,mamma,papa,gatto,cane"; 
+IFS=, 
+read -a myarray <<< "$lol"
