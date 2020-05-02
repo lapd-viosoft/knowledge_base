@@ -46,8 +46,11 @@ curl -u <username>:<password> <url>
 # To download a file with a proxy:
 curl -x <proxy-host>:<port> <url>
 
-# To make a request behind a proxy
+# To make a request behind a SOCKS proxy
 curl --socks5 127.0.0.1:9050 http://checkip.amazonaws.com/
+
+# To make a request behind an HTTP proxy (e.g., ZAP, Burp)
+curl -x 127.0.0.1:9090 http://example.com/
 
 # To download a file over FTP:
 curl -u <username>:<password> -O ftp://example.com/pub/file.zip

@@ -1,5 +1,10 @@
-# Create a key
+# Encrypt a file
+gpg -c ~/path/to/file.pdf
 
+# Decrypt a file
+gpg -d ~/path/to/file.pdf.gpg
+
+# Create a key
  gpg --gen-key
 
 

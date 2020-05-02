@@ -6,3 +6,6 @@ cat -n <file>
 
 # To display file contents with line numbers (blank lines excluded)
 cat -b <file>
+
+# To print a file with cat
+cat << EOF > /tmp/filename

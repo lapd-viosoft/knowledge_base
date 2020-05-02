@@ -1,6 +1,12 @@
 # To print only second and third column using '\s+' as a delimiter
 awk '{ print $2,$3 }'
 
+# To print only second and last column using '\s+' as a delimiter
+awk '{ print $2,$NF }'
+
+# To print only second and second to last column using '\s+' as a delimiter
+awk '{ print $2,$(NF-1) }'
+
 # To print only first and third column using ',' as a delimiter
 awk -F',' '{ print $1,$3 }'
 

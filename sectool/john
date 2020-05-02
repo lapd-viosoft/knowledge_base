@@ -1,15 +1,46 @@
-﻿#To show the types of passwords that John can crack with crack speed (in cracks/second)
+﻿# John
+# Passwords to Try
+# For guidance on how to choose password list see cheatsheets:
+# - list_passwords
+# - list_common_passwords
+
+# To show the types of passwords that John can crack with crack speed (in cracks/second)
 john --test
 
-#To use your own word list (the Rockyou list is suggested)
+# To use your own word list (the Rockyou list is suggested as a starting point)
 john --wordlist=[filename] [passwordfile]
 
-#To show your results after running john (shows ~/.john/john.pot)
+# To show your results after running john (shows ~/.john/john.pot)
 john --show
 
 # Show results
 john --show --pot=.john/john.pot --format=raw-md5 breach_superwebsite_hashes.txt
 
-#To restore an interrupted john session
+# To restore an interrupted john session
 john --restore
+
+
+# Linux Passwords
+## Get /etc/shadow and /etc/passwd
+unshadow passwd.txt shadow.txt > passwords.txt
+john --wordlist=/usr/share/wordlists/rockyou.txt passwords.txt
+
+# Net-NTLMv2 Hashes
+john --fork=4 --format=netntlmv2 --wordlist=/usr/wordlists/rockyout.txt passwd_ntlmv2hash.txt
+
+# MD5
+john --wordlist=/usr/share/wordlists/passwords/rockyou.txt  --format=Raw-MD5 pwd.txt
+
+
+# ZIP / RAR
+## Check if archive is encrypted
+7z x archive.zip ;; or archive.rar
+## Check what technique has been used to encrypt the archive
+7z slt archive.zip ;; or archive.rar
+## Extract the hash of the password
+zip2john archive.zip > hashes.txt
+rar2john archive.rar > hashes.txt
+## Crack the hashes
+john hashes.txt --wordlist /usr/share/wordlists/rockyou.txt
+
 

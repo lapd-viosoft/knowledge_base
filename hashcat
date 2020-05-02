@@ -1,0 +1,2 @@
+# Crack Net-NTLMv2 Passwords
+hashcat -m 5600 passwd_ntlmv2.txt passwordlists/*

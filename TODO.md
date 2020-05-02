@@ -1,4 +1,5 @@
 - organizzarli directory o con tags
+- split wifi cracking into multiple cheatsheets
 - hydra
 - assicurarsi che tutti i cheatsheet in `wished_cheatsheets` siano stati fatti
 - cheat of common lists with paths

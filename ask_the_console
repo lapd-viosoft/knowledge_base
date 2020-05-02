@@ -1,0 +1,44 @@
+# Get all links
+var links = document.getElementsByTagName("A");
+const links = document.links;
+document.links;
+
+
+document.images;
+
+console.log(top)
+
+# Add an admin=true to all links
+
+for(link of document.links) {
+    link.href = link.href + "&admin=true";
+    link.style = "border: 5px solid blue";
+}
+
+# Get URL of every image
+
+const pic_urls = [];
+for (pic_of document.images){
+    pic_urls.push(pic.src);
+}
+console.log(pic_urls);
+
+# Encode/Decode from Browser
+
+Base64 encode   
+btoa("string-to-encode")
+
+Base64 decode   
+atob("string-to-decode")
+
+URL encode  
+encodeURIComponent("string-to-encode")
+
+URL decode  
+decodeURIComponent("string-to-decode")
+
+HTML encode     
+escape("string-to-encode")
+
+HTML decode     
+unescape("string-to-decode")

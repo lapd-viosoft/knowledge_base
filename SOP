@@ -25,6 +25,8 @@ policy will prevent this interaction from happening. So, basically, the
 same-origin policy prevented a random web page which was not a part of
 Gmail from performing actions on your behalf on an actual Gmail web page.
 
+SOP can be relaxed by using CORS.
+
 ## Concept of Origin
 
 Generally to understand if given two URLs they belong to the same origin

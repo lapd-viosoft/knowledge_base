@@ -1,3 +1,18 @@
+# See help
+help
+
+# Search for Something
+search <something>
+
+# Search for Exploit 
+search type:exploit <productstring>
+
+# Search for Exploit 
+search type:exploit platform:windows <productstring>
+
+# Search for Exploit 
+grep <string> search type:exploit platform:windows
+
 # To show all exploits that for a vulnerability
 grep <vulnerability> show exploits
 
@@ -10,11 +25,26 @@ show options
 # To see compatible payloads for a selected exploit
 show payloads
 
+# To check advanced options and default payload
+show advanced
+
 # To set the payload for a selected exploit
 set payload <payload>
 
-# To set setting for a selected exploit 
+# To set setting for a selected module 
 set <option> <value>
+
+# To set setting globally for a selected module 
+setg <option> <value>
 
 # To run the exploit
 exploit
+
+# List Sessions 
+sessions
+
+# Enter in session 2
+sessions 2
+
+# Kill session 1
+sessions -k 1
