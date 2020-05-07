@@ -14,3 +14,6 @@ dirb http://172.28.128.17 -X .html,.php
 
 # Bruteforce a website using .html and .php extensions (blank is included)
 dirb http://172.28.128.17 -X .html,.asp,.jsp,,
+
+# Bruteforce a website using a user-specified wordlist
+dirb http://172.28.128.24 /usr/share/wordlists/directory-list-2.3-small.txt -r -o dirb_medium.txt

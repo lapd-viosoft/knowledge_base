@@ -1,14 +1,40 @@
+# smbclient
+#
+## Once inside an smbclient connection
+## we should remember to set:
+## `recurse on`: to allow dealing with directories
+## `prompt off`: to disable asking confirmation for each file operation
+
+
 # To display public shares on the server
-smbclient -L <host> -U%
-or
 smbclient -L '\\192.168.1.220'
+or
+smbclient -L <host> -U%
 
 # To display public shares on the server with a null session
 smbclient -N -L '\\192.168.1.220'
 
 # To connect to a share
-smbclient //<host>/<share> -U<user>%<password>
-or 
 smbclient '\\192.168.1.220\MusicShare'
+or 
+smbclient //<host>/<share> -U<user>%<password>
 
+# Download a file from a remote SMB share
+get <filename>
 
+# Upload a file to a remote SMB share
+put <filename>
+
+# Upload a directory to a remote SMB share
+## Notice that we should not put an additional '/'
+## at the end of the directory name
+recurse ON
+prompt OFF
+mput <directory_name>
+
+# Download a directory from a remote SMB share
+## Notice that we should not put an additional '/'
+## at the end of the directory name
+recurse ON
+prompt OFF
+mget *

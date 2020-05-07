@@ -1,0 +1,20 @@
+# Basic exploit search
+searchsploit <string>
+
+# Copy an exploit inside current directory
+searchsploit -m exploits/hardware/dos/29767.txt
+
+# Edit exploit
+searchsploit -x exploits/hardware/dos/29767.txt
+
+# Copy path of an exploit
+searchsploit -p exploits/hardware/dos/29767.txt
+
+# Show results in JSON format
+searchsploit -j <string>
+
+# Show exploit-db URL instead of the exploit ID
+searchsploit -w <string>
+
+# Get searchsploit result from nmap report
+searchsploit --nmap <nmap_report>.xml

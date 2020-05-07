@@ -1,0 +1,24 @@
+# Show available nodejs/npm versions
+nvm ls-remote
+
+# Install the latest version of node
+nvm install node 
+
+# Install a specific version of node
+nvm install 6.14.4 
+
+# Uninstall/Remove a node version
+nvm uninstall 6.11.1
+
+# Get installed versions
+nvm ls
+
+# Switch to a specific installed version of node
+nvm use 5.0
+
+# Run any arbitrary command in a subshell with the desired version of node
+nvm exec 4.2 node --version
+
+# Get the path to the executable
+nvm which 5.0
+

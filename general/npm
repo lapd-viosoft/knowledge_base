@@ -1,16 +1,21 @@
----
-tags: [ packaging ]
----
-# Every command shown here can be used with the `-g` switch for global scope
-
 # To install a package in the current directory:
 npm install <package>
 
-# To install a package, and save it in the `dependencies` section of `package.json`:
+# To install a package globally
+npm install -g <package>
+
+# To install a package, and save it in the `dependencies` section of `package.json`
+## (Notice that in recent versions of npm --save it's the default behavior)
 npm install --save <package>
 
 # To install a package, and save it in the `devDependencies` section of `package.json`:
 npm install --save-dev <package>
+
+# List packages installed within current directory
+npm list
+
+# List packages installed globally
+npm list -g
 
 # To show outdated packages in the current directory:
 npm outdated
@@ -23,3 +28,6 @@ npm install -g npm
 
 # To uninstall a package:
 npm uninstall <package>
+
+# To create a package.json in a directory
+npm init --yes

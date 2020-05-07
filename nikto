@@ -1,0 +1,67 @@
+# nikto
+
+## Nikto offers the following types of scans selectable via `-T` are:
+## - 0   Arbitrary File upload check
+## - 1   Interesting files 
+## - 2   Misconfiguration or default file
+## - 3   Informational disclosure, and other interesting paths/files
+## - 4   Injection Flaws (such as XSS)
+## - 5   Remote file Retrieval attacks from webroot
+## - 6   Denial of Service attacks
+## - 7   Remote file Retrieval attacks, on the whole web application
+## - 8   Command Execution attacks
+## - 9   SQL Injection attacks
+## - a   Authentication Bypass attacks
+## - b   Identification of installed software
+## - c   Remote file inclusion attacks
+## 
+## The number/letter is the identifier we can specify through the -T option to
+## select only specific types of analysis.
+#
+## Nikto also supports different ways/modes to bypass WAF/IPS which is:
+## - 1 - Random URI encoding (non-UTF8)
+## - 2 - Directory self-reference (/./)
+## - 3 - Premature URL ending
+## - 4 - Prepend long random string
+## - 5 - Fake parameter
+## - 6 - TAB as request spacer
+## - 7 - Change the case of the URL
+## - 8 - Use Windows directory separator (\)
+## - A - Use a carriage return (0x0d) as a request spacer
+## - B - Use binary value 0x0b as a request spacer
+
+# Nikto Basic Scan
+nikto -h <ip-address> -output /tmp/output.txt
+
+# Nikto limit scan to  Scan 1 (interesting files) and 2 (misconfig or default files)
+nikto -h <ip-address> -T 12 -output /tmp/output.txt
+
+# Nikto scan with specified port
+nikto -h <ip-address>:<port> -output /tmp/output.txt 
+
+# Nikto scan for multiple ports
+nikto -h <ip-address> -p 80,88,443 -output /tmp/output.txt 
+
+# Nikto scan for multiple hosts from a file
+nikto -h list_of_hosts.txt -output /tmp/output.txt 
+
+# Nikto scan with proxy
+nikto -h <ip-address> -p 80 -useproxy http://localhost:8080/ -output /tmp/output.txt 
+
+# Nikto scan with progress
+nikto -h <ip-address> -Display P -output /tmp/output.txt 
+
+# List plugin
+nikto -list-plugins
+
+# Subdomain Plugin usage
+nikto -h www.example.com -Plugin subdomain 
+
+# Scan with multiple plugins
+nikto -host targets.txt -Plugins "apacheusers(enumerate,dictionary:users.txt)" -output apacheusers.xml
+
+# Bruteforce CGI directories
+nikto -C all -h <ip-address>
+
+# Nikto WAF/IPS Evasion of type 2 (directory self-reference)
+nikto -h <ip-address> -evasion 2

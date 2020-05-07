@@ -1,11 +1,11 @@
----
-tags [ ssh ]
----
-# To ssh via pem file (which normally needs 0600 permissions):
-ssh -i <pemfile> <user>@<host>
+# To login via ssh (on default port 22)
+ssh <username>@<host> 
 
 # To connect on a non-standard port:
 ssh -p <port> <user>@<host>
+
+# To ssh via pem file (which normally needs 0600 permissions):
+ssh -i <pemfile> <user>@<host>
 
 # To connect and forward the authentication agent:
 ssh -A <user>@<host>
@@ -15,6 +15,9 @@ ssh -t <user>@<host> 'the-remote-command'
 
 # To tunnel an x session over SSH:
 ssh -X <user>@<host>
+
+# To connect via SSH with obsolete
+ssh -oKexAlgorithms=+diffie-hellman-group1-sha1 <username>@<host>
 
 # Redirect traffic with a tunnel between local host (port 8080) and a remote
 # host (remote.example.com:5000) through a proxy (personal.server.com):

