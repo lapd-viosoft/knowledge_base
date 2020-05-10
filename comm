@@ -1,0 +1,19 @@
+# comm
+## By default, comm outputs 3 columns: left-only, right-only, both. The -1,
+## -2 and -3 switches suppress these columns.
+## So, -23 hides the right-only and both columns, showing the lines that
+## appear only in the first (left) file.
+## If you want to find lines that appear in both, you can use -12, which
+## hides the left-only and right-only columns, leaving you with just the
+## both column.
+
+# Show lines contained in file1 which are not in file2
+comm -23 <(sort -u file1) <(sort -u file2)
+
+# Show lines contained in file2 which are not in file1
+comm -13  <(sort -u file1) <(sort -u file2)
+or simply
+comm -23 <(sort -u file2) <(sort -u file1)
+
+# Show lines contained in both files
+comm -12 <(sort -u file1) <(sort -u file2)

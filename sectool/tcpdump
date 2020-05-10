@@ -2,6 +2,34 @@
 # and other packets being transmitted or received over a network
 # Note: 173.194.40.120 => google.com
 
+# Run tcpdump without root
+groupadd pcap
+usermod -a -G pcap <username>
+chgrp pcap /usr/sbin/tcpdump
+chmod 750 /usr/sbin/tcpdump
+setcap cap_net_raw,cap_net_admin=eip /usr/sbin/tcpdump
+ln -s /usr/sbin/tcpdump /usr/local/bin/tcpdump
+
+# Favorite Command 1
+# -nn do not resolve IP addresses to domain names
+# -q  show each packet on one line
+tcpdump -i <interface> -nn -q
+
+# Favorite Command 2
+# -nn do not resolve IP addresses to domain names
+# -q  show each packet on one line (we can remove it if we want more details)
+# -X  show content of the packet
+tcpdump -i <interface> -nn -q -X
+
+# Favorite Command 3
+# -nn do not resolve IP addresses to domain names
+# -q  show each packet on one line
+# -X  show content of the packet
+tcpdump -i wlp1s0 -nn -q -w - | tee capture.pcap | tcpdump -nn -q -r -
+
+# Read a Pcap file
+tcpdump -nn -r <file.pcap>
+
 # Intercept all packets on eth0
 tcpdump -i eth0
 
@@ -62,33 +90,34 @@ tcpdump -X
 # - src net 67.207.148.0 mask 255.255.255.0
 # - src net 67.207.148.0/24
 
-## Find User-Agents
+# Find User-Agents
 tcpdump -vvAls0 | grep 'User-Agent:'
 
 
-## Find specific HTTP requests
+# Find specific HTTP requests
 tcpdump -vvAls0 | grep 'GET'
 
-## Find Hosts related to HTTP requests
+# Find Hosts related to HTTP requests
 tcpdump -vvAls0 | grep 'Host:'
 
-## Find HTTP Cookies
+# Find HTTP Cookies
 tcpdump -vvAls0 | grep 'Set-Cookie|Host:|Cookie:'
 
-## Find SSH Connections
+# Find SSH Connections
  tcpdump 'tcp[(tcp[12]>>2):4] = 0x5353482D'
 
-## Show DNS Traffic
+# Show DNS Traffic
 tcpdump -vvAs0 port 53
 
-## Show FTP Traffic
+# Show FTP Traffic
 tcpdump -vvAs0 port ftp or ftp-data
 
-## Show NTP Traffic
+# Show NTP Traffic
 tcpdump -vvAs0 port 123
 
-## Find passwords sent as plain-text
+# Find passwords sent as plain-text
 tcpdump port http or port ftp or port smtp or port imap or port pop3 or port telnet -lA | egrep -i -B5 \
 'pass=|pwd=|log=|login=|user=|username=|pw=|passw=|passwd= |password=|pass:|user:|username:|password:|login:|pass |user '
 
-
+# Sniff network traffic remotely via SSH and show via wireshark
+ssh root@remotesystem 'tcpdump -s0 -c 1000 -nn -w - not port 22' | wireshark -k -i

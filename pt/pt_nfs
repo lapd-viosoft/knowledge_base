@@ -5,8 +5,10 @@ nmap --script=nfs-ls <target-ip>
 OR
 showmount -e <target-ip>
 
-# ???
 showmount -a <target-ip>
+showmount --all <target-ip>
+showmount --exports <target-ip>
+mount -t nfs target:/ /mnt/nfs/
 
 
 If `rw,no_root_squash` is present, we can also upload and execute 
