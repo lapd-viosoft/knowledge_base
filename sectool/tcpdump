@@ -33,8 +33,11 @@ tcpdump -nn -r <file.pcap>
 # Intercept all packets on eth0
 tcpdump -i eth0
 
-# Intercept all packets from/to 173.194.40.120
-tcpdump -i eth0 host 173.194.40.120
+# Intercept all packets from/to host 173.194.40.120
+tcpdump -i eth0 host 172.17.0.1
+
+# Intercept all packets from/to network 173.194.40.120
+tcpdump -i eth0 net 192.168.1.0/24
 
 # Intercepts all packets on all interfaces from / to 173.194.40.120 port 80
 # -nn => Disables name resolution for IP addresses and port numbers.
