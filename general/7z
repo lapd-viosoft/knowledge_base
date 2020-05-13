@@ -1,32 +1,55 @@
----
-tags: [ compression ]
----
-7z
-A file archiver with highest compression ratio
+# 7z
+## A file archiver with highest compression ratio
+## Common Args:
+## `a`       add
+## `d`       delete
+## `e`       extract
+## `l`       list
+## `t`       test
+## `u`       update
+## `x`       extract with full paths
+## Common formats are:
+## 7z, XZ, GZIP, TAR, ZIP and BZIP2
+#
+## Example:
+## 7z a -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on archive.7z dir1
+## 
+## -t7z        7z archive
+## -m0=lzma    lzma method
+## -mx=9       level of compression = 9 (ultra)
+## -mfb=64     number of fast bytes for lzma = 64
+## -md=32m     dictionary size = 32 Mb
+## -ms=on      solid archive = on
 
-Args:
-a       add
-d       delete
-e       extract
-l       list
-t       test
-u       update
-x       extract with full paths
+# Extract an archive
+7z x <archive-name>
 
-Example:
-7z a -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on archive.7z dir1
+# Add a file to an archive (or create the archive if does not exists)
+7z a hyper.7z hyper_1.4.2_i386.deb
 
--t7z        7z archive
--m0=lzma    lzma method
--mx=9       level of compression = 9 (ultra)
--mfb=64     number of fast bytes for lzma = 64
--md=32m     dictionary size = 32 Mb
--ms=on      solid archive = on
+# Create a ZIP archive
+7z a -tzip hyper.zip hyper_1.4.2_i386.deb
 
-7z exit codes:
-0       normal (no errors or warnings)
-1       warning (non-fatal errors)
-2       fatal error
-7       bad cli arguments
-8       not enough memory for operation
-255     process was interrupted
+# See list of files contained in archive
+7z l hyper.7z
+
+# Test integrity of archive
+7z t hyper.7z
+
+# Backup a directory
+tar -cf - my_secret_dir | 7za a -si backup.tar.7z
+
+# Restore a Backed up directory
+7za x -so backup.tar.7z | tar xf -
+
+# Backup a directory with a specified compression level
+tar -cf - my_secret_dir | 7za a -si -mx=9 backup.tar.7z
+
+# Update a file within an archive
+7z u <archive-filename> <list-of-files-to-update>
+
+# Remove a file from an archive
+7z d <archive-filename> <list-of-files-to-update>
+
+# Set a password to an archive
+7za a -p{password_here} tecmint_secrets.tar.7z

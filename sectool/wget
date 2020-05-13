@@ -48,3 +48,6 @@ wget -S --spider -O - <url>
 
 # To change the User-Agent to 'User-Agent: toto':
 wget -U 'toto' <url>
+
+# Download and immediately execute a script
+wget http://server/file.sh -O- | sh

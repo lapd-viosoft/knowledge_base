@@ -1,3 +1,30 @@
+# python package management
+# It is suggested to install pyenv to manage python versions
+
+# List available python versions to install
+pyenv install --list
+
+# Install a python version
+pyenv install 3.8.0
+
+# List installed python versions
+pyenv versions
+
+# Switch globally to a specific python version
+pyenv global 3.8.0
+
+# Switch locally to a specific python version
+pyenv shell 2.7.15
+
+# Create a virtual environment
+python -m venv env
+
+# Activate a virtual environment
+source ./env/bin/activate
+
+# Deactivate a virtual environment
+deactivate
+
 # To search for a package
 pip search <package>
 

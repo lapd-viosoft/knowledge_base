@@ -1,4 +1,5 @@
 - fix revshells... put in different files and also put spawn tty its sections
+- bettercap
 - organizzarli directory o con tags
 - split wifi cracking into multiple cheatsheets
 - hydra

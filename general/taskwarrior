@@ -4,7 +4,6 @@ task add Read Taskwarrior documents later
 # List tasks
 task 
 
-
 # Add a task with a high priority
 task add priority:H Pay bills
 

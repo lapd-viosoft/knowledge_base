@@ -1,7 +1,4 @@
----
-tags: [ compression ]
----
-
+# rar
 # Create a rar archive
 rar a archive.rar file1 file2
 
@@ -17,7 +14,7 @@ rar a -p archive.rar
 # Extract an archive
 rar x tecmint.rar
 
-# We can perform similar things with unrar
+## We can perform similar things with unrar
 
 # To decompress a rar archive
 unrar e archive.rar

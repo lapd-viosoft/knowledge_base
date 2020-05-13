@@ -46,13 +46,12 @@ xxd input_file | xxd -r -s 100 > output_file
 # Separate with a space each 4 byte (also with 1 is useful)
 xxd -g 4 <file>
 
-
 # xxd as hex editor
 ## Patch a byte in the file <filetomodify>
 ## in this way we change the 0x00000036 byte with 0x35 in the file xxd.1
 echo "0000036: 35" | xxd -r - <filetomodify>
 
-## Check the modification
+# Check the modification
 xxd -s 0x36 -l 13 -c 13 <filetomodify>
 
 

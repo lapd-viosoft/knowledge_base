@@ -1,0 +1,68 @@
+# perlbrew
+## To manage different versions of perl we can use perlbrew or plenv
+## plenv has a similar feel to pyenv
+
+# Install perlbrew with cpan
+cpan -i App::perlbrew
+
+# Initialize perlbrew
+# this command should be executed by each user which wants to use perlbrew
+# for zshells we should append to the .zshrc file the line:
+# source `~/perl5/perlbrew/etc/bashrc`
+# then it is adviced to stick with perlbrew to install everything one needs
+perlbrew init
+perlbrew install-cpanm 
+
+
+# List currently installed modules on system perl
+instmodsh
+
+# List available Perl versions
+perlbrew available
+
+# Install a Perl version
+perlbrew install perl-5.24.0
+
+# List installed perl versions
+perlbrew list
+
+
+# Switch to specified perl version
+perlbrew switch perl-5.22.2
+
+# Changes the perl version only for the current terminal session
+perlbrew use 5.22.2
+
+
+# List the currently installed Perl modules
+perlbrew list-modules
+
+# Create a "lib" (collection of packages) which will be installed on all Perl versions
+perlbrew lib create default
+
+# Switch to a specific lib (or environment)
+perlbrew switch 5.22.2@default
+
+# Install a module
+cpanm Module::Name
+
+# Uninstall a module
+cpanm -U Module::Name
+
+# Remove a lib
+perlbrew lib delete 5.22.2@default
+
+# Search for packages
+cpan 
+reload index
+locate 02package
+zgrep 'WWW' path/to/02package.gz
+
+# Store dependencies of a project
+## We can store dependencies of a project by creating 
+## a file with the various dependencies,for example:
+echo 'requires "Mojolicious";' >> cpanfile
+echo 'requires "Net::Frame::Device";' >> cpanfile
+
+# Install dependencies from cpanfile
+cpanm --installdeps .

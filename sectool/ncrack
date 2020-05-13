@@ -1,22 +1,24 @@
----
-tags: [ tools ]
----
-
-# Common flags list: 
- -v verbose
- -vv very verbose
- -u specifies a single user
- -U specifies a list of users in a file 
- --pass specifies a single password
- -P specifies a list of password in a file 
- -f stops after the first valid found credentials
- -T [0~5] specifies how aggressive the bruteforce will be: 0 (paranoid), 5 (insane) # 0 and 1 are for IDS evasion
- -d enables debugging, it is a more powerful verbose
- -sL lists only hosts and services
- -iL specifies a list of hosts 
- -iX specifies as input the nmap output XML file obtained with nmap -oX
- -iN specifies as input the nmap output normal file obtained with nmap -oN
- -oA outputs the results of ncrack
+# ncrack
+## Common flags list: 
+## -v verbose
+## -vv very verbose
+## -u specifies a single user
+## -U specifies a list of users in a file 
+## --pass specifies a single password
+## -P specifies a list of password in a file 
+## -f stops after the first valid found credentials
+## -T [0~5] specifies how aggressive the bruteforce will be: 0 (paranoid), 5 (insane) # 0 and 1 are for IDS evasion
+## -d enables debugging, it is a more powerful verbose
+## -sL lists only hosts and services
+## -iL specifies a list of hosts 
+## -iX specifies as input the nmap output XML file obtained with nmap -oX
+## -iN specifies as input the nmap output normal file obtained with nmap -oN
+## -oA outputs the results of ncrack
+## Good password lists to use are:
+## - better default pass from SecLists (for common protocols/apps)
+## - 10_million_password_list_top_1000.txt 
+## - ...
+## - rockyou (this is too much in general for e.g., ssh)
 
 # Search /ServicesTable/ in man page to list supported services
 
@@ -36,10 +38,6 @@ tags: [ tools ]
  p / P display found credentials
  ? print a runtime interaction help screen
 
-# Good password lists to use are:
-# - 10_million_password_list_top_1000.txt 
-# - ...
-# - rockyou (this is too much in general for e.g., ssh)
 
 
 # Shows the ncrack version and supported modes

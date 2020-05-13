@@ -1,0 +1,192 @@
+# SSH Tunnels Notes
+
+## Why do I need an SSH Tunnel
+
+An SSH Tunnel is perfect for the following scenarios:
+
+* You want to get to a website that a corporate network is blocking.
+* You want to encrypt the network traffic for a non-encrypted protocol.
+* You want to bypass a firewall
+
+
+## Set Up an SSH Tunnel to go on the blocked Internet
+
+Setting up an SSH Tunnel is as easy as typing:
+```sh
+ssh -p22 -D 5000 -N user@machine.com
+# we will use port 5000 for the tunnel
+# the machine.com just has to be ssh enabled on the specified port
+# whch in this case is 22
+# the flag -N After you connect just hang there (you won't get a shell prompt)
+# it is used when we are not using SSH to issue commands
+```
+
+### Testing our tunnel
+```sh
+curl --socks5-hostname 127.0.0.1:5000 http://httpbin.org/ip
+```
+
+
+
+## Bypassing a Firewall
+
+### Problem 1: A server/service on remote.server.com is listening to port 11000 but it is behind a firewall.
+You want to use your own personal, local computer to connect to it. 
+
+Tunneling solution: You can connect to port 22000 of your own personal, local computer and the tunnel will push it to port 11000 on remote.server.com 
+
+```sh
+ssh -p22 -N -L 22000:localhost:11000 user@remote.server.com
+# Which is equivalent to -L localhost:22000:localhost:11000 
+# -N After you connect just hang there (you won't get a shell prompt)
+# -L 22000 The connection will originate on port 22000 of your personal, Local machine
+# localhost:11000 remote.server.com will make sure that the other end of the tunnel is localhost, port 11000
+# now we can issue requests or netcat connections/commands to localhost:22000
+# and port 11000 will reply on the other side, all this is possible through a
+# communication using ssh and having local port 22000 to act as a mirror for the
+# remote port
+```
+
+
+### Problem 2: A server/service on your own personal, local computer is listening on port 11000. 
+You want remote.server.com to connect to your server/service. 
+However, your personal, local computer does not have a publicly accessible address on the internet.
+Tunneling solution: remote.server.com can connect to itself on port 22000 and the tunnel 
+will push it to port 11000 on your personal, local computer. 
+
+```sh
+ssh -p22 -N -R 22000:localhost:11000 user@remote.server.com
+# Which is equivalent to -R localhost:22000:localhost:11000
+# -N After you connect just hang there (you won't get a shell prompt)
+# -R 22000 The connection will originate on port 22000 of the remote server
+```
+
+Notice that the advance of using reverse SSH tunneling with respect to a reverse 
+shell is that all the traffic gets encrypted.
+
+
+### Problem 3: I want to use various internet services and want a Proxy
+
+In this scenario, we want to create an encrypted connection to our remote server,
+but we don't have a specific port in mind to target, so this is used when the application that we are using will choose
+for a us the specific port.
+
+From the man page of ssh indeed we can find close to "-D":
+```man
+Whenever a connection is made to this port, the connection is forwarded over
+the secure channel, and the application protocol is then used to
+determine where to connect to from the remote machine.
+```
+
+With -L, SSH makes no attempt to understand the traffic. It just sends everything it receives on the local 
+port to the target port - you determine the target port at the time the connection 
+is made. With -D, SSH acts as a proxy server, and therefore can handle connections from multiple ports 
+(for example, a browser configured to use it as a SOCKS proxy can then access HTTP, HTTPS, FTP, etc. over the 
+same connection). And like with other proxy servers, it will use the traffic to determine the destination.
+
+Let's see an example:
+```sh
+ ssh -p22 -D 5000 -N user@machine.com
+ # As we can see in this case we do not specify a target port
+```
+
+
+## Other Examples
+
+local: -L Specifies that the given port on the local (client) host is to be forwarded to the given host and port on the remote side.
+
+ssh -L sourcePort:forwardToHost:onPort connectToHost means: connect with ssh to connectToHost, and forward all connection attempts to the local sourcePort to port onPort on the machine called forwardToHost, which can be reached from the connectToHost machine.
+
+remote: -R Specifies that the given port on the remote (server) host is to be forwarded to the given host and port on the local side.
+
+ssh -R sourcePort:forwardToHost:onPort connectToHost means: connect with ssh to connectToHost, and forward all connection attempts to the remote sourcePort to port onPort on the machine called forwardToHost, which can be reached from your local machine.
+
+### Examples
+
+#### 1 Direct Tunnel
+You specify that a connection made to the local port 80 is to be forwarded to port 
+80 on SUPERSERVER. That means if someone connects to your computer with a webbrowser,
+he gets the response of the webserver running on SUPERSERVER.
+You, on your local machine, have no webserver running.
+
+```sh
+ssh -L 80:localhost:80 SUPERSERVER
+```
+
+#### 2 Reverse Tunnel
+
+```sh
+ssh -R 80:localhost:80 tinyserver
+```
+
+You specify, that a connection made to the port 80 of tinyserver is to be forwarded 
+to port 80 on your local machine. That means if someone connects to the small and 
+slow server with a webbrowser, he gets the response of the webserver running on 
+your local machine. The tinyserver, which has not enough diskspace for the big website,
+has no webserver running. But people connecting to tinyserver think so.
+
+
+#### 3: Other Example More examples
+
+Other things could be: The powerful machine has five webservers running on five 
+different ports. If a user connects to one of the five tinyservers at port 80 with 
+his webbrowser, the request is redirected to the corresponding webserver running on 
+the powerful machine. That would be:
+
+```sh
+ssh -R 80:localhost:30180 tinyserver1
+ssh -R 80:localhost:30280 tinyserver2
+# etc...
+```
+
+Or maybe your machine is only the connection between the powerful and the small 
+servers. Then it would be (for one of the tinyservers that play to have their 
+own webservers):
+
+```sh
+ssh -R 80:SUPERSERVER:30180 tinyserver1
+ssh -R 80:SUPERSERVER:30280 tinyserver2
+# etc...
+```
+
+
+
+## Creating a Restricted Account to access a service on my machine
+
+We can create let's say a guest account on our machine and let people connect to our 
+machine and access only a specific service, this can be done by using a -L tunnel with
+some sshd configuration.
+
+We start by creating the account:
+```sh
+useradd -m guest
+```
+Then we set as shell `/bin/false`
+```sh
+chsh -s /bin/false guest
+# if this shell is not listed in /etc/shells we can manually add it
+```
+
+Now we can modify the sshd config file by appending the following snipper of
+configuration.
+
+```txt
+Match User guest
+   # here guest is the account name
+   #AllowTcpForwarding yes
+   #X11Forwarding no
+   #PermitTunnel no
+   #GatewayPorts no
+   AllowAgentForwarding no
+   PermitOpen localhost:62222
+   # here we have to specify the port we want to share
+   # we cann add a ForceCommand if the user has a login shell
+   # but with a /bin/false or /bin/nologin it is useless
+   #ForceCommand echo 'This account can only be used for [reason]'
+```
+
+
+## References
+
+The cyber plumber's handbook by Brennon Thomas
+https://artkond.com/2017/03/23/pivoting-guide/

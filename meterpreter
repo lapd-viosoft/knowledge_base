@@ -22,6 +22,16 @@ ps
 # Search for all DOC files
 search -f *.doc
 
+# Search for interesting files
+search -f *.txt
+search -f *.zip
+search -f *.doc
+search -f *.xls
+search -f config*
+search -f *.rar
+search -f *.docx
+search -f *.sql
+
 # Search for files starting with "sea" and extension .bat in the xamp directory
 search -f sea*.bat c:\\xamp\\
 

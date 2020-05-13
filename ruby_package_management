@@ -1,0 +1,93 @@
+# rvm
+## rvm is used to manage rubby versions
+## an alternative is rbenv
+## Remember that a gemset can be thought of as a set of modules
+## For example we could have for ruby version X different gemsets,
+## by default there are two gemsets for any ruby version installed:
+## -default
+## -global
+## 
+## Remember that the global gemset is the set of packages which are installed in all others gemset
+## so when we create a new gemset all the gem installed in the global gemset will be transferred
+## to the new created gemset.
+
+# List the installable available versions of ruby
+rvm list known
+
+# Install a specific version of Ruby
+rvm install 2.3
+
+# View the locally installed versions
+rvm list
+
+# Switch to a specific version of ruby for the current session
+rvm use 2.2.4 
+
+# List the available and currently selected gemsets for the current version of ruby
+rvm gemset list 
+
+# List all the current versions of ruby and gemsets
+rvm list gemsets 
+
+# Set the default version of ruby
+rvm use --default 1.9.3 
+
+# Show the currently selected version of ruby
+rvm current 
+
+# Switch to the default ruby version
+rvm default 
+
+# Uninstall and remove the sources of a specific ruby version
+rvm remove 2.3 
+
+# Show the available commands
+gem help commands
+
+# Install a gem
+gem install moduleName
+
+# List the locally installed gems for the current environment
+gem list --local
+
+
+# Search for a package
+gem search keyword
+
+# Search for a package using keywords
+gem search --details keyword
+
+# Uninstall a module
+gem uninstall moduleName
+
+# Search for specific modules using a regex
+gem search '^rails$'
+
+# Create a gemset for the currently selected ruby version
+rvm gemset create <gemset-name>
+
+# Remove a gemset for the currently selected ruby version
+rvm gemset delete <gemset-name>
+
+# Installing a gemset to use for a specific project
+The first step involves choosing a version of ruby:
+rvm use 2.3 
+rvm gemset create my_project_name
+rvm gemset list
+rvm gemset use my_proj
+gem install <packages-we-want>
+
+
+# Create Project Based Ruby Version and Gemset
+## Once we have created a project dir with:
+## mkdir my_own_proj; cd my_own_proj
+## we can now create two files, which will contain
+## correspectively ruby version and ruby gemset name, so we do:
+echo "2.3" > .ruby-version
+echo "my_own_proj_gemset" > .ruby-gemset
+## So that anytime we will cd to the directory we will get the
+## an automatic change of ruby version and gemset, this is
+## very adviceable for mantaining projects etc...
+
+# Uninstall rvm
+rvm implode

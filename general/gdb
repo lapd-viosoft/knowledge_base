@@ -4,23 +4,22 @@ gdb -q ./executable
 # To attach gdb to an existing process PID
 gdb -q -p <PID> 
 
-
 # To run the program
 r ;; run
-r parameter1 parameter2 ;; run with parameters
+r parameter1 parameter2 ;; run with specified parameters
 
 # Disassemble a program (the main function)
 disas main ;; disasemble function with name "main"
 disassemble main
 
 # List source code
-`list 1` ;; list source code
+list 1 ;; list source code
 
 # Get information about object
 info sources               ;; list information on the source file
 info functions             ;; list functions
 info variables,            ;; list global variables
-info scope <FunctionName>` ;; list local variables in the specified function
+info scope <FunctionName>  ;; list local variables in the specified function
 info files                 ;; lists all the sections and their addresses, like ".text", ".bss", ...
 info registers             ;; get registers values
 info all-registers         ;; get all registers values
@@ -41,7 +40,8 @@ disable 1   ;; disable breakpoint 1
 enable 1    ;; enable breakpoint 1
 delete 1    ;; delete breakpoint 1
 
-# when a breakpoint is reached:
+
+## When a breakpoint is reached
 
 # To run the next line (without going inside library/system calls)
 n ;; next

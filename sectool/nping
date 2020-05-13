@@ -1,6 +1,6 @@
 # nping
-# To toggle how verbose the output should be, simply append '-v '
-# followed by an integer between -4 (no output) and 4 (very verbose)
+## To toggle how verbose the output should be, simply append '-v '
+## followed by an integer between -4 (no output) and 4 (very verbose)
 
 # To perform a TCP connect() (handshake) with a host
 nping --tcp-connect [target host]

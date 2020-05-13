@@ -1,4 +1,7 @@
 # Bruteforce Login
+# Lists to use to start with can be:
+# https://github.com/GoVanguard/legion/tree/master/wordlists
+# https://github.com/danielmiessler/SecLists/tree/master/Passwords/Default-Credentials
 
 # AFP
 nmap -p 548 --script afp-brute <IP>
