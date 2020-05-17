@@ -21,3 +21,9 @@ seq 9 | sed 'H;g' | awk -v RS='' '{for(i=1;i<=NF;i++)printf("%dx%d=%d%s", i, NR,
 
 # To specify an output separator character:
 printf '1 2 3' | awk 'BEGIN {OFS=":"}; {print $1,$2,$3}'
+
+# Generate a sort of dataset with 10 elements
+seq 10 | awk '{print 2*$1, $1*$1}'
+
+# Get a random sample from a file
+awk 'BEGIN {srand()} {printf "%05.0f %s \n",rand()*99999, $0; }' data.txt | sort -n | head -100 | sed 's/^[0-9]* //'

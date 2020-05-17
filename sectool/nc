@@ -1,6 +1,3 @@
----
-tags [ networking ]
----
 # To open a TCP connection from <src-port> to <dest-port> of <dest-host>, with a timeout of <seconds>
 nc -p <src-port> -w <seconds> <dest-host> <dest-port>
 
@@ -23,3 +20,13 @@ nc -x<proxy-host>:<proxy-port> -Xconnect -Pruser <host> <port>
 
 # To choose the source IP for the testing using the -s option
 nc -zv -s source_IP target_IP Port
+
+# Port scanning
+nc -nzv <ip> <port-range>
+nc -nzv <ip> 80-30000
+
+# Port scanning with timeout of 2 seconds
+nc -nzv -w 2 <ip> <port-range>
+
+# Port scanning UDP
+nc -nuzv -w 2 <ip> <port-range>

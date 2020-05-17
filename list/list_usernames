@@ -5,7 +5,7 @@
 - SecLists/Usernames/Names/names.txt                    (10163);; common names
 - SecLists/Usernames/xato-net-10-million-usernames.txt    (10M);;
 
-## Specific
+## Specific Lists
 - SecLists/Usernames
     find SecLists/Usernames/ -type f | xargs wc -l | sort -n
 - metasploit-framework/data/wordlists/

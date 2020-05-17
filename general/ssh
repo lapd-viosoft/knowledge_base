@@ -16,7 +16,7 @@ ssh -t <user>@<host> 'the-remote-command'
 # To tunnel an x session over SSH:
 ssh -X <user>@<host>
 
-# To connect via SSH with obsolete
+# To connect via SSH with obsolete algorithms
 ssh -oKexAlgorithms=+diffie-hellman-group1-sha1 <username>@<host>
 
 # Redirect traffic with a tunnel between local host (port 8080) and a remote

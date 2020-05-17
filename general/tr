@@ -20,3 +20,9 @@ echo "1. /usr/bin\n2. /bin" | tr -cs " /[:alpha:]\n" "+"
 
 # To squeeze all spaces/tabs to a single space, useful to use it with cut/paste/column
 tr '\t' ' ' < file | tr -s ' ' 
+
+# Get more frequent lines in a file
+cat data.txt | tr '[:upper:]' '[:lower:]' | sort | uniq -c | sort -rn
+
+# Get more frequent words in a file
+cat data.txt | tr '[:upper:]' '[:lower:]' | tr -d '[:punct:]' | tr ' ' '\n' | grep -v -w -f stopwords_en.txt | sort | uniq -c | sort -rn

@@ -1,8 +1,8 @@
----
-tags [ networking ]
----
 # Connect mode (ncat is client) | default port is 31337
 ncat <host> [<port>]
+
+# Listen for reverse shell
+rlwrap ncat -nlvp <port>
 
 # Listen mode (ncat is server) | default port is 31337
 ncat -l [<host>] [<port>]
@@ -31,3 +31,6 @@ ncat --proxy <proxyhost>[:<proxyport>] --proxy-type {http | socks4} <host>[<port
 
 # Chat server | can use brokering for multi-user chat
 ncat -l --chat [<host>] [<port>]
+
+# Port scanning
+ncat -nzv <ip> 1-1023

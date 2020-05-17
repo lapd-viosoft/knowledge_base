@@ -1,3 +1,4 @@
+- integrate with these https://github.com/OlivierLaflamme/Cheatsheet-God
 - fix revshells... put in different files and also put spawn tty its sections
 - bettercap
 - organizzarli directory o con tags

@@ -63,6 +63,9 @@ localnet 127.0.0.0/255.0.0.0
 #       http    192.168.39.93   8080
 #
 #       proxy types: http, socks4, socks5
+#       http is the one used by ZAP and Burp
+#       socks4 is the one used by metasploit
+#       socks5 is the one used by ssh -D
 #       ( auth types supported: "basic"-http  "user/pass"-socks )
 #
 

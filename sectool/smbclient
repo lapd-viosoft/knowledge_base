@@ -38,3 +38,10 @@ mput <directory_name>
 recurse ON
 prompt OFF
 mget *
+
+
+# Change directory on local machine
+lcd <path>
+
+# Check current directory on local machine
+!pwd

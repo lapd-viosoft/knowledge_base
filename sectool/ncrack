@@ -14,11 +14,14 @@
 ## -iX specifies as input the nmap output XML file obtained with nmap -oX
 ## -iN specifies as input the nmap output normal file obtained with nmap -oN
 ## -oA outputs the results of ncrack
+## Note that by default ncrack uses two default files for users and pwds
+## default.usr and default.pwd
 ## Good password lists to use are:
 ## - better default pass from SecLists (for common protocols/apps)
 ## - 10_million_password_list_top_1000.txt 
 ## - ...
 ## - rockyou (this is too much in general for e.g., ssh)
+#
 
 # Search /ServicesTable/ in man page to list supported services
 
@@ -44,8 +47,6 @@
 ncrack -V
 
 # FTP bruteforce, stops after the first successful login
-# by default ncrack uses two default files for users and pwds
-# default.usr and default.pwd
 ncrack -f ftp://192.168.0.105
 
 # SSH bruteforce attempt on port 5910
@@ -87,3 +88,8 @@ ncrack --resume /home/user/.ncrack/restore.<datetime>
 # Save session and set its filename
 ncrack --save cracking-session <[service-name]>://<target>:<[port-number]>
 
+# Save session and use custom users and password files on SSH
+ncrack --save cracking-session -U users.txt -P passwords.txt ssh://<ip>:<port> -oA ncrack.log
+
+# Save session and use custom users and password files on nmap scan
+ncrack --save cracking-session -U users.txt -P passwords.txt -iX nmap.xml -oA ncrack.log 

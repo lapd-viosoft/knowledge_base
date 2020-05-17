@@ -1,0 +1,83 @@
+# csvkit
+
+
+# Inspect a csv in a pretty tabular format
+csvlook data.csv | less -S
+
+# Show columns of dataset
+csvcut -n data.csv
+
+# Show only columns 2,5,6 of dataset
+csvcut -c 2,5,6 data.csv
+or by name:
+csvcut -c county,item_name,quantity data.csv
+
+# Reorder columns
+csvcut -c column_c,column_a data.csv > new.csv
+
+# Show statistics about a CSV file
+csvstat data.csv
+
+# Show statistics only about a subset of columns of a CSV file
+csvcut -c county,acquisition_cost,ship_date data.csv | csvstat
+
+# Grep through a specific column searching for string "LANCASTER"
+csvcut -c county,item_name,total_cost data.csv | csvgrep -c county -m LANCASTER | csvlook
+
+# Grep through a specific column searching for regex "L.N.ASTER"
+csvcut -c county,item_name,total_cost data.csv | csvgrep -c county -r L.N.ASTER | csvlook
+
+# Grep through rows matching cells
+csvgrep -c phone_number -r "555-555-\d{4}" data.csv > new.csv
+
+
+# Sort on a specific column in descending order
+csvcut -c county,item_name,total_cost data.csv | csvgrep -c county -m LANCASTER | csvsort -c total_cost -r | csvlook
+
+# Query CSV with SQL
+csvsql --query "select name from data where age > 30" data.csv > new.csv
+
+# Convert Excel Document to CSV
+in2csv ne_1033_data.xlsx > data.csv
+
+
+# Convert SQL to CSV
+sql2csv
+
+csvlean
+
+csvformat
+
+# Like UNIX cut
+cvscut
+
+# Allows to grep in specified columns
+csvgrep
+
+# Execute an SQL-like join to morge CSV files on specified column/s
+csvsql
+
+# Sort on desired fields
+csvsort
+
+# Concatenate/multiple CSV files
+csvstack ne_1033_data.csv ks_1033_data.csv > complete_data.csv
+
+# Merge CSV files on a column field called "fips"
+csvjoin -c fips data.csv acs2012_5yr_population.csv > joined.csv
+
+# Convert CSV to JSON
+csvjson data.csv > data.json
+
+# Load the csv into an object and drop a python shell
+csvpy data.csv
+
+# Import data into PostgreSQL
+csvsql --db postgresql:///database --insert data.csv
+
+# Extract data from PostgreSQL
+sql2csv --db postgresql:///database --query "select * from data" > new.csv
+
+
+PENTEST TALK ABOUT CSVKIT AND GNU PARALLEL
+https://www.youtube.com/watch?v=cZa11zhOKUM

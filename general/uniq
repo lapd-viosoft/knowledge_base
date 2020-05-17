@@ -16,3 +16,9 @@ sort <file> | uniq -uc
 
 # To count only duplicated lines:
 sort <file> | uniq -dc
+
+# Get the most frequent lines in a file
+cat data.txt | tr '[:upper:]' '[:lower:]' | sort | uniq -c | sort -rn
+
+# Get more frequent words in a file
+cat data.txt | tr '[:upper:]' '[:lower:]' | tr -d '[:punct:]' | tr ' ' '\n' | grep -v -w -f stopwords_en.txt | sort | uniq -c | sort -rn

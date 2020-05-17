@@ -135,4 +135,29 @@ The most common Nmap scripting engine categories:
 - malware: Look for signs of malware infection on the target hosts.
 - safe: Designed not to impact target in a negative fashion.
 - version: Measure the version of software or protocols on the target hosts.
-- vul: Measure whether target systems have a known vulnerability.
+- vuln: Measure whether target systems have a known vulnerability.
+
+## Nmap as vulnerability scanner
+
+# Check manually for specific "vulnerability" scripts
+ls /usr/share/nmap/scripts/* | grep vuln
+
+# Check all the vuln scripts automatically
+nmap --script vuln www.example.com
+
+# Using vulners (best one imho)
+## Install with:
+## cd /usr/share/nmap/scripts/
+## git clone https://github.com/vulnersCom/nmap-vulners.git
+nmap --script nmap-vulners -sV www.example.com
+or
+nmap -sV --script nmap-vulners --script-args mincvss=5.0 www.example.com
+
+# Using vulscan
+## Install with:
+## cd /usr/share/nmap/scripts/
+## git clone https://github.com/scipag/vulscan
+nmap -sV --script vulscan www.example.com
+
+# Using searchsploit on nmap report (this sucks!)
+searchsploit --nmap nmap_scan.xml
