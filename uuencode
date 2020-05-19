@@ -1,0 +1,12 @@
+# uuencode/uudecode
+## This is a basic utility that is used to encode binary files
+## with ASCII text. The mechanism is similar to base64, but
+## this type of encoding has a larger set of characters.
+## UU stands for Unix-Unix since it was used in the past
+## to send binary files.
+
+# Encode a file
+uuencode /path/to/inputfile outputfilename > /path/to/outputfile
+
+# Decode a file
+uudecode /path/to/encoded/file

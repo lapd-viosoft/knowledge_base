@@ -1,0 +1,11 @@
+# Firefox Web Browser
+
+# Launch with profile selector
+firefox --new-instance --ProfileManager
+
+# Launch with a specific profile
+firefox -P <profile>
+
+# Check available profiles
+about:config
+

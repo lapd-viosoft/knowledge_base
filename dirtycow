@@ -1,0 +1,8 @@
+# dirtycow
+
+Run a command as a user other than root
+sudo -u haxzor /usr/bin/vim /etc/apache2/sites-available/000-default.conf
+
+Add a user or change a password
+/usr/sbin/useradd -p 'openssl passwd -1 thePassword' haxzor
+echo thePassword | passwd haxzor --stdin

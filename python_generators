@@ -1,0 +1,16 @@
+# python generators
+Generators represent iterable objects where data is not represented as
+a static list inside memory, but we actually have a function generating
+data for us that can stop at every step.  Inside the function defining the
+generator a step is defined by what the function is doing before a call
+to `yield`.  Generators are useful for lazy evaluation, hence whenever
+we have to deal with infinite lists or with very long lists/files.
+
+
+
+# Get out the entire list from a generator
+list(g)
+
+# Get out the first 10 elements from a generator
+[next(g) for _ in range(10)]
+or

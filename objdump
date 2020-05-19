@@ -36,8 +36,8 @@ objdump -T executable
 objdump -R executable
 
 # Display section of interest
-# (extremely useful when you know the section related
-# to which the information is required)
+## (extremely useful when you know the section related
+## to which the information is required)
 objdump -s -j.rodata executable
 
 # Use the older disassembly format

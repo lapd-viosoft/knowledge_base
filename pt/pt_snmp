@@ -45,3 +45,31 @@ auxiliary/scanner/snmp/snmp_login
 snmpcheck -p 161 -c public -t target
 snmpwalk -v1 -c public target
 msf > use auxiliary/scanner/snmp/snmp_enum
+
+
+
+
+## Other 2 (Check and Integrate)
+Fix SNMP output values so they are human readable
+apt-get install snmp-mibs-downloader download-mibs echo "" > /etc/snmp/snmp.conf
+
+SNMP Enumeration Commands
+
+snmpcheck -t $ip -c public
+
+snmpwalk -c public -v1 $ip 1|
+
+grep hrSWRunName|cut -d\* \* -f
+
+snmpenum -t $ip
+
+onesixtyone -c names -i hosts
+
+SNMPv3 Enumeration
+nmap -sV -p 161 --script=snmp-info $ip/24
+
+Automate the username enumeration process for SNMPv3:
+apt-get install snmp snmp-mibs-downloader wget https://raw.githubusercontent.com/raesene/TestingScripts/master/snmpv3enum.rb
+
+SNMP Default Credentials
+/usr/share/metasploit-framework/data/wordlists/snmp_default_pass.txt

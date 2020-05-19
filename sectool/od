@@ -1,11 +1,33 @@
-# To dump a file in octal format:
-od <binary-file>
+# od
+## the flag `-t` is used to specify the "type",
+## hence decides the kind of output, e.g., octal, hex, decimal, ...
+## Note that lines with "*" have to be read as:
+## content is the same as the previous line.
+## We can output everything without "*" by using the flag `-v`.
+## By default outputs every two bytes as an octal number, in lesser endian
+
+# Convert a file to octal
+od <file>
+
+# Convert back a file from the output of od to its original form
+## in this case the loop converts the two bytes in octal (lesser endian) 
+## to hex in big endian (or network order), which is what xxd -p -r expects as input
+od <file> | while read -ra line; do unset 'line[0]'; \
+for oct in "${line[@]}"; do \
+printf %02x%02x "$(( 8#$oct & 0xff ))" "$(( 8#$oct >> 8 ))"; done; done \
+| xxd -p -r
+
+
+# Convert a file to octal (2)
+## These commands are all the same
 od -o <binary-file>
+or
 od -t o2 <binary-file>
 
-# To dump a file in hexadecimal format:
+# To dump a file in hexadecimal format
 od -x <binary-file>
+or
 od -t x2 <binary-file>
 
-# To dump a file in hexadecimal format, with hexadecimal offsets and a space between each byte:
+# To dump a file in hexadecimal format, with hexadecimal offsets and a space between each byte
 od -A x -t x1 <binary-file>
