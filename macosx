@@ -1,0 +1,4 @@
+# Check open ports
+netstat -an -ptcp | grep LISTEN
+or
+lsof -i -P | grep -i "listen"

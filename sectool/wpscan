@@ -1,7 +1,7 @@
 # basic usage
 wpscan --url "target" --verbose
 
-# enumerate vulnerable plugins, users, vulrenable themes, timthumbs
+# enumerate vulnerable plugins, users, vulnerable themes, timthumbs
 wpscan --url "target" --enumerate vp,u,vt,tt --plugins-detection --follow-redirection --verbose --log target.log
 
 # stealthier scan

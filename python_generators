@@ -13,4 +13,5 @@ list(g)
 
 # Get out the first 10 elements from a generator
 [next(g) for _ in range(10)]
-or
+or 
+islice

@@ -161,3 +161,6 @@ nmap -sV --script vulscan www.example.com
 
 # Using searchsploit on nmap report (this sucks!)
 searchsploit --nmap nmap_scan.xml
+
+# Port Knocking with nmap
+for x in 7000 8000 9000; do nmap -Pn --host-timeout 201 --max-retries 0 -p $x 1.1.1.1; done

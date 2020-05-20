@@ -1,5 +1,12 @@
-# Ping with mssql
+# MS-SQL
+
+# Ping with MS-SQL
 use auxiliary/scanner/mssql/mssql_ping
+
+# Login to MS-SQL
+mssqlclient.py -port 27900 user:password@10.1.1.1
+or
+sqsh -S 10.1.1.1 -U user -P password
 
 # Last options. Brute force.
 scanner/mssql/mssql_login

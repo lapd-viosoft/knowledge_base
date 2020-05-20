@@ -62,3 +62,7 @@ wget -U 'toto' <url>
 
 # Download and immediately execute a script
 wget http://server/file.sh -O- | sh
+
+# Download a file through a proxy
+export http_proxy=127.0.0.1:4444
+wget -c 'http://server/file.iso'
