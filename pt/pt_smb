@@ -55,9 +55,9 @@ ls
 # Notice that the mounted files will have permissions which are not reliable
 # this happens since there is no easy mapping between linux and windows files
 mount -o username=usernameonserver,uid=localusername -t cifs '\\192.168.1.220\Video' /mnt/winshare/
-mount -t cifs -o username=user,password=pass,domain=xxx //192.168.1.X/share-name /mnt/cifs
-mount -o username=<usertologin> -t cifs //<ip_address>/<share_name> /mnt
-mount -t cifs //<ip_address>/<share_name> /mnt
+mount -o username=<usertologin>,uid=localusername -t cifs //<ip_address>/<share_name> /mnt
+mount -t cifs -o username=user,uid=localusername,password=pass,domain=xxx //192.168.1.X/share-name /mnt/cifs
+mount -t cifs //<ip_address>/<share_name> /mnt  ;; This will mount in read only mode
 
 
 # Mount C share (if permissions are good)

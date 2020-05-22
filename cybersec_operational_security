@@ -1,0 +1,41 @@
+# Cybersecurity Operational Security in Organization and CIS
+
+In a cybersecurity:
+- CSIRT, this is about Incident Response but it may be also about Disaster Recovery (which is not strictly about cybersecurity),
+  it relates also other, natural disasters), the function is "Respond";
+- SOC, Security Operation Center (monitoring SIEM e check IOCs produced by SIEM)  and the function is "Identify";
+- Support Unit, the main task in this case is "Prevention" and the function is "Protect";
+
+Try to give a look at the `Template_CIS.xslx` file.
+The CIS is implemented by all these three elements, depending on the
+element we dispatch to the right subdivision.
+
+`Template_CIS.xslx` 
+
+https://en.wikipedia.org/wiki/The_CIS_Critical_Security_Controls_for_Effective_Cyber_Defense
+
+## CIS List
+
+- CSC 1:  Inventory of Authorized and Unauthorized Devices
+- CSC 2:  Inventory of Authorized and Unauthorized Software
+- CSC 3:  Continuous Vulnerability Assessment and Remediation
+- CSC 4:  Controlled Use of Administrative Privileges
+- CSC 5:  Secure Configurations for Hardware and Software on Mobile Devices, Laptops, Workstations, and Servers
+- CSC 6:  Maintenance, Monitoring, and Analysis of Audit Logs
+- CSC 7:  Email and Web Browser Protections
+- CSC 8:  Malware Defenses
+- CSC 9:  Limitation and Control of Network Ports, Protocols, and Services
+- CSC 10: Data Recovery Capability
+- CSC 11: Secure Configurations for Network Devices such as Firewalls, Routers, and Switches
+- CSC 12: Boundary Defense
+- CSC 13: Data Protection
+- CSC 14: Controlled Access Based on the Need to Know
+- CSC 15: Wireless Access Control
+- CSC 16: Account Monitoring and Control
+- CSC 17: Security Skills Assessment and Appropriate Training to Fill Gaps
+- CSC 18: Application Software Security
+- CSC 19: Incident Response and Management
+- CSC 20: Penetration Tests and Red Team Exercises
+
+This is the CIS list, if you want a more detailed explanation consult
+the file `Template_CIS.xslx`.

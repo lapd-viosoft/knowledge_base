@@ -2,6 +2,7 @@
 
 #Let's see how to create an array
 names=("Bob" "Peter" "$USER" "Big Bad John")
+for i in "${names[@]}"; do echo "$i"; done
 
 #Now we create a normal string
 example=" this is an example how do you do ?"

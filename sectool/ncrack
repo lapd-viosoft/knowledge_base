@@ -15,7 +15,7 @@
 ## -iN specifies as input the nmap output normal file obtained with nmap -oN
 ## -oA outputs the results of ncrack
 ## Note that by default ncrack uses two default files for users and pwds
-## default.usr and default.pwd
+## default.usr (~550) and default.pwd (~5000)
 ## Good password lists to use are:
 ## - better default pass from SecLists (for common protocols/apps)
 ## - 10_million_password_list_top_1000.txt 
@@ -59,7 +59,7 @@ ncrack scanme.nmap.org:22 ftp://10.0.0.10 ssh://192.168.1.*:5910
 ncrack -U users.txt --pass admin123 10.10.10.10:21
 
 # Bruteforce with users and passwords list. The XML is an nmap input, ncrack will follow it
-ncrack -U users.txt -P passwords.txt -iX nmap.xml
+ncrack -U users.txt -P passwords.txt -iX nmap.xml -oA output_ncrack
 
 # Aggressive bruteforce, with user "test" and a passwords list
 ncrack -u test -P 500-worst-passwords.txt -T 5 -p 21 10.10.10.10

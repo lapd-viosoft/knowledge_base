@@ -18,6 +18,8 @@ smbclient -N -L '\\192.168.1.220'
 smbclient '\\192.168.1.220\MusicShare'
 or 
 smbclient //<host>/<share> -U<user>%<password>
+or
+smbclient //<host>/<share> -U <user>
 
 # Download a file from a remote SMB share
 get <filename>
