@@ -1,0 +1,29 @@
+# pyshark
+
+# Reading from a Capture File
+import pyshark
+cap = pyshark.FileCapture('/tmp/mycapture.cap')
+cap
+<FileCapture /tmp/mycapture.cap (589 packets)>
+print cap[0]
+
+# Reading from a Live Interface
+capture = pyshark.LiveCapture(interface='eth0')
+capture.sniff(timeout=50)
+capture
+<LiveCapture (5 packets)>
+capture[3]
+
+# Reading from a Live Remote Interface (host should be running rpcapd)
+capture = pyshark.RemoteCapture('192.168.1.101', 'eth0')
+capture.sniff(timeout=50)
+capture
+
+# Accessing Packet Protocol Data
+packet['ip'].dst
+
+# Testing if packet contains protocol
+'IP' in packet
+
+# To check all accessible field names
+packet.ip.field_names

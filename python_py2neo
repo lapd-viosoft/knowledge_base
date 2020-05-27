@@ -1,0 +1,18 @@
+# py2neo
+## Just for demo purposes we assume
+## we have imported all the py2neo namespace as in:
+## `from py2neo import *`
+
+# Connect to a local neo4j DB
+db = Graph('http://localhost:7474', user="neo4j", password="password1")
+
+# Connect to a remote neo4j DB
+db = Database("bolt://camelot.example.com:7687")
+or
+db = Database("http://camelot.example.com:7474")
+
+
+# Perform a Test Query
+
+# Perform a query to get all data within the database
+db.run('match (n) return (n)')

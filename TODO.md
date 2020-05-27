@@ -1,3 +1,5 @@
+- take a look at the operator handbook
+- make python cheatsheets
 - integrate with these https://github.com/OlivierLaflamme/Cheatsheet-God
 - fix revshells... put in different files and also put spawn tty its sections
 - bettercap

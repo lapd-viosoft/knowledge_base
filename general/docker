@@ -30,6 +30,15 @@ docker rm $(docker ps -a -q -f status=exited)
 # To start a container with an interactive shell
 docker run -it <image-id> /bin/bash
 
+# To start a container in a daemonized way
+docker run -d  <image-id>
+
+# To view logs of the started image
+docker logs <container-id>
+
+# To attach a bash to a running container
+docker exec -it <container-id> /bin/bash
+
 # To start a container and remove it automatically at exit
 docker run -it --rm alpine /bin/bash
 

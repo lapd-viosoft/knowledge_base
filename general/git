@@ -180,3 +180,12 @@ git checkout BRANCHNAME
 ;; do everything you have to do test/run/etc...
 git checkout master && git merge BRANCHNAME
 git branch --delete BRANCHNAME
+
+# To view differences between current commit and last commit
+git show
+
+# To view differences between current status (uncommited changes) and last commit
+git diff HEAD
+
+# To view differences between current status (uncommited changes) and second to last commit
+git diff HEAD~1

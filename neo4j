@@ -1,3 +1,93 @@
+# neo4j
+# Default creds are neo4j/neo4j
+# We can play with neo4j here:
+# https://sandbox.neo4j.com/login
+#
+# Basic Analogy between SQL query and Neo4j cypher query:
+# SQL syntax: Select count (EMP-ID) from Employee where COMPANY_NAME='X'
+# Cypher syntax: match (n) where n.CompanyName='X' return count(n);
+#
+## Some administrative commands can only be executed when using
+## the "system" database. To switch to the system database
+## from a neo4j shell we can do ":use system;"
+#
+## Notice that neo4j by default limits our results both by default
+## in example queries by using `LIMIT 25` but also in the settings
+## where the entry `Initial Node Display` is set to a specific value.
+## Also if we remove the `LIMIT 25` from queries we will still be
+## limited graphically to the Initial Node Display, so we can 
+## increase this value from the settings.
+## Note that this limit only applies to the visualization graphs and
+## not the raw table data that we can textually view or export.
+#
+## Note on performance:
+## we can try to configure min/max heap and pagecache in the neo4j.conf.
+
+# Show help
+:help
+
+# Show configuration
+## This will show us the configuration of neo4j, particularly
+## interesting are things like:
+## "initialNodeDisplay": "350"
+## "maxNeighbours": "200"
+:config
+
+# Switch to the administrative "system" database
+:use system
+
+# Show all available databases (only system)
+show databases;
+or
+:dbs
+
+# Show style configuration for graph visualization
+:style
+
+# Reset style configuration for graph visualization
+:style reset
+
+# Inspect data model of the database
+CALL db.schema
+
+# Inspect all properties of the graph
+CALL db.propertyKeys
+
+# Return all nodes (not the relationships) from the database
+## (in the graph visualization we will be limited by "Initial Node Display")
+## Note that because of a setting in neo4j we will also see relationships
+MATCH (n) RETURN n
+
+# Get all data from neo4j (nodes, relationships and connected nodes)
+## get all node which has edges along with their properties
+## NOTE: probably this is the most complete query
+MATCH (n)-[r]->(m)
+RETURN n,r,m
+
+# Count the total number of nodes in the database
+MATCH (n) RETURN count(*)
+
+# Count elements with a certain label in a database
+MATCH (p:Person) RETURN count(*)
+
+# Create two nodes labeled as :Person with aperson "LOVING" the other one
+CREATE (:Person {name:"Ann"})-[:LOVES]->(:Person {name:"Joe"})
+
+# Search all of Ann's friends, regardless of who initiated the friendship
+MATCH(:Person{name:"Ann"})-[:FRIEND]-(p:Person)
+
+# Query a specific field, order and limit results
+MATCH (n)
+RETURN n.name
+ORDER BY n.name
+LIMIT 3
+
+# Get top 25 nodes labeled as machines with higher "count" field values
+MATCH (b:machine)
+RETURN b.name,b.count
+ORDER BY b.count
+DESC LIMIT 25
+
 # Get all nodes involved in a relationship called "Married"
 ()-[:MARRIED]->()
 
@@ -261,3 +351,8 @@ MATCH
 
 CREATE (actor)-[:PLAYED {role:csvLine.role}]->(movie) # here the role is a property of the relationship
 
+
+# Delete all nodes from a neo4j DB
+MATCH (n) DETACH DELETE n;
+or
+rm -rf data/graph.db
