@@ -1,5 +1,30 @@
 # WMIC
 
+# Get local user accounts and domain user accounts
+wmic useraccount
+wmic useraccount where (Lockout=FALSE and Disabled=FALSE)
+get name, description,localaccount
+
+# Get list of patches
+wmic qfe
+
+# Get list of process
+wmic process
+
+# Get list of mounted drives
+wmic netuse
+
+# Get info such as logged in users
+wmic computersystem
+
+# Start a process (Local)
+wmic process call create "calc.exe"
+
+# Start a process (Remote)
+wmic /node:target process call create "calc.exe"
+or
+wmic /node:target /user:blah /password:p@ss process call create "calc.exe"
+
 # BIOS info
 wmic bios get Manufacturer,Name,Version    
 

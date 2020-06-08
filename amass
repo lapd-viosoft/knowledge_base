@@ -1,0 +1,31 @@
+# amass
+## enum:
+## -ip     shows IP address
+## -src    shows the source of where that information was found
+## -brute  after passive searches, starts to bruteforce
+## -w      sets a wordlist
+## -oA     save file in all formats (similar to nmap)
+## Good guide with examples can be found here:
+## https://github.com/OWASP/Amass/blob/master/doc/user_guide.md
+
+## Find all companies with "uber" in their name
+amass intel -org uber
+
+## Find domains via CIDR range
+amass intel -ip -cidr 104.154.0.0/15
+
+## Find domains by ASN
+amass intel -asn 6057
+
+
+## Find subdomains related to a target domain (passive mode)
+amass enum -d example.com
+or
+amass enum -d -passive example.com
+
+
+## Find subdomains related to a target domain (passive mode + resolve name to IP)
+### Takes a long time
+amass enum -d -ip -src example.com
+
+

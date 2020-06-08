@@ -22,7 +22,8 @@
 #
 # LISTS FOR BRUTEFORCE:
 #   - dirb/common.txt
-#   - dirb/shortlist.txt
+#   - optionally quickhits.txt (it is not a long list)
+#   - (dirb/shortlist.txt)
 #   - dirbuster/medium.txt
 
 # Resource bruteforcing

@@ -1,7 +1,4 @@
----
-tags [password, list]
----
-
+# crunch
 # Common flags list:
 # @ is used as wildcard for
 # -b maximum size of the wordlist (requires -o START)
@@ -65,9 +62,5 @@ crunch 3 3 + ABC 123 \!\@\# -t ,%^
 # Create a wordlist with specific pattern
 # With lowercase limit to 1, uppercase to 1, numbers to 1
 crunch 4 4 -t @@,% -d 1@ 1, 1%
-
-
-
-
 
 

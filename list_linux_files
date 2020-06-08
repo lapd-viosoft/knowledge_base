@@ -1,0 +1,5 @@
+# Common Linux Files List
+
+- sqlmap/data/txt/common-files.txt
+- TODO (there are files in PayloadsAllTheThings/SecLists
+    for PayloadsAllTheThings check out directory traversal and LFI

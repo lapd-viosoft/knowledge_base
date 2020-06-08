@@ -1,0 +1,154 @@
+# github dorks
+# Github dorks work a lot with filename and extension
+# You can build search like this
+filename:bashrc
+extension:pem
+langage:bash
+
+# Possible to search terms and use these keywords
+# Some usefull examples
+extension:pem private # Private SSH Keys
+extension:sql mysql dump # MySQL dumps
+extension:sql mysql dump password # MySQL dumps with passwords
+filename:wp-config.php # Wordpress config file
+filename:.htpasswd # .htpasswd
+filename:.git-credentials # Git stored credentials
+filename:.bashrc password # .bashrc files containing passwords
+filename:.bash_profile aws # AWS keys in .bash_profiles
+extension:json mongolab.com # Keys/Credentials for mongolab
+HEROKU_API_KEY language:json # Heroku API Keys
+filename:filezilla.xml Pass # FTP credentials
+filename:recentservers.xml Pass # FTP credentials
+filename:config.php dbpasswd # PHP Applications databases credentials
+shodan_api_key language:python # Shodan API Keys (try others languages)
+filename:logins.json # Firefox saved password collection (key3.db usually in same repo)
+filename:settings.py SECRET_KEY # Django secret keys (usually allows for session hijacking, RCE, etc)
+
+# Github Dorks
+password
+https://github.com/search?q=%22$1%22+password&type=Code"
+https://github.com/search?q=%22$without_suffix%22+password&type=Code"
+
+npmrc _auth
+https://github.com/search?q=%22$1%22+npmrc%20_auth&type=Code"
+https://github.com/search?q=%22$without_suffix%22+npmrc%20_auth&type=Code"
+
+dockercfg
+https://github.com/search?q=%22$1%22+dockercfg&type=Code"
+https://github.com/search?q=%22$without_suffix%22+dockercfg&type=Code"
+
+pem private
+https://github.com/search?q=%22$1%22+pem%20private&type=Code"
+https://github.com/search?q=%22$without_suffix%22+extension:pem%20private&type=Code"
+
+id_rsa
+https://github.com/search?q=%22$1%22+id_rsa&type=Code"
+https://github.com/search?q=%22$without_suffix%22+id_rsa&type=Code"
+
+aws_access_key_id
+https://github.com/search?q=%22$1%22+aws_access_key_id&type=Code"
+https://github.com/search?q=%22$without_suffix%22+aws_access_key_id&type=Code"
+
+s3cfg
+https://github.com/search?q=%22$1%22+s3cfg&type=Code"
+https://github.com/search?q=%22$without_suffix%22+s3cfg&type=Code"
+
+htpasswd
+https://github.com/search?q=%22$1%22+htpasswd&type=Code"
+https://github.com/search?q=%22$without_suffix%22+htpasswd&type=Code"
+
+git-credentials
+https://github.com/search?q=%22$1%22+git-credentials&type=Code"
+https://github.com/search?q=%22$without_suffix%22+git-credentials&type=Code"
+
+bashrc password
+https://github.com/search?q=%22$1%22+bashrc%20password&type=Code"
+https://github.com/search?q=%22$without_suffix%22+bashrc%20password&type=Code"
+
+sshd_config
+https://github.com/search?q=%22$1%22+sshd_config&type=Code"
+https://github.com/search?q=%22$without_suffix%22+sshd_config&type=Code"
+
+xoxp OR xoxb OR xoxa
+https://github.com/search?q=%22$1%22+xoxp%20OR%20xoxb%20OR%20xoxa&type=Code"
+https://github.com/search?q=%22$without_suffix%22+xoxp%20OR%20xoxb&type=Code"
+
+SECRET_KEY
+https://github.com/search?q=%22$1%22+SECRET_KEY&type=Code"
+https://github.com/search?q=%22$without_suffix%22+SECRET_KEY&type=Code"
+
+client_secret
+https://github.com/search?q=%22$1%22+client_secret&type=Code"
+https://github.com/search?q=%22$without_suffix%22+client_secret&type=Code"
+
+sshd_config
+https://github.com/search?q=%22$1%22+sshd_config&type=Code"
+https://github.com/search?q=%22$without_suffix%22+sshd_config&type=Code"
+
+github_token
+https://github.com/search?q=%22$1%22+github_token&type=Code"
+https://github.com/search?q=%22$without_suffix%22+github_token&type=Code"
+
+api_key
+https://github.com/search?q=%22$1%22+api_key&type=Code"
+https://github.com/search?q=%22$without_suffix%22+api_key&type=Code"
+
+FTP
+https://github.com/search?q=%22$1%22+FTP&type=Code"
+https://github.com/search?q=%22$without_suffix%22+FTP&type=Code"
+
+app_secret
+https://github.com/search?q=%22$1%22+app_secret&type=Code"
+https://github.com/search?q=%22$without_suffix%22+app_secret&type=Code"
+
+passwd
+https://github.com/search?q=%22$1%22+passwd&type=Code"
+https://github.com/search?q=%22$without_suffix%22+passwd&type=Code"
+
+s3.yml
+https://github.com/search?q=%22$1%22+.env&type=Code"
+https://github.com/search?q=%22$without_suffix%22+.env&type=Code"
+
+.exs
+https://github.com/search?q=%22$1%22+.exs&type=Code"
+https://github.com/search?q=%22$without_suffix%22+.exs&type=Code"
+
+beanstalkd.yml
+https://github.com/search?q=%22$1%22+beanstalkd.yml&type=Code"
+https://github.com/search?q=%22$without_suffix%22+beanstalkd.yml&type=Code"
+
+deploy.rake
+https://github.com/search?q=%22$1%22+deploy.rake&type=Code"
+https://github.com/search?q=%22$without_suffix%22+deploy.rake&type=Code"
+
+mysql
+https://github.com/search?q=%22$1%22+mysql&type=Code"
+https://github.com/search?q=%22$without_suffix%22+mysql&type=Code"
+
+credentials
+https://github.com/search?q=%22$1%22+credentials&type=Code"
+https://github.com/search?q=%22$without_suffix%22+credentials&type=Code"
+
+PWD
+https://github.com/search?q=%22$1%22+PWD&type=Code"
+https://github.com/search?q=%22$without_suffix%22+PWD&type=Code"
+
+deploy.rake
+https://github.com/search?q=%22$1%22+deploy.rake&type=Code"
+https://github.com/search?q=%22$without_suffix%22+deploy.rake&type=Code"
+
+.bash_history
+https://github.com/search?q=%22$1%22+.bash_history&type=Code"
+https://github.com/search?q=%22$without_suffix%22+.bash_history&type=Code"
+
+.sls
+https://github.com/search?q=%22$1%22+.sls&type=Code"
+https://github.com/search?q=%22$without_suffix%22+PWD&type=Code"
+
+secrets
+https://github.com/search?q=%22$1%22+secrets&type=Code"
+https://github.com/search?q=%22$without_suffix%22+secrets&type=Code"
+
+composer.json
+https://github.com/search?q=%22$1%22+composer.json&type=Code"
+https://github.com/search?q=%22$without_suffix%22+composer.json&type=Code"

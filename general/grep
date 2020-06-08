@@ -35,3 +35,6 @@ grep -nlir 'stringtosearch' /dir/
 
 # Find files with grep
 find . | grep <options> <pattern>
+
+# How to exclude strings contained in a file from another file
+grep -vf hosts-ignore.txt hosts-all.txt > hosts-inscope.txt

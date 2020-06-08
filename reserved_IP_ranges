@@ -1,0 +1,19 @@
+# Reserved IP Ranges
+
+0.0.0.0/8           # Used for broadcast messages to the current ("this")
+10.0.0.0/8          # Used for local communications within a private network
+100.64.0.0/10       # Used for communications between a service provider and its subscribers when using a carrier-grade NAT
+127.0.0.0/8         # Used for loopback addresses to the local host
+169.254.0.0/16      # Used for link-local addresses between two hosts on a single link when no IP address is otherwise specified,
+                    # such as would have normally been retrieved from a DHCP server
+172.16.0.0/12       # Used for local communications within a private network
+192.0.0.0/24        # Used for the IANA IPv4 Special Purpose Address Registry
+192.0.2.0/24        # Assigned as "TEST-NET" for use in documentation and examples. It should not be used publicly
+192.88.99.0/24      # Used by 6to4 anycast relays
+192.168.0.0/16      # Used for local communications within a private network
+198.18.0.0/15       # Used for testing of inter-network communications between two separate subnets
+198.51.100.0/24     # Assigned as "TEST-NET-2" for use in documentation and examples. It should not be used publicly
+203.0.113.0/24      # Assigned as "TEST-NET-3" for use in documentation and examples. It should not be used publicly
+224.0.0.0/4         # Reserved for multicast
+240.0.0.0/4         # Reserved for future use
+255.255.255.255/32  # Reserved for the "limited broadcast" destination address

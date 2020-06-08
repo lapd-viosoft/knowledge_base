@@ -1,0 +1,14 @@
+# dnsrecon
+
+## Attempt Zone Transfer
+dnsrecon -d www.example.com -a
+
+## Bruteforce Subdomains
+dnsrecon -d www.example.com -D /wordlists/subdomains-500.txt -t brt
+
+## Reverse DNS Solve IPs (Find domains associated with IPs)
+dnsrecon -r 1.2.3.4-1.2.3.50
+
+## Check if there are other hosts on the DNS server (i.e., nameserver machine)
+dnsrecon -r 127.0.0.0/24 -n <ip_address_of_nameserver>
+dnsrecon -r 127.0.1.0/24 -n <ip_address_of_nameserver>

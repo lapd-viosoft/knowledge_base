@@ -1,74 +1,87 @@
-### DNS service enumeration
+# DNS service enumeration
+
+## Check for DNS wildcard configuration
+dig A,CNAME \
+{test32112381,testingforwildcardrandom,plsdontgimmearesult2810}.<domain> +short \
+| wc -l
+
+NOTE: The values test321123, testingforwildcard, plsdontgimmearesult,
+can be changed to anything. Just make sure it's something that is
+very unlikely to be found as a valid sub domain for the target domain.
+
+If the output of the command is greater than 1 it's a good
+indicator that there might be a wildcard configuration. What this
+means for the next steps is that brute forcing will return a lot
+of false positives. The reason for this is that the wildcard will
+match anything that is not a registered subdomain and point all of
+them to the same place.
 
 
-```sh
+## Basic Information Gathering for a domain
+## remember that to find the DNS server of a domain we have to obtain its NS
+## records, so we can do that by doing dig -t NS <domainname.com>
 whois domain.com
 dig {a|txt|ns|mx} domain.com
 dig {a|txt|ns|mx} domain.com @ns1.domain.com
 host -t {a|txt|ns|mx} domain.com
-host -a domain.com
+host -a domain.com     ;; shows many DNS fields of a dommain (not all)
 host -l domain.com ns1.domain.com
-for sub in $(cat subdomains.txt);do host $sub.domain.com|grep "has.address";done
-```
+for sub in $(cat subdomains.txt); do host $sub.domain.com | grep "has.address";done
 
 If we find that a DNS server (tcp) is listening on the host we can try to
 enumerate starting from that nameserver by doing:
-```sh
 nsloookup
-SERVER <ip_address_of_nameserver>
-127.0.0.1 # we try to resolve 127.0.0.1, sometimes a hostname may be leaked
-<ip_address_of_nameserver> # sometimes this leaks other hostnames
-# keep into account that reverse lookups may not be enabled
-<hostname_of_machine> # we can double check the ip address of the machine if we
-# know its hostname
-```
+SERVER <ip_address_of_nameserver> ;; set IP address of DNS server
+127.0.0.1                         ;; try to resolve 127.0.0.1, sometimes a hostname may be leaked
+<ip_address_of_nameserver>        ;; sometimes this may leak other hostnames
+<hostname_of_machine>             ;;  we can double check the ip address of the machine if we know its hostname
 
-Another thing we can do to perform enumeration on DNS servers is:
-```sh
+## Bind Version Information Gathering
+Notice that some older/misconfigured versions of bind show their version number
+when askekd for. We can request the version number by doing:
+dig -t txt -c chaos VERSION.BIND @<dns_server_ip_or_hostname>
+
+
+## Get Domain Names from a set of IPs
+If we have a set of IPs we can try to reverse solve them by doing:
+dnsrecon -r 1.2.3.4-1.2.3.50
+
+
+## Check if there are other hosts on the DNS server (i.e., nameserver machine)
 dnsrecon -r 127.0.0.0/24 -n <ip_address_of_nameserver>
 dnsrecon -r 127.0.1.0/24 -n <ip_address_of_nameserver>
-# both these commands are used to check if there are other hosts on the nameserver machine
-```
+
 We may also attempt to find domain names belonging to the same LAN network in
 which the nameserver resides, and this can be done by providing LAN addresses to
 tools such as dnsrecon like this:
-```sh
 dnsrecon -r 10.0.0.0/8 -n <ip_address_of_nameserver> --db database.db
 dnsrecon -r 172.16.0.0/12 -n <ip_address_of_nameserver> --db database.db
 dnsrecon -r 192.168.0.0/16 -n <ip_address_of_nameserver> --db database.db
-```
 
-We can also attempt to perform zone transfers.
 
-Windows DNS zone transfer
-```sh
+## Zone Transfer 
+### Zone Transfer from Windows
 nslookup
 set type=any
 ls -d blah.com
-```
 
-Linux DNS zone transfer:
-```sh
-# We can attempt a zone transfer from the root zone in this way:
+### Zone Transfer from Linux 
 dig axfr @<ip_address_of_nameserver>
-# or
-dig axfr @ns1.blah.com # so by putting the hostname
-```
+or
+dig axfr @ns1.blah.com ;; so by putting the hostname
+or
+dig +multi AXFR @ns1.insecuredns.com insecuredns.com
+or
+dnsrecon -d www.example.com -a
 
 Many times zone transfers are not enabled from the root zone, so we must have
 more specific and try to perform zone transfer from a specific zone, this can be
 done in this way:
-```sh
 dig axfr example.com @ns1.blah.com
-# where in this case example.com is the zone from where we are attempting the 
-# zone transfer
-```
+## where in this case example.com is the zone from where we are attempting the 
+## zone transfer
 
-Notice that some older/misconfigured versions of bind show their version number
-when askekd for. We can request the version number by doing:
-```sh
-dig -t txt -c chaos VERSION.BIND @<dns_server_ip_or_hostname>
-# remember that to find the DNS server of a domain we have to obtain its NS
-# records, so we can do that by doing dig -t NS <domainname.com>
-```
-
+## Bruteforce Subdomains
+dnsrecon -d www.example.com -D /wordlists/subdomains-500.txt -t brt
+or
+gobuster dns -w /usr/share/SecLists/Discovery/DNS/subdomains-top1million-5000.txt -i -d example.com

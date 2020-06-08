@@ -1,7 +1,17 @@
-# RPC Bind enumeration is possible when RPC ports are exposed
-# most likely we can see this happen on port 111 (which may also indicate
-# the presence of an NFS server) or on port 135 on Microsoft Windows
-# systems.
+# PT RPC
+## most likely we can see this happen on port 111 (which may also indicate
+## the presence of an NFS server) or on port 135 on Microsoft Windows
+## systems.
+## Port 135 TCP is used in general for remote inter-process communication,
+## where some processes can publish some functions and other
+## processes can call those functions.
+## It is remote, since this makes it possible to interact from
+## different machines.
+
+## In particular port 135 TCP works as service mapper, so that
+## we can query the system to understand which services are running
+## on that host.
+
 
 # Nmap Scan
 nmap -n -v -sV -Pn -p 135 --script=msrpc-enum 192.168.1.10 
@@ -15,14 +25,31 @@ msf > use exploit/windows/dcerpc/ms03_026_dcom
 
 
 # Get Information with IP address
-rpcinfo  IP
-OR 
-rpcclient -U "" IP
-OR 
+rpcinfo $IP
+
+# Connect to the RPC console
+rpcclient -U "" $IP
+or 
+rpcclient -U "" $IP
+or
 rpcclient -U "DOMAINNAME.LOCAL\username" 10.10.10.175
-# Once inside we can issue different commands, such as:
+
+# Commands within RPC console
 srvinfo
+
+# Get the list of users in the domain
 enumdomusers
+
+# Get the list of groups in the domain
+enumdomgroups
+
+# Get the list of users within a group (0x200 are the domain admins)
+## Here users are shown in the form:
+## rid:[0x451] attr:[0x7]
+## rid:[0x1f4] attr:[0x7]
+## We have to convert these numbers, e.g., RID 1F4 (= 500) is the Administrator
+querygroupmem 0x200
+
 getdompwinfo
 querydominfo
 netshareenum
@@ -33,21 +60,10 @@ netshareenumall
 enum4linux -a $IP
 
 
-# Port 135 TCP is used in general for remote inter-process communication,
-# where some processes can publish some functions and other
-# processes can call those functions.
-# It is remote, since this makes it possible to interact from
-# different machines.
-
-# In particular port 135 TCP works as service mapper, so that
-# we can query the system to understand which services are running
-# on that host.
-
 # We can use enum4linux to get some information, such as
 # operating system info:
-```sh
 enum4linux -o <ip-address>
-```
+
 # If we have username/password we could get much more information.
 
 

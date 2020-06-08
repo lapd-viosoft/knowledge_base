@@ -35,12 +35,14 @@ smbclient -N -L '\\<ip_address>'
 
 # List shares (creds required)
 smbclient -L '\\<ip_address>'
+smbclient -L '\\<ip_address>' -U john
 
 # Connect to a share
 # with a null session
 smbclient -N '\\<ip_address>\<share_name>'
 
 # with creds
+smbclient -L '\\192.168.1.10\' -U administrator
 smbclient '\\192.168.1.10\ipc$' -U administrator
 smbclient //192.168.1.10/ipc$ -U administrator
 smbclient //192.168.1.10/admin$ -U administrator

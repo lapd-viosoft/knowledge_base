@@ -78,3 +78,26 @@ ctrl-w=          - make all equal size
 :only            - keep only this window open
 :ls              - show current buffers
 :b 2             - open buffer #2 in this window
+
+
+# Rename files with vim
+\ls | vim -
+
+# For example, to rename the files to lowercase
+:%s/.*/mv -i & \L&/g
+
+# To append .orig to each file name
+:%s/.*/mv -i & &.orig/g
+
+# To change all .JPEG extensions to .jpg
+:%s/.*/mv -i & &/g
+:%s/.JPEG$/.jpg/g
+
+# To remove duplicate extensions
+:%s/.*/mv -i & &/g
+:%s/.jpg.jpg$/.jpg/g
+
+## To substitute certain text in the filename
+;; \= is substitute command expression. See VimTip755 for more details. 
+:%s/.*/\="mv -i ".submatch(0)." ".substitute(submatch(0), "foo", "bar", "g")/g
+

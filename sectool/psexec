@@ -64,3 +64,15 @@ netsh advfirewall firewall set rule group="File and Printer Sharing" new enable=
 # Enable psexec with Powershell
 Set-NetFirewallRule -DisplayGroup "File And Printer Sharing" -Enabled True -Profile Private
 
+
+# Copies the program test.exe to the remote system and executes it interactively
+psexec \\marklap -c test.exe
+
+# Specify the full path to a program that is already installed on a remote system if its not on the system's path
+psexec \\marklap c:\bin\test.exe
+
+# Run Regedit interactively in the System account to view the contents of the SAM and SECURITY keys
+psexec -i -d -s c:\windows\regedit.exe
+
+# To run Internet Explorer as with limited-user privileges use this command
+psexec -l -d "c:\program files\internet explorer\iexplore.exe"    

@@ -1,0 +1,5 @@
+# Launch wifite
+sudo python Wifite.py
+
+# Crack previously obtained handshakes
+sudo python Wifite.py --crack --dict /usr/share/wordlists/rockyou_8.txt

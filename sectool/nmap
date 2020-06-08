@@ -25,6 +25,9 @@ nmap -sn -n -PE 192.168.1.0/24
 # Performs a ping sweep analogous to what happens with the ping command
 sudo nmap -sO -p 1 -n -Pn <target>
 
+# Fast Scan (only scan 100 ports)
+nmap -F <target>
+
 # Scan from a list of targets:
 nmap -iL [list.txt]
 

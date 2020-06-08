@@ -1,5 +1,25 @@
 ﻿# John
-# Passwords to Try
+# John the Ripper has different modes:
+# - single:      use GECOS/Full Field of accounts + lots of mangling rules;
+# - wordlist:    use a wordlist;
+# - incremental: bruteforce approach;
+# By default john will try:
+# "single crack" mode first, then use a wordlist (password.lst) also with rules,
+# and finally go for "incremental" mode.
+# This is a good way to proceed in case of system passwords.
+#
+# Incremental modes are:
+# - ascii       (95 chars, all ASCII printable)
+# - alnum       (62 chars, all letters + digits)
+# - alpha       (52 chars, all letters)
+# - lowernum    (36 chars, lowercase letters + digits)
+# - uppernum    (36 chars, uppercase letters + digits)
+# - lowerspace  (27 chars, lowercase letters + space)
+# - upperspace  (27 chars, uppercase letters + space)
+# - lower       (26 chars, lowercase letters)
+# - upper       (26 chars, uppercase letters)
+# - digits      (10 chars, digits)
+#
 # For guidance on how to choose password list see cheatsheets:
 # - list_passwords
 # - list_common_passwords
@@ -7,18 +27,60 @@
 # To show the types of passwords that John can crack with crack speed (in cracks/second)
 john --test
 
-# To use your own word list (the Rockyou list is suggested as a starting point)
+# List all supported password formats
+john --list=formats
+
+# List all incremental modes (i.e., bruteforce modes) available
+john --list=inc-modes
+
+# Use single mode
+john --single [passwordfile]
+
+# Use a custom wordlist (the Rockyou list is suggested as a starting point)
 john --wordlist=[filename] [passwordfile]
+
+# Use a custom wordlist but only try passwords from 4 chars to 7 chars
+john --wordlist=[filename] --min-length=4 --max-length=7 [passwordfile]
+
+# Use a custom wordlist and apply word mangling rules
+john --wordlist=[filename] --rules [passwordfile]
 
 # To show your results after running john (shows ~/.john/john.pot)
 john --show
 
 # Show results
 john --show --pot=.john/john.pot --format=raw-md5 breach_superwebsite_hashes.txt
+we can generate passwords manually from the pot by doing:
+cut -d: -f2 ~/.john/john.pot | sort -u > pot.dic
+
+# Use pot as dictionary for passwords
+john --loopback [passwordfile]
 
 # To restore an interrupted john session
 john --restore
+or
+john --restore=$sessionname    ;; note that we should omit the ".rec" as it is already added
 
+# Try all passwords composed of digits from 1 to 3 chars (default is ASCII mode)
+john --incremental --min-length=1 --max-length=3 [passwordfile]
+
+# Try all passwords composed of digits from 1 to 3 chars
+john --incremental=digits --min-length=1 --max-length=3 [passwordfile]
+
+# Print all passwords composed of digits from 1 to 3 chars
+john --incremental=digits --min-length=1 --max-length=3 --stdout
+
+# Try all passwords composed of lower chars from 4 to 6 chars
+john --incremental=lower --min-length=4 --max-length=6 [passwordfile]
+
+# Try all passwords composed of alphabetic (a-zA-Z) chars from 5 to 8 chars
+john --incremental=alpha --min-length=5 --max-length=8 [passwordfile]
+
+# Try all passwords composed of alphanumeric (a-zA-Z0-9) chars from 5 to 8 chars
+john --incremental=alnum --min-length=5 --max-length=8 [passwordfile]
+
+# Try all passwords composed of lower alphanumeric (a-z0-9) chars from 5 to 8 chars
+john --incremental=lowernum --min-length=5 --max-length=8 [passwordfile]
 
 # Linux Passwords
 ## Get /etc/shadow and /etc/passwd
@@ -44,3 +106,7 @@ rar2john archive.rar > hashes.txt
 john hashes.txt --wordlist /usr/share/wordlists/rockyou.txt
 
 
+# WPA2 Handshake
+aircrack-ng Kalip300-01.cap -J john
+hccap2john john.hccap > wpa_hashes.txt
+john wpa_hashes.txt --wordlist /usr/share/wordlist/rockyou.txt

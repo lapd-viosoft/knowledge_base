@@ -4,16 +4,19 @@
 # -o Generate output log
 # -X .html test files with '.html' extension
 # -z adds delay in ms
-
+# As for lists start with:
+# - common.txt
+# - eventually quickhits.txt (it is not a long list)
+# - dirbuster (medium)
 
 # Bruteforce a website in a non-recursive mode 
 dirb http://10.10.10.10 -r -o log.dirb
 
 # Bruteforce a website using .html and .php extensions (note that blank is not included)
-dirb http://172.28.128.17 -X .html,.php
+dirb http://172.28.128.17 -X .html,.php -o log.dirb
 
 # Bruteforce a website using .html and .php extensions (blank is included)
-dirb http://172.28.128.17 -X .html,.asp,.jsp,,
+dirb http://172.28.128.17 -X .html,.asp,.jsp,, -o log.dirb
 
 # Bruteforce a website using a user-specified wordlist
 dirb http://172.28.128.24 /usr/share/wordlists/directory-list-2.3-small.txt -r -o dirb_medium.txt

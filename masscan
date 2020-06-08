@@ -1,0 +1,34 @@
+# masscan
+
+# Scan port 443 for the specified netblock
+masscan 10.11.0.0/16 -p443
+
+# Scan multiple ports (80,443) for the specified netblock
+masscan 10.11.0.0/16 -p80,443
+
+# Scan a port range for the specified netblock
+masscan 10.11.0.0/16 -p22-25
+
+# Scan the top 100 ports for the specified netblock
+masscan 10.11.0.0/16 ‐‐top-ports 100
+
+# Scan faster 100,000 packets per second
+masscan 10.11.0.0/16 ‐‐top-ports 100 --rate 100000
+
+# Scan a netblock but exclude hosts specified in a file
+masscan 10.11.0.0/16 ‐‐top-ports 100 ‐‐excludefile exclude.txt
+
+# Scan a network for all ports
+masscan 10.11.0.0/16 -p0-65535 --rate 1000000
+
+# Scan the internet for a port
+masscan 0.0.0.0/0 -p443 --rate 10000000
+
+# Scan the internet for all ports
+masscan 0.0.0.0/0 -p0-65535 --rate 10000000
+
+# Dump a configuration file for masscan and exit
+masscan -p80,8000-8100 10.0.0.0/8 --echo > xxx.conf
+
+# Use a configuration file
+masscan -c xxx.conf --rate 1000

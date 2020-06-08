@@ -1,0 +1,60 @@
+# shodan
+# one of the most important command is "download"
+# by default it will give us 1000 results by default
+# but we can bypass the limit by doing: 
+# --limit -1 
+# So if you often search for the same queries it will help you save credits.
+# The export credits are used to download data from the website at the
+# rate of: 1 export credit lets you download up to 10,000 results.
+
+# Initialize shodan providing API Key
+shodan init <YOUR_API_KEY>
+
+# Check number of available credits on account
+shodan info 
+
+# Count openssh on the internet
+shodan count openssh
+
+# Count openssh version 7 on the internet
+shodan count openssh 7
+
+# Show information about host (ports/location/etc..)
+shodan host 1.1.1.1
+
+# Show my IP address
+shodan myip
+
+# Download openssh data
+shodan download datafile openssh
+
+# Parse downloaded results
+shodan parse --fields location.country_code3,ip_str,hostnames \
+-f port:2222 datafile.json.gz
+
+# Parse downloaded results 2
+shodan parse --fields port,ip_str,location.city,location.postal_code \
+-f location.country_code:FR --separator , datafile.json.gz 
+
+# Search (no credit required, because no filter)
+shodan search --fields ip_str,port,os smb 
+
+# Search (no credit required, because no filter)
+shodan search --fields ip_str,port,os smb 
+
+# Search (1 credit required for 1000 results by default, because of filter)
+shodan search --fields ip_str,port,org,info product:mongodb
+
+# Scan an IP (1 credit required for 1 IP)
+## If the host has already been scanned in the last 24 hours,
+## we won't be able to scan it again without an Enterprise plan.
+shodan scan submit --filename 104.27.154.244_scan.json.gz 104.27.154.244
+
+# See the scans previously launched 
+shodan scan list 
+
+# Scan entire internet for specific product (requires enterprise)
+shodan scan internet 8080 wemo-http
+
+# Show statistics
+shodan stats nginx

@@ -1,19 +1,35 @@
-# Bruteforce Directory/Files
-# dir bruteforce directories/files
-# -u target
-# -w wordlists
-# -e print full path for web resources https://...
-# -l prints length for each web resource
-# -x adds extensions to all resources in the wordlists
-# -t choose number of threads
-# -to timeout (default 10s)
+# Bruteforce Directory/Files/DNS/VHosts
+## gobuster has three modes:
+## - dir, used to bruteforce web files/directories
+## - dns, used to actively bruteforce subdomains of a domain
+## - vhost, used to bruteforce virtual hosts related to a web application
+## dir mode flags:
+## -u target
+## -w wordlists
+## -e print full path for web resources https://...
+## -l prints length for each web resource
+## -x adds extensions to all resources in the wordlists
+## -t choose number of threads
+## -to timeout (default 10s)
+## dns mode flags:
+## -i is used to show IP addresses
+## -d is to select a domain name for dns bruteforcing
+## As for lists start with:
+## - common.txt
+## - eventually quickhits.txt (it is not a long list)
+## - dirbuster (medium)
 
 # Bruteforce Directory/Files
 gobuster dir -u http://172.28.128.17 -w ~/wordlists/common.txt -l
-
 
 # Bruteforce php files (and blank files)
 gobuster dir -u http://172.28.128.17 -w ~/wordlists/common.txt -l -x .php
 
 # Bruteforce php and html files (and blank files)
 gobuster dir -u http://172.28.128.17 -w /usr/share/dirb/wordlists/common.txt -l -x .php,.asp
+
+# Bruteforce DNS subdomains for domain example.com
+gobuster dns -w /usr/share/SecLists/Discovery/DNS/subdomains-top1million-5000.txt -i -d example.com
+
+# Bruterforce virtual hosts available on the same machine of a target web application
+gobuster vhost -u https://example.com -w common-vhosts.txt
