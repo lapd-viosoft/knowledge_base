@@ -85,19 +85,24 @@ ctrl-w=          - make all equal size
 
 # For example, to rename the files to lowercase
 :%s/.*/mv -i & \L&/g
+:%!bash ;; to execute lines as commmands
 
 # To append .orig to each file name
 :%s/.*/mv -i & &.orig/g
+:%!bash ;; to execute lines as commmands
 
 # To change all .JPEG extensions to .jpg
 :%s/.*/mv -i & &/g
 :%s/.JPEG$/.jpg/g
+:%!bash ;; to execute lines as commmands
 
 # To remove duplicate extensions
 :%s/.*/mv -i & &/g
 :%s/.jpg.jpg$/.jpg/g
+:%!bash ;; to execute lines as commmands
 
 ## To substitute certain text in the filename
 ;; \= is substitute command expression. See VimTip755 for more details. 
 :%s/.*/\="mv -i ".submatch(0)." ".substitute(submatch(0), "foo", "bar", "g")/g
+:%!bash ;; to execute lines as commmands
 

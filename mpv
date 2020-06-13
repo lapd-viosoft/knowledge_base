@@ -1,0 +1,20 @@
+# mpv
+
+`*`                - Increase volume
+`/`                - Decrease volume
+`0`                - Increase volume
+`9`                - Decrease volume
+`e`                - zoom in  (panscan)
+`w`                - zoom out (panscan)
+`alt+arrow`        - Move around image
+`p`                - pause/continue
+`q`                - quit
+`s`                - screenshot
+`m`                - mute
+`o`                - show time
+`i`                - show info about played file
+`alt+shift+arrow`  - go to the next/previous subtitle
+`z/x`              - decrease/increase subtitle delay 
+`[/]`              - increase/decrease speed of media
+`{/}`              - increase/decrease speed of media exponentially
+

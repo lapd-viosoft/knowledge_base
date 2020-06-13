@@ -1,3 +1,6 @@
+# awk
+# https://learnxinyminutes.com/docs/awk/
+
 # To print only second and third column using '\s+' as a delimiter
 awk '{ print $2,$3 }'
 

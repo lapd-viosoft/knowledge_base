@@ -388,7 +388,7 @@ Thread.start {
 ## A reverse shell in C can be done with the following code,
 ## notice that we have to modify the two constants 
 ## `REMOTE_ADDR` and `REMOTE_PORT`.
-
+## Compile with gcc -static
 ```c
 /* credits to http://blog.techorganic.com/2015/01/04/pegasus-hacking-challenge/ */
 #include <stdio.h>
