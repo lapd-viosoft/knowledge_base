@@ -1,4 +1,5 @@
 - take a look at the operator handbook
+- reorder cheatsheet from mohamed adam, the xslx file in this directory
 - make python cheatsheets
 - integrate with these https://github.com/OlivierLaflamme/Cheatsheet-God
 - fix revshells... put in different files and also put spawn tty its sections
