@@ -13,11 +13,29 @@ task <ID> done
 # Delete a task
 task <ID> delete
 
+# Show task calendar
+task calendar
+
+# Start/Stop working on a task
+task <ID> start   ;; Start working on a task, make active
+task <ID> stop    ;; Stop working on a task, no longer active
+
+# Append text to title task
+task add "Fix plumbing"
+task 1 append "before the house floods"
+
+# Prepend text to title task
+task add "sandwich"
+task 1 prepend "make me a "
+
 # Modify a task by setting the project it belongs to
 task <ID> project:"PhD Thesis"
 
 # Modify a task by setting it as next
 task <ID> project:"PhD Thesis" +next
+
+# Show summary of completed projects
+task summary
 
 # Add a task with a high (H) priority
 task add "Wash the bicycle" priority:H # other priorities are Low (L) and Medium (M)
@@ -40,6 +58,30 @@ task waiting
 # See a Calendar
 task calendar
 
-
 # Set a task with a due date and time
 task add "Lunch" due:tomorrow due:12:30:00
+
+# Add anontation to a task
+task <ID> annotate "A simple annotation for a task"
+
+# Show task statistics
+task stats
+
+# Edit a task with a text editor
+task <ID> edit
+
+# Export tasks in the JSON format
+task export 
+
+# Import tasks from a JSON file
+task import task_file.json
+
+# Show the list of all possible reports
+task reports
+
+# Interesting Example Reports
+task burndown.daily      ;; Burndown chart, by day
+task burndown.monthly    ;; Burndown chart, by month
+task burndown.weekly     ;; Burndown chart, by week
+
+
