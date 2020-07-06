@@ -61,7 +61,7 @@ task calendar
 # Set a task with a due date and time
 task add "Lunch" due:tomorrow due:12:30:00
 
-# Add anontation to a task
+# Add anontation to a task (attach text notes)
 task <ID> annotate "A simple annotation for a task"
 
 # Show task statistics

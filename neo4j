@@ -26,6 +26,9 @@
 # Show help
 :help
 
+# Try the exercises
+:play intro-neo4j-exercises
+
 # Show configuration
 ## This will show us the configuration of neo4j, particularly
 ## interesting are things like:
@@ -47,11 +50,20 @@ or
 # Reset style configuration for graph visualization
 :style reset
 
-# Inspect data model of the database
-CALL db.schema
+# Inspect data model of the database (neo4j 3.x)
+CALL db.schema()
+
+# Inspect data model of the database (neo4j 4.x)
+CALL db.schema.visualization()
+
+# Inspect all labels
+CALL db.labels()
 
 # Inspect all properties of the graph
-CALL db.propertyKeys
+CALL db.propertyKeys()
+
+# Inspect all relationship types
+CALL db.relationshipTypes()
 
 # Return all nodes (not the relationships) from the database
 ## (in the graph visualization we will be limited by "Initial Node Display")
@@ -63,6 +75,9 @@ MATCH (n) RETURN n
 ## NOTE: probably this is the most complete query
 MATCH (n)-[r]->(m)
 RETURN n,r,m
+
+# Delete all nodes from a neo4j DB
+MATCH (n) DETACH DELETE n
 
 # Count the total number of nodes in the database
 MATCH (n) RETURN count(*)
@@ -87,6 +102,9 @@ MATCH (b:machine)
 RETURN b.name,b.count
 ORDER BY b.count
 DESC LIMIT 25
+
+# Match movies with a certain attribute for a certain property
+MATCH (m:Movie {released:2003}) RETURN m
 
 # Get all nodes involved in a relationship called "Married"
 ()-[:MARRIED]->()
@@ -155,6 +173,18 @@ MATCH
 (:Actor)-[:PLAYED]->(c:Character)
 WHERE a.name = 'Matt Smith'
 RETURN c
+
+# Retrieve all people that wrote movies by testing the relationship
+# between two nodes, returning the names of the people and the titles of
+# the movies.
+MATCH (a)-[rel]->(m)
+WHERE a:Person AND type(rel) = 'WROTE' AND m:Movie
+RETURN a.name as Name, m.title as Movie
+
+# Find all the titles of movies where Tom Cruise is an actor
+MATCH (a:Person)-[:ACTED_IN]->(m:Movie)
+WHERE a.name = 'Tom Cruise'
+RETURN m.title as Movie
 
 # Sort results
 MATCH
@@ -356,3 +386,7 @@ CREATE (actor)-[:PLAYED {role:csvLine.role}]->(movie) # here the role is a prope
 MATCH (n) DETACH DELETE n;
 or
 rm -rf data/graph.db
+
+
+# Find all movies related to tom hanks and print title and relationship type:
+match (:person {name:"tom hanks"})-[r]->(m:movie) return m.title,type(r)

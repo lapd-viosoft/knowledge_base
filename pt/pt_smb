@@ -94,7 +94,6 @@ enum4linux <ip_target>
 Metasploit module `scanner/smb/smb_version`
 
 
-
 # Try to Bruteforce Windows Credentials
 Metasploit module `auxiliary/scanner/smb/smb_login` 
 
