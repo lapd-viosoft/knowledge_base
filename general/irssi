@@ -1,33 +1,110 @@
-# To connect to an IRC server:
-/connect <server>
+# All of this was taken from:
+# [IRSSI Docs](https://irssi.org/documentation/startup)
+# Top 100 IRC Networks after Freenode:
+## https://netsplit.de/networks/top100.php
+## As of October 2018, the largest IRC networks are:
+## freenode – around 90k users at peak hours
+## IRCnet – around 30k users at peak hours
+## EFnet – around 18k users at peak hours
+## Undernet – around 17k users at peak hours
+## QuakeNet – around 15k users at peak hours
+## Rizon – around 14k users at peak hours
+## OFTC – around 13k users at peak hours
+## DALnet – around 8k users at peak hours
 
-# To join a channel:
-/join #<channel>
+# Get a list of default public network available
+/network list
 
-# To set a nickname:
-/nick <nickname>
+# Connect to a specific network
+/connect Freenode
+/server Freenode
+/connect irc.freenode.org    ;; via specific address
 
-# To send a private message to a user:
-/msg <nickname>
+# Join a channel
+/join #channelname
 
-# To close the current channel window:
-/wc
+# Switch between channels
+/1   ;; switch to channel 1
+/2   ;; switch to channel 2
+/3   ;; switch to channel 3
 
-# To switch between channel windows:
-ALT+<number>, eg. ALT+1, ALT+2
-
-# To list the nicknames within the active channel:
+# Get the names and the count of users inside a channel
 /names
 
-# To change the channel topic:
-/topic <description>
+# Get the full list of users
+/who #channelname
+
+# Exit from a channel
+/part
+or
+/part #channelname
+
+# Disconnect from a server
+/disconnect
+
+# Add a network
+/network ADD ExampleNet
+
+# Add a server for a specified network
+/SERVER ADD -auto -network ExampleNet irc.example.net
+
+# Setup to automatically join channels after being connected to a network
+/CHANNEL ADD -auto #channelname ExampleNet
+
+# Automatically login to specified networks 
+/NETWORK ADD -autosendcmd "/^msg nickserv ident pass;wait 2000" ExampleNet
+
+# Automatically login to specified networks using SASL
+/NETWORK ADD -sasl_username yourname -sasl_password yourpassword -sasl_mechanism PLAIN ExampleNet
+
+# To have our nick highlighted we can set:
+/hilight nick
+# or
+/SET hilight_nick_matches_everywhere ON
+
+# To have beeps when we are references
+/SET beep_msg_level MSGS HILIGHT DCCMSGS
+
+# Get help
+/HELP NETWORK
+/HELP SERVER
+/HELP CHANNEL
+/HELP
+
+## Freenode Specific
+/msg alis LIST searchterm
+/msg alis LIST * -topic multiple*ordered*search*terms
+/msg alis LIST * -min 50
+/msg alis LIST #foo*
+/msg alis LIST #foo* -mode =n
+/msg alis LIST *freetopic* -mode -t -show mt
+/msg alis LIST ##nocolors* -mode +c -show t
+
+
+## Moving inside irssi
+We can move between windows through:
+* Alt-[0-9q-o]              - Jump to the specified window
+* /WINDOW <number>          - Jump to any window with specified number
+* Ctrl-P, Ctrl-N            - Jump to previous / next window
+
+
+## Users
+
+# Check if user is online
+/ping username
+
+# Get information about administrators of a specific server
+/stats
+
+# Viewing channel names on new messages
+/set actlist_names on
+
+# Save configuration in configuration file
+/save
 
 # To limit channel background noise (joins, parts, quits, etc.):
-/ignore #foo,#bar JOINS PARTS QUITS NICKS   # Quieten only channels `#foo`, `#bar`
-/ignore * JOINS PARTS QUITS NICKS           # Quieten all channels
-
-# To save the current Irssi session config into the configuration file:
-/save
+/ignore #foo,#bar JOINS PARTS QUITS NICKS   ;; Quieten only channels `#foo`, `#bar`
+/ignore * JOINS PARTS QUITS NICKS           ;; Quieten all channels
 
 # To quit Irssi:
 /exit
