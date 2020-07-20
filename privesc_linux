@@ -73,3 +73,39 @@ chmod 777 cat
 export PATH=/tmp:$PATH
 
 
+
+# A recap of techniques
+
+Kernel Exploits
+
+Password Hunting
+
+File Permissions
+
+Sudo Attacks
+
+Shell Escaping
+
+Intended Functionality
+
+LD_PRELOAD
+
+CVE-2019-14287
+
+CVE-2019-18634
+
+SUID Attacks
+
+Shared Object Injection
+
+Binary Symlinks
+
+Environment Variables
+
+Capabilities Attacks
+
+Scheduled Tasks
+
+NFS
+
+Docker

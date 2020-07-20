@@ -1,55 +1,74 @@
 # Running emacs
 
-$ emacs        ;; GUI mode            
-$ emacs -nw    ;; Terminal mode       
+$ emacs        ;; gui mode            
+$ emacs -nw    ;; terminal mode       
+
+# Mode Line
+
+The mode line is the line we see at the bottom of the
+screen, and by default contains some basic information
+such as:
+- status of the current file opened in the buffer 
+- name of the file
+- current line
+- current mode
+
+The status assumes generally one of the following values:
+
+- `**-` meaning the file is modified but not saved
+- `---` meaning the file is not modified
+- `%%`  read only mode and not modified
+- `%*`  read only mode but has been modified
 
 # Basic usage
 
-Select text then press TAB  ;; Indent              
-C-w                         ;; Cut                 
-M-w                         ;; Copy                
-C-y                         ;; Paste ("yank")      
-C-SPACE                     ;; Begin selection     
-C-s                         ;; Search/Find         
-C-M-s                       ;; Search/Find by using regexes
-M-% (M-SHIFT-5)             ;; Replace             
-C-x C-s                     ;; Save                
-C-x C-w                     ;; Save as             
-C-x C-f                     ;; Load/Open           
-C-x u                       ;; Undo
-C-/                         ;; Undo 
-C-x h                       ;; Highlight all text  
-C-x d                       ;; Directory listing   
-C-g                         ;; Cancel a command    
-C-x C-+                     ;; Font size bigger    
-C-x C--                     ;; Font size smaller   
-C-x C-c                     ;; Close emacs session 
+select text then press tab  ;; indent              
+C-w                         ;; cut                 
+M-w                         ;; copy                
+C-y                         ;; paste ("yank")      
+C-space                     ;; begin selection     
+C-space select some lines and then C-x C-x ;; goes to the other side of selection
+C-s                         ;; search/find         
+C-M-s                       ;; search/find by using regexes
+M-% (M-shift-5)             ;; replace             
+C-x C-s                     ;; save                
+C-x C-w                     ;; save as             
+C-x C-f                     ;; load/open           
+C-x u                       ;; undo
+C-/                         ;; undo 
+C-x h                       ;; highlight all text  
+C-x d                       ;; directory listing   
+C-g                         ;; cancel a command    
+C-x C-+                     ;; font size bigger    
+C-x C--                     ;; font size smaller   
+C-x C-c                     ;; close emacs session 
+C-S-Backspace               ;; delete a line
 
 # Buffers
   
-C-x 2         ;; Split screen vertically                         
-C-u 5 C-x 2   ;; Split screen vertically with 5 row height       
-C-x 3         ;; Split screen horizontally                       
-C-u 24 C-x 3  ;; Split screen horizontally with 24 column width  
-C-x 1         ;; Revert to single screen                         
-C-x 0         ;; Hide the current screen                         
-C-x o         ;; Move to the next screen                         
-C-x k         ;; Kill the current buffer                         
-C-x b         ;; Select a buffer                                 
-C-x C-e       ;; Run command in the scratch buffer               
+C-x 2         ;; split screen vertically                         
+C-u 5 C-x 2   ;; split screen vertically with 5 row height       
+C-x 3         ;; split screen horizontally                       
+C-u 24 C-x 3  ;; split screen horizontally with 24 column width  
+C-x 1         ;; revert to single screen                         
+C-x 0         ;; hide the current screen                         
+C-x o         ;; move to the next screen                         
+C-x k         ;; kill the current buffer                         
+C-x b         ;; select a buffer                                 
+C-x C-e       ;; run command in the scratch buffer               
 
 # Navigation ( backward / forward )
   
-C-b   , C-f    ;; Character-wise                                  
-C-p   , C-n    ;; Line-wise                                       
-C-v   , M-v    ;; Screen-wise                                     
-M-b   , M-f    ;; Word-wise                                       
-M-a   , M-e    ;; Sentence-wise                                   
-M-{   , M-}    ;; Paragraph-wise                                  
-M-<   , M->    ;; Alltext                                         
-C-M-a , C-M-e  ;; Function-wise                                   
-C-a   , C-e    ;; Line beginning / end                            
-C-l            ;; Reposition line (top/middle/bottom)             
+C-b   , C-f    ;; character-wise                                  
+C-p   , C-n    ;; line-wise                                       
+C-v   , M-v    ;; screen-wise                                     
+M-b   , M-f    ;; word-wise                                       
+M-a   , M-e    ;; sentence-wise                                   
+M-{   , M-}    ;; paragraph-wise                                  
+M-<   , M->    ;; alltext                                         
+C-M-a , C-M-e  ;; function-wise                                   
+C-a   , C-e    ;; line beginning / end                            
+C-l            ;; reposition line (top/middle/bottom)             
 
 # Other stuff
 
@@ -57,26 +76,56 @@ M-x eshell                 ;; Open a shell
 M-x goto-line              ;; Goto a line number   
 M-x toggle-word-wrap       ;; Word wrap            
 M-x flyspell-mode          ;; Spell checking       
-M-x linum-mode             ;; Line numbers         
+M-x linuM-mode             ;; Line numbers         
 M-x visual-line-mode       ;; Toggle line wrap     
 M-x compile                ;; Compile some code    
 M-x package-list-packages  ;; List packages        
+
+Select text and press M-=  ;; shows region of text statistics
 
 
 # Line numbers
 To add line numbers and enable moving to a line with C-l:
 
 (global-set-key "\C-l" 'goto-line)
-(add-hook 'find-file-hook (lambda () (linum-mode 1)))
+(add-hook 'find-file-hook (lambda () (linuM-mode 1)))
 
 We can goto a specific line by doing:
 M-g g 23            ;; go to line number 23
 
 # Misc
 
-# Packages
+## Executing shell command on text
 
-M-x list-packages           ;; List Packages
+After having selected a region of text
+we can apply shell commands on it by doing:
+
+EsC-1 EsC-| shellcommand
+
+If we just want to have a preview of the output
+without applying the substitution we can just select
+the region of space of interest and just execute:
+
+EsC-| shellcommand
+
+
+## Search and Replace
+
+EsC-%
+then insert string to be replaced and string
+which will be inserted.
+We can then press "!" to apply substitution
+globally.
+
+# Packages
+## Generally we may want to install the melpa repo by following
+## the instructions in getting-started on the melpa website
+
+M-x list-packages                           ;; List Packages
+M-x package-refresh-contents                ;; Refresh package list
+M-x package-install RET clojure-mode        ;; installs the package called "clojure-mode"
+M-x package-install RET cider               ;; installs the package called "cider"
+M-x package-delete RET racket-mode          ;; removes a package
 
 # Themes
 
@@ -84,8 +133,37 @@ M-x customize-themes        ;; change theme
 
 # Docs
 
-C-h i           ;; show documentation directory
-C-h t           ;; open the tutorial
-C-h b           ;; show keybindings
-C-h k C-x b     ;; show documetation about a command (in this case C-x b)
-C-h a buffer    ;; show all commands related to "buffer"
+C-h i                  ;; show documentation directory
+C-h t                  ;; open the tutorial
+C-h b                  ;; show keybindings
+C-h f RET functionname ;; show documentation for function
+C-h k C-x b            ;; show documetation about a command (in this case C-x b)
+C-h a RET buffer       ;; show all commands related to "buffer"
+
+# Macros
+
+C-x( actions C-x)  ;; register a macro
+C-x e              ;; play a macro
+C-x C-k n          ;; give name to last specified macro
+M-x macroname      ;; executes the macro known as "macroname"
+
+
+# Modes
+
+There are hundreds of modes, we can see the current mode in the mode line.
+In order to switch to another mode we can just do:
+
+M-x modename                   ;; switch to the mode called "modename"
+e.g.,
+M-x text-mode                  ;; switch to text mode
+M-x fundamental-mode           ;; switch to fundamental mode
+
+Mode can be automatically set also depending on the extension
+of the loaded file (e.g., a .py file will load the Eldoc python mode).
+
+To show documentation about currently set mode we can do:
+M-x describe-mode
+
+
+
+
