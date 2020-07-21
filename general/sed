@@ -1,4 +1,5 @@
 # sed
+# NOTE: ALWAYS USE -i.bak when using "-i"
 # sed basic flags are:
 # - `-e`,     executes a command, can be omitted
 # - `-i.bak`, modifies file in place but creates a backup .bak file
@@ -55,3 +56,10 @@ sed '/Once upon a time/i\Chapter 1'
 
 # To add a line after a matching pattern:
 sed '/happily ever after/a\The end.'
+
+# Apply sed substitution on all files found with find
+find . -iname "cloud_config*.yaml" -exec sed -i.baktwo 's/\[DS1, 0.05\]/[DS1, 0.005]/g' {} +
+
+# Remove lines containing one string from a list
+list_of_str='note|address|isbn|copyright|month|issn|file|shorttitle|abstract|doi|url|language|file|keywords'
+sed -E "/(\s)?($list_of_str)/d" file.txt > cleaned_file.txt

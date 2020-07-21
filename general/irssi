@@ -28,6 +28,18 @@
 /2   ;; switch to channel 2
 /3   ;; switch to channel 3
 
+# Scroll Up/Down messages
+ALT-p, ALT-n       Up / Down
+pageup, pagedown   Up / Down
+
+/scrollback home: go to the first line of the buffer.
+/scrollback end: go to the last line of the buffer.
+/scrollback goto 13:05: scrolls back to 13:05.
+/scrollback goto -100: scrolls back 100 lines.
+/scrollback goto +50: scrolls forward 50 lines.
+
+You can use /sb instead of /scrollback to save time typing.
+
 # Get the names and the count of users inside a channel
 /names
 
@@ -38,6 +50,8 @@
 /part
 or
 /part #channelname
+or for nickserv and other non-closing channels
+/window close
 
 # Disconnect from a server
 /disconnect

@@ -1,0 +1,14 @@
+#!/usr/bin/env  sh
+
+stdel='note|address|isbn|copyright|month|issn|file|shorttitle|abstract|doi|url|language|file|keywords'
+sed -E "/(\s)?($stdel)/d" target.txt > /tmp/bib
+
+sed  "/^@.*{/ s/{\(.\)/{\U\1/" /tmp/bib > /tmp/bib2
+sed  "/^@.*{/ s/{.\._\(.\)/{\U\1/" /tmp/bib2 > /tmp/bib3
+
+# Write International as Int. and Proceedings as Proc.
+sed  "s/International/Int./;\
+      s/Proceedings/Proc./; \
+      s/Conference/Conf./" /tmp/bib3 > /tmp/bib4
+sed 's/ı/{\\i}/g; s/ć/\\'"'"'{c}/g; s/Ö/\\"{O}/g; s/ö/\\"{o}/g; s/ç/\\c{c}/g; s/Ç/\\c{C}/g' /tmp/bib4 > /tmp/bib5
+sed  "/booktitle =/ s/[0-9]\{4\}//" /tmp/bib5 > target.txt

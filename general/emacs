@@ -3,6 +3,17 @@
 $ emacs        ;; gui mode            
 $ emacs -nw    ;; terminal mode       
 
+# Configuration
+
+Your emacs config file is probably in one of three places:
+
+- in ~/.emacs (though this is now a bit outdated)
+- in ~/.emacs.d/init.el
+- in ~/.emacs.d/personal/
+    Any .el file in this directory will 
+    be read when emacs starts
+
+
 # Mode Line
 
 The mode line is the line we see at the bottom of the
@@ -15,8 +26,8 @@ such as:
 
 The status assumes generally one of the following values:
 
-- `**-` meaning the file is modified but not saved
-- `---` meaning the file is not modified
+- `**` meaning the file is modified but not saved
+- `--` meaning the file is not modified
 - `%%`  read only mode and not modified
 - `%*`  read only mode but has been modified
 
@@ -165,5 +176,8 @@ To show documentation about currently set mode we can do:
 M-x describe-mode
 
 
+# Implementing Custom Command Interpreter Interactions
 
-
+This can be easily achieved by combining:
+- comint (to open the custom process interpreter)
+- isend-mode (to send lines to other buffers)
