@@ -3,17 +3,6 @@
 $ emacs        ;; gui mode            
 $ emacs -nw    ;; terminal mode       
 
-# Configuration
-
-Your emacs config file is probably in one of three places:
-
-- in ~/.emacs (though this is now a bit outdated)
-- in ~/.emacs.d/init.el
-- in ~/.emacs.d/personal/
-    Any .el file in this directory will 
-    be read when emacs starts
-
-
 # Mode Line
 
 The mode line is the line we see at the bottom of the
@@ -55,18 +44,38 @@ C-x C--                     ;; font size smaller
 C-x C-c                     ;; close emacs session 
 C-S-Backspace               ;; delete a line
 
-# Buffers
-  
+# Buffers/Windows
+
+NOTE: A window is a subdivision of a frame
+a frame in emacs is a completely separate OS window.
+
+C-x C-b       ;; list buffers
+C-u C-x C-b   ;; list only buffers corresponding to files
+C-x b         ;; select a buffer in current window/frame
+C-x 4 b       ;; open buffer in the other window
+C-x 5 b       ;; open buffer in the other frame
 C-x 2         ;; split screen vertically                         
-C-u 5 C-x 2   ;; split screen vertically with 5 row height       
 C-x 3         ;; split screen horizontally                       
-C-u 24 C-x 3  ;; split screen horizontally with 24 column width  
-C-x 1         ;; revert to single screen                         
-C-x 0         ;; hide the current screen                         
-C-x o         ;; move to the next screen                         
+C-x 0         ;; hide the current window
+C-x o         ;; move to the next window
+C-x 1         ;; revert to single window                         
 C-x k         ;; kill the current buffer                         
-C-x b         ;; select a buffer                                 
+
+C-u 5 C-x 2   ;; split screen vertically with 5 row height       
+C-u 24 C-x 3  ;; split screen horizontally with 24 column width  
 C-x C-e       ;; run command in the scratch buffer               
+
+When we are in "buffer-menu" (i.e., C-x C-b) we can mark
+buffers for deletion with "d" and kill them with "x"
+as within dired.
+
+A common scenario when reading manuals is the willingness of
+reading info in multiple windows but at different spots,
+this can be done by doing:
+
+C-u 1 C-h i   ;; this will open info1
+C-u 2 C-h i   ;; this will open info2
+
 
 # Navigation ( backward / forward )
   
@@ -144,12 +153,16 @@ M-x customize-themes        ;; change theme
 
 # Docs
 
-C-h i                  ;; show documentation directory
+C-h m                  ;; show documentation for current mode (equivalent to M-x describe-mode)
+C-h f RET functionname ;; show documentation for a function
+C-h v RET variablename ;; show documentation for a variable
+C-h i                  ;; show documentation directory (all the included manuals)
+C-h r                  ;; open the emacs main manual
 C-h t                  ;; open the tutorial
 C-h b                  ;; show keybindings
-C-h f RET functionname ;; show documentation for function
 C-h k C-x b            ;; show documetation about a command (in this case C-x b)
-C-h a RET buffer       ;; show all commands related to "buffer"
+C-h a RET -buffer$     ;; show all commands related to "buffer"
+C-h a RET -word$       ;; show all commands related to "word"
 
 # Macros
 
@@ -175,9 +188,66 @@ of the loaded file (e.g., a .py file will load the Eldoc python mode).
 To show documentation about currently set mode we can do:
 M-x describe-mode
 
+# Windows resize
+
+C-x ^ makes the current window taller ('enlarge-window')
+C-x } makes it wider ('enlarge-window-horizontally')
+C-x { makes it narrower ('shrink-window-horizontally')
+
+we can also do it faster by doing:
+
+C-u 20 C-x }
+C-u 20 C-x {
+C-u 20 C-x ^
+
+Or if we use DoReMi then just hit 'C-x t w'.
+
 
 # Implementing Custom Command Interpreter Interactions
 
 This can be easily achieved by combining:
 - comint (to open the custom process interpreter)
 - isend-mode (to send lines to other buffers)
+
+
+# Emacs Common Applications
+
+- ERC       -> IRC Client
+- calendar  -> a calendar
+- eww       -> a web browser
+- calc      -> a calculator
+
+
+# Bookmarks
+
+C-x r m bookmarkname RET  ;; create a bookmark
+C-x r l                   ;; list bookmark
+C-x r b bookmarkname RET  ;; jump to bookmark
+
+# Emacs client-server architecture
+
+Generally Emacs users keep long-running emacs sessions, hence
+it may be useful to use it also for quick edits without launching
+an entire new session of Emacs, this is certainly doable.
+
+We can activate the Emacs server from a running instance by doing:
+
+M-x server-start
+
+now to perform quick edits we can just do:
+
+emacsclient -n file1.txt file2.org
+
+We should also set our $EDITOR variable to "emacsclient".
+
+We can also automatically start the server mode by adding within
+the configuration:
+(server-start)
+
+# Ibuffer Notes
+We can create a new group by marking interesting files "m", then
+pressing "t" to select the opposite files and "k" to hide them.
+At this point we should have only the list of files we are interested
+in. We can make a dummy filter by doing "/ . RET" and then "/ g".
+
+This creates the new named group.
