@@ -1,0 +1,4 @@
+# phrack - hacking magazine
+
+# Download all phrack articles
+wget --no-clobber -A txt,tgz -m -p -E -k -K -np http://www.phrack.org/archives/

@@ -1,0 +1,55 @@
+# Hashmaps
+Hashmaps (also called hashtables) represent a very common data structure
+used nowadays in most programming languages.
+
+They are flexible and performant.
+
+They basically work in this way.  When we declare a hash table, an array
+of fixed size is allocated, let's say of 100 elements.
+
+Whenever we insert something into the hash table, what happens is:
+- The key gets converted to a hash
+- The hash has to be mapped into the array of n elements (in our case
+  at the moment n is equal to 100)
+- The value is stored
+
+Note that, of course we can have two types of collisions:
+1. A hash function collision (when the hash function is bad and creates
+   two equal hashcodes from different keys)
+2. An index collision, when our two different hashcodes belong to the
+   same array index
+
+For solving the first type of collision we should use a strong hash
+function.
+
+For solving the second type of collision there are different solutions,
+a common solution is called "chaining", where basically each element of
+the array is a linked list, and hence if we are searching for an element,
+once we end up in the correct "bucket" (i.e., the correct array element)
+we search for the key in the linked list.
+
+Notice that hashmaps may follow also different strategies for what
+concerns the grow/shrink strategy of the array.  Indeed whenever we have
+hashmaps with more and more values, it has to reallocate the array size
+to be able to fit all the keys/values.
+
+# Complexity and performance
+
+We can say in general that performance of hashmaps depend on the implementation,
+anyway good implemented hashmaps (e.g., robust hash function and good strategy
+for grow/shrink) have constant time complexity O(1).
+
+A bad designed hashmap may reach a linear time complexity O(n)
+
+# Note on hash functions
+
+Note that hash functionsa re used to extract a number from a string, this
+in a very simple way to explain the concept is similar to summing all
+ascii values of a sequence of characters. As you may notice from "hello"
+we could get (1004) (this is an example and not the correct number),
+and we use this number to then find the index in the array 1004 %
+n where n is the size of the array.
+In this context we can observe how hash functions are one way only,
+we can get from a string to a number but from the same number we may
+not know what was the origin.
+

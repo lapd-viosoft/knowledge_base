@@ -1,0 +1,13 @@
+# leiningen
+
+# Create a new application
+lein new app $appname
+
+# Run Application (once inside the project directory)
+lein run
+
+# Create JAR file
+lein uberjar
+
+# Launch a REPL
+lein repl

@@ -12,6 +12,9 @@ nmap <target>
 # Advanced target scan
 nmap -sC -sV <target> -oA report
 
+# UDP Scan (UDP enumeration is slow, 100 ports are enough generally)
+nmap -sU -sV --top-ports 100 <target>
+
 # Advanced target scan with OS detection
 ## -A is equivalent to -sC -sV -O --traceroute
 nmap -A <target> -oA report
@@ -167,3 +170,4 @@ searchsploit --nmap nmap_scan.xml
 
 # Port Knocking with nmap
 for x in 7000 8000 9000; do nmap -Pn --host-timeout 201 --max-retries 0 -p $x 1.1.1.1; done
+
