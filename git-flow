@@ -1,0 +1,33 @@
+# git-flow
+# Reference: https://nvie.com/posts/a-successful-git-branching-model/
+
+# Initialize
+git flow init
+
+# Start a new feature called MYFEATURE (develop->feature/myfeature)
+git flow feature start MYFEATURE
+
+# Finish up a feature (feature->develop)
+git flow feature finish MYFEATURE
+
+# Publish a feature (local ---> remote)
+git flow feature publish myfeature
+
+# Getting a published feature (remote ---> local)
+git flow feature publish myfeature
+
+# Start a release
+git flow release start RELEASE [BASE]
+
+# Publish release 
+git flow release publish RELEASE
+
+# Finish up a release (release->develop, release->master)
+git flow release finish RELEASE
+git push origin --tags
+
+# Start a hotfix (master->hotfix/myfix)
+git flow hotfix start VERSION [BASENAME]
+
+# Finish a hotfix (hotfix/myfix->master, hotfix/myfix->develop)
+git flow hotfix finish VERSION

@@ -1,0 +1,101 @@
+# pytest
+
+# Commands
+
+# Execute all tests
+pytest      ;; inside project directory
+
+# Execute tests related to a single module
+py.test test_sample1.py
+
+# Preamble
+import pytest
+
+
+# Simple Tests
+def test_true():
+    """Test if True is truthy."""
+    assert True
+
+
+def test_false():
+    """Test if False is falsey."""
+    assert not False
+
+def test_strings():
+    """ Test strings matching with regex. """
+    value = "111.111.111.111"
+    assert re.match(r'\d+\.\d+\.\d+\.\d+', value)
+    assert not re.match(r'(^192\.168\.)|(^10\.)|(^172\.)', value)
+
+
+
+# Test with fixtures (do something before a test)
+Fixtures are used when we want to run some code before every test
+method. So instead of repeating the same code in every test we define
+fixtures. Usually, fixtures are used to initialize database connections,
+pass the base , etc...
+
+@pytest.fixture
+def user():
+    return {
+        'name': 'John Snow',
+        'email': 'john@snow.wes'
+    }
+
+def test_do_something(user):
+    assert user['name'] == 'John Snow'
+
+def test_do_something_else(user):
+    assert user['name'] == 'John Snow'
+
+# Parametrize Example (test with a lot of stuff easily)
+def is_even(input):
+    if input % 2 == 0:
+        return True
+    return False
+
+@pytest.mark.parametrize("input,expected", [
+    (2, True),
+    (3, False),
+    (11, False),
+])
+
+def test_is_even(input, expected):
+    assert is_even(input) == expected
+
+
+# Run a subset of entire test
+To run a subset of all tests we have two options:
+- Use string matching
+- Use markers
+
+## Run tests using string matching
+To run all tests for methods containing the string "method1"
+it is as simple as:
+py.test -k method1 -v
+
+## Run tests using markers
+Markers are useful to mark (associate) tests with symbolic
+names so that we can test functions selectively.
+
+
+    import pytest
+    @pytest.mark.set1
+    def test_file1_method1():
+        x=5
+        y=6
+        assert x+1 == y,"test failed"
+        assert x == y,"test failed because x=" + str(x) + " y=" + str(y)
+
+    @pytest.mark.set2
+    def test_file1_method2():
+        x=5
+        y=6
+        assert x+1 == y,"test failed"
+
+Then, from the command line we can do:
+py.test -m set1 ;; this will run test_file1_method1
+or 
+py.test -m set2 ;; this will run test_file1_method2
+
