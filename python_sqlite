@@ -1,0 +1,126 @@
+# python sqlite
+
+# Few rules to follow
+1. Remember to commit anytime a write to the DB is done
+    (e.g., INSERT, DELETE, UPDATE, REPLACE)
+2. No need to commit() after SELECT
+
+
+# Create DB connection
+def create_connection(db_file):
+    """
+    Create a database connection to the SQLite database
+    specified by db_file
+
+    Arguments:
+    db_file         -  database file
+
+    Returns:
+    An sqlite3 connection object or None in case of error
+    """
+    conn = None
+    try:
+        conn = sqlite3.connect(db_file)
+        return conn
+    except Exception as err:
+        print("Connection Failed: {error}".format(error=err))
+
+    return conn
+
+conn = create_connection("/path/to/mydatabase.db")
+
+# Create a Table
+def create_table(conn, create_table_sql):
+    """
+    Create a table from the create_table_sql statement
+    or show an error message in case of failure
+
+    Arguments:
+    conn              - Connection object
+    create_table_sql  - A 'CREATE TABLE' statement
+    """
+    try:
+        cursor = conn.cursor()
+        cursor.executescript(create_table_sql)
+    except Exception as err:
+        print("Table Creation Failed: {error}".format(error=err))
+
+sql_create_script = """CREATE TABLE IF NOT EXISTS artifacts (
+                            id integer PRIMARY KEY,
+                            name text NOT NULL,
+                            category text NOT NULL,
+                            path text NOT NULL,
+                            tags text,
+                            status text,
+                            author text);
+                       CREATE TABLE IF NOT EXISTS tags (
+                            artifact_id integer,
+                            tag text,
+                            FOREIGN KEY(artifact_id)
+                                REFERENCES artifacts(id));
+                    """
+create_table(conn, sql_create_script)
+
+# Perform a query
+def get_artifacts_by_name(conn, query_string="", is_strict=False):
+    """
+    Returns artifacts matching the string to search,
+    if the string is empty, it will retrieve all artifacts
+
+    Arguments:
+    conn                - the sqlite3 Connection object
+    query_string        - the string to match in the database
+    is_strict           - if True, the pattern matching is
+                          on exact strings
+
+    Returns:
+    a list of the artifacts matching the provided string that
+    have been found
+    """
+    if not is_strict:
+        query_string = "%" + query_string + "%"
+    cur = conn.cursor()
+        sql_query = """
+        SELECT *
+        FROM artifacts
+        WHERE name LIKE ?
+        COLLATE NOCASE
+        """
+    cur.execute(sql_query, [query_string])
+    rows = cur.fetchall()
+    return rows
+
+# Check if an entry already exists
+def signup(conn):
+    email = request.form['email']
+    username = request.form['user']
+    password = request.form['password']
+
+    # Create cursor object
+    cur = conn.cursor()
+
+    # run a select query against the table to see if any record exists
+    # that has the email or username
+    cur.execute("""SELECT email,username
+                   FROM users
+                   WHERE email=?
+                       OR username=?""",
+                (email, username))
+
+    # Fetch one result from the query because it
+    # doesn't matter how many records are returned.
+    # If it returns just one result, then you know
+    # that a record already exists in the table.
+    # If no results are pulled from the query, then
+    # fetchone will return None.
+    result = cur.fetchone()
+
+    if result:
+        # Record already exists
+        # Do something that tells the user that email/user handle already exists
+    else:
+        cur.execute("INSERT INTO users VALUES (?, ?, ?)", (email, username, password))
+        conn.commit()
+
+
+
