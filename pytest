@@ -5,6 +5,12 @@
 # Execute all tests
 pytest      ;; inside project directory
 
+# Execute all tests and show all details (e.g., tested functions)
+pytest -v
+
+# Execute all tests and show more details 
+pytest -vv
+
 # Execute tests related to a single module
 pytest test_sample1.py
 

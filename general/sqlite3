@@ -1,6 +1,7 @@
 # sqlite3
 # Note that commands can be provided either within double quotes
 # or interactively from an sqlite shell
+# in sqlite each file corresponds to a single database
 
 # To create database and launch interactive shell on an sqlite database
 sqlite3 <database>
