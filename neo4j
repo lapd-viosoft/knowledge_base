@@ -385,7 +385,7 @@ CREATE (actor)-[:PLAYED {role:csvLine.role}]->(movie) # here the role is a prope
 # Delete all nodes from a neo4j DB
 MATCH (n) DETACH DELETE n;
 or
-rm -rf data/graph.db
+rm -rf data/graph.db ;; and restart the database
 
 
 # Find all movies related to tom hanks and print title and relationship type:

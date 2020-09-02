@@ -1,0 +1,17 @@
+# redshift
+#
+# redshift sets colors according to Temperature values,
+# as it happens with lamps. The value must be between 1000K and 25000K.
+
+# Remember that when setting colors manually we must be sure that
+# no redshift application is running (e.g., redshift-gtk)
+
+# Manually set colors to the specified temperature color
+redshift -P -O 2700k    ;; 2700k is a sort of night mode
+
+# Reset settings
+redshift -x
+
+# Automatically manage color shifting
+redshift-gtk
+

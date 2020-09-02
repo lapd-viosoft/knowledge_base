@@ -1,0 +1,41 @@
+# Design Patterns
+
+A design pattern is a typical solution to commonly occurring
+problems in software design. They are like pre-made blueprints
+that we can customize to solve a recurring design problem in code.
+
+A pattern generally consists of:
+
+- An Intent: describing both the problem and the solution;
+- A  Motivation: explaining the problem and the soolution the pattern makes possible;
+- A  Structure: of classes showing each part of the pattern and how they are related;
+- A  Code Example: to grasp the idea behind the pattern;
+
+
+Design patterns differ by their complexity, level of detail
+and scale of applicability to the entire system being designed.
+We can make an analogy with road construction, we can make
+an intersection safer by either installing some traffic lights
+or building an entire multi-level interchange with underground
+passages for pedestrians.
+
+The most basic and low-level patterns are often called "idioms"
+and they usually apply only to a single programming language.
+
+On the other end, the most universal and high-level patterns
+are the "architectural patterns". These patterns can be
+implemented virtually in any language. These are used to
+design the architecture of an entire application.
+
+Design Patterns can be categorized into three main groups:
+- Creational Patterns:
+    provide object creation mechanisms that increase flexibility
+    and reuse of existing code;
+- Structural Patterns:
+    explain how to assemble objects and classes into larger structures,
+    while keeping the structures flexible and efficient;
+- Behavioral Patterns:
+    take care of effective communication and the assignment of
+    responsibilities between objects;
+
+

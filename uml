@@ -1,0 +1,60 @@
+# Class Diagrams
+
+- Each class has a name, a state and a behavior
+  In a class + means public, while - means private.
+
+- Interfaces are like class but only have methods
+  and generally have an "<<Interface>>" indicator on them
+  or an "<<I>>".
+
+- Abstract classes look like classes but have their name and
+  the name of the abstract methods written in italic.
+
+- UML Comments are simple rectangles with a missing edge
+  and they generally explain implementation details of the
+  given classes or methods
+
+
+# Arrows
+
+- Empty triangle continuous lines mean inheritance, and go from subclasses
+  to superclasses... hence Dog ---|> Animal
+
+- Empty triangle dashed lines mean implementing an inteface, and go from
+  concrete classes implementing the behavior to the interface
+  Airplace ---|> FlyingTransport
+
+(Association)
+- Simple continuous arrows indicate that one class uses or interacts with another class
+  so if a class (e.g., Airport) expects an object
+  implementing a certain interface (e.g., FlyingTransport) we would have
+  Airport ---> FlyingTransport
+  
+  - Association can represent a field in a class
+
+(Dependency)
+- Simple Dashed arrows indicate a dependency association that usually implies that
+  there is no permanent link between objects.
+
+  - Dependency typically implies that an object accepts another object as
+    a method parameter, instantiates or uses another object.
+We can spot dependencies between two classes if changes to the definition
+of one class result in modifications in another class.
+e.g., Profefssor ---> Salary
+
+(Composition)
+- Simple continuous arrow with a filled diamond on the other edge represents
+  composition which is a "whole-part" relationship between two objects.
+  One of which is composed of one or more instances of the other.
+  The distinction between thiss relation and others is that
+  the component can only exist as a part of the container.
+  University <>---> Department
+
+(Aggregation)
+- Simple continuous arrow with a blank diamond on the other edge represents
+  aggregation which is a less strict variant of composition,
+  where one object merely contains a reference to another.
+  The container does not control the life cycle of the component.
+  The commponent can exist without the container and can be linked to
+  several containers at the same time.
+

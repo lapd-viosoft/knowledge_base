@@ -1,0 +1,5 @@
+# avahi zeroconf
+
+# TODO !!! CHECK NETWORK NOTES FOR THIS CHEATSHEET
+# Obtain a link local IP
+avahi-autoipd -D
