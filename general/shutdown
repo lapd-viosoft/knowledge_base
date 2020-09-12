@@ -4,6 +4,9 @@ shutdown -r now
 # To shut system down immediately
 shutdown -h now
 
+# To shut system down in 120 minutes
+shutdown -h +120
+
 # To reboot system after 5 minutes
 shutdown -r +5
 

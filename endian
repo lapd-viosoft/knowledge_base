@@ -1,15 +1,45 @@
 # endian-ness
-# Historically, various methods of endianness have been used in computing,
-# including exotic forms such as middle-endianness. Today, however, big-endianness
-# is the dominant ordering in networking protocols (IP, TCP, UDP). Conversely,
-# little-endianness is the dominant ordering for processor architectures (x86,
-# most ARM implementations) and their associated memory. File formats can use
-# either ordering; some formats use a mixture of both. 
 
-# The sequence of byte '0a 0b 0c 0d' becomes:
-# - big    endian: '0a 0b 0c 0d'
-# - little endian: '0d 0c 0b 0a'
-# - middle endian: '0b 0a 0d 0c'
+# A bit of theory
+Endian-ness of a system determines how bytes stored or arriving at a
+computer should be read.  The two main kinds of endian-ness are:
+- Big Endian    (also known as "network byte order"):
+    Mostly used by most (but not all) network protocols
+    (e.g., IP, TCP, UDP)
+- Little Endian:
+    Mostly used by most (but not all) CPUs and associated memory.
+
+File formats can use any order, also a mixture of both.
+
+Historically, various methods of endianness have been used in computing,
+including exotic forms such as middle-endianness. Today, however, big-endianness
+is the dominant ordering in many networking protocols (IP, TCP, UDP). Conversely,
+little-endianness is the dominant ordering for processor architectures (x86,
+most ARM implementations) and their associated memory.
+
+
+As an example, the sequence of bytes '0a 0b 0c 0d' becomes:
+- big    endian: '0a 0b 0c 0d'
+- little endian: '0d 0c 0b 0a'
+- middle endian: '0b 0a 0d 0c'
+
+Note that when interpreting a binary sequence, e.g., a network protocol
+being little endian does not mean we should reverse the entire sequence
+of bytes in a packet, but we should reverse part by part. For example
+let's say that a specific network protocol is using little endian
+and the following sequence of bytes should be sent:
+
+    0a 0b       0c 0d
+    field1      field2
+
+In this case in order to convert these two fields in little endian
+we would get:
+
+    0b 0a       0d 0c
+    field1      field2
+
+An example of network protocol using little endian is SMB and other
+Microsoft protocols.
 
 # To check out byteorder on GNU/Linux
 lscpu | grep -i order

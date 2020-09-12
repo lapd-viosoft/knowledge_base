@@ -1,0 +1,27 @@
+# setxkbmap
+# consider installing ibus and launching ibus-daemon
+# for a graphical GUI tray icon to easily switch languages
+
+# Get current keyboard configuration
+setxkbmap -query
+
+# Set a keyboard layout
+setxkbmap it   ;; in this case it will be set to italian
+
+# Get the list of available languages
+localectl list-x11-keymap-layouts
+or
+ls -al /usr/share/X11/xkb/symbols
+or
+grep -rinH alts_toggle /usr/share/X11/xkb
+or
+less /usr/share/X11/xkb/rules/xorg.xml
+
+# Get variants for a specific layout
+localectl list-x11-keymap-variants de
+
+# Get all layout switching options
+localectl list-x11-keymap-options | grep grp:
+
+# List all keyboard shortcuts for switching language
+grep 'grp:' /usr/share/X11/xkb/rules/base.lst

@@ -1,0 +1,27 @@
+# Python conversion bytes <-> strings
+
+Since Python 3.5 this is finally no longer awkward:
+
+
+# Bytes to UTF-8 String
+b'\xde\xad\xbe\xef'.decode('utf-8')
+
+
+# Bytes to Hex String
+b'\xde\xad\xbe\xef'.hex()
+'deadbeef'
+
+and reverse:
+
+# Hex String to Bytes
+bytes.fromhex('deadbeef')
+b'\xde\xad\xbe\xef'
+
+# Bytes (Big-Endian) to Integer
+int.from_bytes(b'y\xcc\xa6\xbb', byteorder='big')
+2043455163
+
+# Bytes (Little-Endian) to Integer
+int.from_bytes(b'y\xcc\xa6\xbb', byteorder='little')
+2043455163
+

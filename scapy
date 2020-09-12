@@ -1,4 +1,8 @@
 # scapy
+# scapy is cool and works flawlessly
+# If you ever think about using pyshark, as of september 2020 don't!
+# pyshark, although supporting a lot of protocols, has a lot of bugs.
+
 
 ## Getting Help
 
@@ -22,6 +26,7 @@ conf
 
 # Show help about a command
 help(<command_name>)
+
 
 ## Sniff Packets
 
@@ -51,6 +56,7 @@ packet[TCP].show()
 # We can also view packets by opening wireshark
 pkts = sniff(filter="tcp or arp", count=20)
 wireshark(pkts)
+
 
 ## Generating a packet
 
@@ -112,6 +118,21 @@ dir()
 
 # Read a PCAP file
 packets = rdpcap('capture_file.pcapng')
+
+# Get layers of a specific packet
+pkt = packets[0]
+pkt.layers()
+
+# Check if a packet contains a specific layer
+if IP in pkt:
+    ...
+elif IPv6 in pkt:
+    ...
+;; or
+if pkt.haslayer(IP):
+    ...
+elif pkt.haslayer(IPv6):
+    ...
 
 # Save a PCAP file
 wrpcap("temp.cap", pkts)

@@ -1,0 +1,24 @@
+# python random module
+
+# random is a standard library module, useful to:
+- deal with random samples;
+- picking up random elements from sequences;
+- generate random numbers
+
+# Pick a random element from a sequence
+seq = [1,2,3,4,5, "a", "b", "c"]
+random.choice(seq)
+"b"
+
+# Pick a random element from a sequence and assign weights
+seq = [1,2,3,4,5]
+random.choices(seq, [0.01,0.01,0.01,0.01,0.96])
+5
+
+# Pick k random elements from a sequence and assign weights
+seq = [1,2,3,4,5]
+random.choices(seq, [0.01,0.01,0.01,0.01,0.96], k=3)
+5 5 5
+
+
+

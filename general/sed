@@ -60,6 +60,10 @@ sed '/happily ever after/a\The end.'
 # Apply sed substitution on all files found with find
 find . -iname "cloud_config*.yaml" -exec sed -i.baktwo 's/\[DS1, 0.05\]/[DS1, 0.005]/g' {} +
 
+# Apply sed substitution on all files found with grep -lnir (or other commands)
+grep -lnir "String to search" dir | xargs sed -i "s/String to search/gnc/g"
+
 # Remove lines containing one string from a list
 list_of_str='note|address|isbn|copyright|month|issn|file|shorttitle|abstract|doi|url|language|file|keywords'
 sed -E "/(\s)?($list_of_str)/d" file.txt > cleaned_file.txt
+

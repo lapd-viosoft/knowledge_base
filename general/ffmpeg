@@ -71,7 +71,6 @@ ffmpeg -i input.mp4 -vf "setpts=4*PTS" output.mp4   ;; decrease speed with n > 1
 # Increase/decrease Audio playback speed
 ffmpeg -i input.mp4 -filter:a "atempo=2.0" -vn output.mp4 ;; increase speed with n > 1
 
-
 # To convert video from .foo to .bar
 # -g : GOP, for searchability
 ffmpeg -i input.foo -vcodec bar -acodec baz -b:v 21000k -b:a 320k -g 150 -threads 4 output.bar
@@ -88,4 +87,3 @@ ffmpeg -i video.ext -i audio.ext -c:v copy -c:a copy output.ext
 # -t  : seconds to cut
 # -autoexit : closes ffplay as soon as the audio finishes
 ffmpeg -ss 00:34:24.85 -t 10 -i path/to/file.mp4 -f mp3 pipe:play | ffplay -i pipe:play -autoexit
-

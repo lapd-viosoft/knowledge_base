@@ -1,0 +1,114 @@
+# ldapsearch
+# We can retrieve data from an LDAP instance by using ldapsearch
+# Note that we generally need to be authenticated
+# although sometimes non-authenticated queries are allowed.
+# Note: if you get “Size Limit Exceeded”, add the paging option:-E pr=1000/noprompt
+# Common options:
+# -x simple authentication
+# -b forest/domain provided as distinguished name
+# -s search base
+# -H ldap host, that can be an ldap://IP, or an ldap://hostname (if DNS is configured correctly)
+# -h ldap server IP, this can be provided as alternative to -H, where we can set -h <ip> without "ldap://"
+# -D specify username@domain 
+# -w specify password, -w "Winter2020"
+# -W prompt for credentials after command, as an alternative to "-w"
+
+# ldapsearch general syntax
+ldapsearch <bind options> -b <base to search from> <search filter> <attributes>
+
+# Convert LDAP dates to human dates
+In all ldapsearch commands we may see timestamps in the LDAP format,
+we can convert them to a human readable form with:
+date -d "1970-01-01 $((($lastLogon/10000000)-11676009600)) sec GMT"
+
+# Get everything
+ldapsearch -x -b "dc=domainname,dc=com" -H ldap://192.168.178.29
+
+# Get domain metadata
+ldapsearch -LLL -x -H ldap://pdc01.lab.ropnop.com -b '' -s base '(objectclass=*)'
+
+# List all the domains of a forest
+ldapsearch -x -b "cn=Partitions,cn=Configuration,dc=nicodomain,dc=prv"\
+    -D "administrator@nicodomain.prv" -h 192.168.1.70 -W "NETBIOSName=*"
+
+# List all the Domain Controllers in a domain
+ldapsearch -x -b "OU=Domain Controllers,DC=NICODOMAIN,DC=PRV"\
+    -D "administrator@nicodomain.prv" -h 192.168.1.71 -W\
+    "objectClass=Computer"
+
+# List all the computers in a domain
+ldapsearch -x -b "dc=nicodomain,dc=prv" -D "administrator@nicodomain.prv"\
+    -h 192.168.1.70 -W "ObjectClass=Computer"
+
+# List all the unconstrained delegation computers in a domain
+ldapsearch -x -b "dc=nicodomain,dc=prv" -D "administrator@nicodomain.prv" \
+    -h 192.168.1.70 -W \
+    "(&(objectCategory=computer)(objectClass=computer)(userAccountControl:1.2.840.113556.1.4.803:=524288))"
+
+# List all the users (accounts) in a domain
+ldapsearch -x -b "dc=nicodomain,dc=prv" -D "administrator@nicodomain.prv" \
+    -h 192.168.1.70 -W "(&(objectCategory=person)(objectClass=user))"
+
+# List all the unconstrained delegation users in a domain
+ldapsearch -x -b "dc=nicodomain,dc=prv" -D "administrator@nicodomain.prv" \
+    -h 192.168.1.70 -W \
+    "(&(&(objectCategory=person)(objectClass=user))(userAccountControl:1.2.840.113556.1.4.803:=524288))"
+
+# List all the kerberoastable accounts in a domain
+ldapsearch -x -b "dc=nicodomain,dc=prv" -D "administrator@nicodomain.prv" \
+    -h 192.168.1.70 -W \
+    "(&(&(servicePrincipalName=*)(UserAccountControl:1.2.840.113556.1.4.803:=512))(!(UserAccountControl:1.2.840.113556.1.4.803:=2)))"
+
+# List all the groups in a domain
+ldapsearch -x -b "dc=nicodomain,dc=prv" -D "administrator@nicodomain.prv" \
+    -h 192.168.1.70 -W "objectClass=Group"
+
+# List all the Organizational Units (OU) in a domain
+ldapsearch -x -b "dc=nicodomain,dc=prv" -D "administrator@nicodomain.prv" \
+    -h 192.168.1.70 -W "objectClass=OrganizationalUnit"
+
+# List all Group Policies (GPO) in a domain
+ldapsearch-LLL -x -H ldap://pdc01.lab.ropnop.com -D "joe@lab.domain.com" -w Summer2017 \
+    -b dc=lab,dc=ropnop,dc=com "objectClass=groupPolicyContainer"
+
+
+## Same queries but only containing interesting fields/columns
+
+# Get users
+ldapsearch-LLL -x -H ldap://pdc01.lab.example.com -D "user1@lab.example.com" -w Winter2020 \
+    -b dc=lab,dc=example,dc=com "(objectClass=user)" \
+    sAMAccountName userPrincipalName memberOf | tee domain_users.lst
+
+# Get Groups
+ldapsearch-LLL -x -H ldap://pdc01.lab.example.com -D "user1@lab.example.com" -w Winter2020 \
+    -b dc=lab,dc=example,dc=com "(objectClass=group)" \
+    sAMAccountName member memberOf| tee domain_groups.lst
+
+# Get Computers
+ldapsearch-LLL -x -H ldap://pdc01.lab.example.com -D "user1@lab.example.com" -w Winter2020 \
+    -b dc=lab,dc=example,dc=com "(objectClass=computer)" \
+    name dNSHostname operatingSystem operatingSystemVersion \
+    lastLogonTimestamp servicePrincipalName | tee domain_computers.lst
+
+
+
+# Find SPNs (for Kerberoasting)
+ldapsearch-LLL -x -H ldap://pdc01.lab.domain.com -D "joe@lab.domain.com" -W \
+    -b "dc=lab,dc=domain,dc=com“ \
+    "(&(&(servicePrincipalName=*)(UserAccountControl:1.2.840.113556.1.4.803:=512))(!(UserAccountControl:1.2.840.113556.1.4.803:=2)))"
+
+# Find users and computers with unconstrained delegation
+ldapsearch-LLL -x -H ldap://pdc01.lab.domain.com -D "joe@lab.domain.com" -W -b \
+    "dc=lab,dc=domain,dc=com" "(&((objectCategory=person)(objectClass=user))(userAccountControl:1.2.840.113556.1.4.803:=524288))"
+
+ldapsearch-LLL -x -H ldap://pdc01.lab.domain.com -D "joe@lab.domain.com" -W -b \
+    "dc=lab,dc=domain,dc=com" "(&(objectCategory=computer)(objectClass=computer)(userAccountControl:1.2.840.113556.1.4.803:=524288))"
+
+# Find Computers with Protocol Transition
+ldapsearch-LLL -x -H ldap://pdc01.lab.domain.com -D "joe@lab.domain.com" -W -b \
+    "dc=lab,dc=domain,dc=com" \
+    "(&(objectCategory=computer)(objectClass=computer)(userAccountControl:1.2.840.113556.1.4.803:=16777216))"
+
+# Find GPO names and Locations
+ldapsearch-LLL -x -H ldap://pdc01.lab.domain.com -D "joe@lab.domain.com" -w Summer2017 \
+    -b dc=lab,dc=ropnop,dc=com "objectClass=groupPolicyContainer" displayNamegPCFileSysPath
