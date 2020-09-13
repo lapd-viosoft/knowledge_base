@@ -1,0 +1,1 @@
+var ezTOC={"smooth_scroll":"1","visibility_hide_by_default":"","width":"auto","scroll_offset":"30"};

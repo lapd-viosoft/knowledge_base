@@ -1,0 +1,10 @@
+# pyinstaller
+# Remember to update both setuptools and pyinstaller 
+# pip install --upgrade setuptools
+# pip install --upgrade pyinstaller
+
+# Convert python script to executable
+pyinstaller script.py --onefile
+
+# Convert python module to executable
+pyinstaller --paths path/to-module kb/__main__.py --onefile
