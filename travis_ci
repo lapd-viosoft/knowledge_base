@@ -1,0 +1,27 @@
+# Travis CI
+
+NOTE: As of 2020 there are two travis-ci, one is travis-ci.org
+whose end is planned to be on the end of 2020 and travis-ci.com.
+To add a repository to travis-ci.com we should first enable
+https://travis-ci.com/account/repositories
+and click on "Manage Repositories"
+at this point from github we should select the repositories we
+want to run within travis-ci.
+
+To go to a specific travis CI page corresponding to a github repo
+we can go to the URL:
+https://travis-ci.com/github/<githubuser>/<repo_name>
+
+Once our account is activated we should also go to the project
+settings in travis CI to set the github token.
+
+Settings on Travis CI are generally found at:
+https://travis-ci.com/<user_name>/<repo_name>/settings
+
+We'll use the variable name RELEASE_TOKEN. To get our value, we need to go
+to GitHub and add a new token, here: https://github.com/settings/tokens
+This will need to just have Repo scope, and doesn't require anything
+further. Copy the key provided into the "VALUE" field in Travis. Make
+sure you keep "DISPLAY VALUE IN BUILD LOG" unticked to keep the value
+out of your logs, and thus not visible to anyone else.
+
