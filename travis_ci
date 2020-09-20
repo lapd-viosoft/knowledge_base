@@ -25,3 +25,95 @@ further. Copy the key provided into the "VALUE" field in Travis. Make
 sure you keep "DISPLAY VALUE IN BUILD LOG" unticked to keep the value
 out of your logs, and thus not visible to anyone else.
 
+## Example CI for cross-platform deployment
+
+I found this travis-CI settings quite useful to have a cross-platform
+deployment whenever a new tag is pushed, and tests running for each
+pushed commit.
+
+I generally have the classic ".travis.yml" and an additional
+".travis/" directory which contains installation and deployment
+scripts for building standalone executables.
+
+```travis-ci
+language: python # this works for Linux but is an error on macOS or Windows
+matrix:
+  include:
+    - name: "Python on Linux"
+      python: 3.8           
+    - name: "Python 3.7 on macOS"
+      os: osx
+      osx_image: xcode11    # Python 3.7.2 running on macOS 10.14.3
+      language: shell       # 'language: python' is an error on Travis CI macOS
+      # python: 3.7         # 'python:' is ignored on Travis CI macOS
+      before_install: python3 --version ; pip3 --version ; sw_vers
+    - name: "Python 3.7 on Windows"
+      os: windows           # Windows 10.0.17134 N/A Build 17134
+      language: shell       # 'language: python' is an error on Travis CI Windows
+      # python: 3.7         # 'python:' is ignored on Travis CI Windows
+      env:  PATH=/c/Python37:/c/Python37/Scripts:$PATH
+      before_install:
+        - choco install python  --version 3.7 # this install takes at least 1 min 30 sec
+        - python --version
+        - python -m pip install --upgrade pip
+
+install:
+  - ./.travis/install.sh
+
+script:
+  - bash -c echo "Tests must go here" # here pytest should go (or any testing program)
+
+before_deploy:
+  - ./.travis/build_binaries.sh
+
+deploy:
+  provider: releases
+  api_key: $RELEASE_TOKEN
+  file_glob: true
+  file: 
+    - dist/kb_*
+  skip_cleanup: true
+  on:
+    tags: true
+  name: $TRAVIS_TAG
+```
+
+The scripts used to install (install.sh) and deploy (build_binaries.sh).
+
+This is ./.travis/build_binaries.sh
+```sh
+#!/bin/bash
+
+if [ $TRAVIS_OS_NAME = 'osx' ]; then
+  pyinstaller --paths kb/ --onefile kb/__main__.py -n kb_${TRAVIS_TAG}_osx
+elif [ $TRAVIS_OS_NAME = 'windows' ]; then
+  pyinstaller --paths kb/ --onefile kb/__main__.py -n kb_${TRAVIS_TAG}_win
+else
+  pyinstaller --paths kb/ --onefile kb/__main__.py -n kb_${TRAVIS_TAG}_linux
+fi
+```
+
+This is ./.travis/install.sh
+```sh
+#!/bin/bash
+
+if [ $TRAVIS_OS_NAME = 'osx' ]; then
+    pip3 install --upgrade pip
+    pip3 install --upgrade setuptools
+    pip3 install -r requirements.txt
+    pip3 install .
+    pip3 install --upgrade pyinstaller
+elif [ $TRAVIS_OS_NAME = 'windows' ]; then
+    python -m pip install --upgrade pip
+    python -m pip install --upgrade setuptools
+    python -m pip install -r requirements.txt
+    python -m pip install .
+    python -m pip install --upgrade pyinstaller
+else
+    pip install --upgrade pip
+    pip install --upgrade setuptools
+    pip install -r requirements.txt
+    pip install .
+    pip install --upgrade pyinstaller
+fi
+```

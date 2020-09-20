@@ -7,4 +7,4 @@
 pyinstaller script.py --onefile
 
 # Convert python module to executable
-pyinstaller --paths path/to-module kb/__main__.py --onefile
+pyinstaller --paths pymodule/ --onefile pymodule/__main__.py -n exename
