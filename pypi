@@ -1,0 +1,12 @@
+# pypi
+# Steps for a python package publication
+#
+
+# First test your upload on test pypi
+
+python3 -m pip install --user --upgrade setuptools wheel ;; make sure you have the latest setuptools and wheel
+rm -rf dist/*
+python setup.py sdist bdist_wheel
+twine upload --repository testpypi dist/* --verbose
+
+

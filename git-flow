@@ -27,7 +27,13 @@ git flow release finish RELEASE
 git push origin --tags
 
 # Start a hotfix (master->hotfix/myfix)
-git flow hotfix start VERSION [BASENAME]
+git flow hotfix start VERSION [BASENAME] ;; note that BASENAME is optional
+e.,g
+git flow hotfix start v0.1.2-patch-refactoring ;; the VERSION will be the tag name
+;; so let it be a version name like `v0.1.49` or `v0.1.40-patch-user-input-in-delete`
 
 # Finish a hotfix (hotfix/myfix->master, hotfix/myfix->develop)
-git flow hotfix finish VERSION
+git flow hotfix finish VERSION           ;; here we have to use the same initial VERSION
+e.g.,
+git flow hotfix finish v0.1.2-patch-refactoring 
+;; the VERSION will be the same tag name used with hotfix start
