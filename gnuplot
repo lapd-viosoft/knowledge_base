@@ -1,4 +1,6 @@
 # gnuplot
+# Keep in mind https://github.com/gnebbia/gnuplot-cheat
+# or https://github.com/cirosantilli/gnuplot-cheat
 
 # Get help for a command
 help command 
