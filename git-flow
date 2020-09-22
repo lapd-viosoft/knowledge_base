@@ -18,12 +18,14 @@ git flow feature publish myfeature
 
 # Start a release
 git flow release start RELEASE [BASE]
+git flow release start v0.1.2
 
 # Publish release 
 git flow release publish RELEASE
 
 # Finish up a release (release->develop, release->master)
 git flow release finish RELEASE
+git flow release finish v0.1.2
 git push origin --tags
 
 # Start a hotfix (master->hotfix/myfix)
