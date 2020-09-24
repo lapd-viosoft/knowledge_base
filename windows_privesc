@@ -1,0 +1,12 @@
+# PowerShellMafia
+# https://morph3sec.com/Cheat-Sheets/Windows-Red-Team-Cheat-Sheet/
+# Use always dev branch others are shit.
+https://github.com/PowerShellMafia/PowerSploit/blob/dev/Recon/PowerView.ps1
+powershell.exe -c "Import-Module C:\Users\Public\PowerUp.ps1; Invoke-AllChecks"
+powershell.exe -c "Import-Module C:\Users\Public\Get-System.ps1; Get-System"
+
+# Sherlock
+https://github.com/rasta-mouse/Sherlock
+
+# Unquoted paths
+wmic service get name,displayname,pathname,startmode |findstr /i "Auto" |findstr /i /v "C:\Windows\\" |findstr /i /v 
