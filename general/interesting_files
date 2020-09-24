@@ -4,5 +4,5 @@ the File Inclusion intruder payloads of "PayloadsAllTheThings":
 [](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/File%20Inclusion/Intruders)
 
 or for windows, do:
-kb windows_interesting_files
+kbl windows_interesting_files
 

@@ -1,0 +1,18 @@
+# ping
+
+# To ping <host> with 15 packets
+ping -c 15 <host>
+
+# To ping <host> with 15 packets, one every .5 seconds
+ping -c 15 -i .5 <host>
+
+# To test if a packet size of 1500 bytes is supported (to check the MTU for example)
+ping -s 1500 -c 10 -M do <host>
+
+# IPv6 ping
+ping -6 <ipv6address>%<net_iface>
+ping -6 fa10::883b:e3fd:5dcc:c8b3%eth0
+
+# Ping Sweep
+for i in {1..254} ;do (ping -c 1 172.28.128.$i | grep "bytes from" &) ;done
+

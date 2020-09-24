@@ -1,0 +1,79 @@
+# ack
+## By default ack will ignore .git/ and .svn/ subdirectories
+## by default the pattern is the argument, but we can defer its
+## specification by using `--match <pattern>`
+
+# Search for pattern starting from path and its subpaths
+ack '<pattern>' <path>
+
+# Search for pattern using word boundaries
+ack '<pattern>' -w 
+
+# Search only in current directory without going into subdirs
+ack '<pattern>' -n
+
+# Search for pattern ignoring case
+ack '<pattern>' -i 
+
+# Search for the negation of 'pattern' like grep -v
+ack '<pattern>' -v 
+
+# Search for pattern but ignoring regexes, like fgrep
+ack -Q '<pattern>'
+ack -Q aa.bb.cc.dd /path/to/access.log
+
+# Search for pattern but ignore some directories
+ack '<pattern>' --ignore-dir env/ --ignore-dir dataset/
+
+# Search for pattern but ignore specific filetypes
+ack '<pattern>' --ignore-file=ext:pod,t,py,csv,tsc
+
+# Print files containing the pattern
+ack '<pattern>' -l 
+
+# Print files not containing the pattern
+ack '<pattern>' -L 
+
+# Print files which contain pattern2 AND pattern1 also on different lines
+ack -l pattern2 $(ack -l pattern1)
+
+
+# Search for file names having the specified pattern
+ack '<pattern>' -g 
+
+# Searches for files having in their name the pattern "log" and are of type ruby
+ack -g "log" --ruby
+
+# Searches for files having in their name the pattern "log" and are not of type ruby
+ack -g log --noruby
+
+# Show file types
+ack --help=types
+
+# Prints all files of type 'python'
+ack -f --python
+
+# Show filenames containing 'log' of type ruby
+ack -g 'log' --ruby
+
+# Show filenames containing 'log' of any type except ruby
+ack -g 'log' --noruby
+
+# Substitute a string in all perl source files
+perl -p -i -e's/this/that/g' $(ack -f --perl)
+or
+sed -i 's/oldstring/newstr/gI' $(ack -f --perl)
+
+# Princ current configuration
+ack --dump
+
+# Save current ack configuration
+ack --create-ackrc > .ackrc
+
+# Lists existing file types
+ack --help=types
+
+# Define a new type of file
+ack pattern --type-add=cpp:ext:cpp,cc,cxx,m,hpp,hh,h,hxx --cpp
+
+

@@ -1,0 +1,36 @@
+# jq
+## We can play with jq and json by using
+## this website to generate a random json:
+## https://www.json-generator.com/
+## and use this one to try jq filters:
+## https://jqplay.org/
+
+
+# To pretty print the json
+jq "." < filename.json
+or
+cat filename.json | python -m json.tool
+
+# To access the value at key "foo"
+jq '.foo'
+
+# To access first list item
+jq '.[0]'
+
+# To access the key "foo" of the first list item 
+jq '.[0].foo'
+
+# To select a subset of fields and assign different names to the first element
+jq '.[0] | {message: .picture, name: .name}'
+
+# To select a subset of fields for all elements (this creates a set of {} {})
+## see next to wrap all results in a list
+jq '.[] | {message: .commit.message, name: .commit.committer.name}'
+
+# To select a subset of fields for all elements (this creates a list of objects)
+jq '[.[] | {message: .commit.message, name: .commit.committer.name}]'
+
+# to slice and dice
+jq '.[2:4]'
+jq '.[:3]'
+jq '.[-2:]'

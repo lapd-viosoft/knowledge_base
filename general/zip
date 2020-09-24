@@ -1,0 +1,14 @@
+# zip
+# -r has to be used when creating zip with directories
+
+# To create zip file
+zip -r archive.zip file1 file2 dir1/ dir2/
+
+# To create zip file from directory
+zip -r archive.zip directory/
+
+# To create zip file with password
+zip -P password archive.zip file1
+
+# To to list, test and extract zip archives, see unzip
+cheat unzip
