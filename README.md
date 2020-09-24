@@ -2,6 +2,6 @@
 
 This is an organized repo of cheatsheets, the current categories are:
 - [general](general/)
-- [sectool](sectool/)
+- [tool](sectool/)
 - [pt](pt/)
 - [list](list/)
