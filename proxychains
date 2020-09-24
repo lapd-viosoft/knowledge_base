@@ -12,11 +12,11 @@
 https://www.proxynova.com/
 http://www.gatherproxy.com/sockslist
 
-# Sample config file if using Tor
-kbe proxychains_extra/torconf
+# Sample config file
+kbl -c config proxychains_sample
 
-# Sample config file if not using Tor
-kbe proxychains_extra/sampleconf
+# Sample config file if using Tor
+kbl -c config proxychains_tor
 
 # Add "proxychains" before commands to enable its service.
 proxychains curl example.com
