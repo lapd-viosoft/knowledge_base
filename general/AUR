@@ -1,0 +1,73 @@
+# AUR
+AUR is the Arch User Repository and is a community oriented repository
+for Arch and Arch-based distros.
+
+To create a package for AUR, we need two files:
+1. PKGBUILD, that is a description of how the file has to be downloaded,
+             built, installed and other metadata related to it
+2. .SRCINFO, contains the useful metadata for the AUR repository generated
+             from the PKGBUILD file
+             
+It is useful to check out other PKGBUILD or the official guide
+to understand what are the steps to perform when writing
+a PKGBUILD file.
+
+Once we have a PKGBUILD file we can generate our .SCRINFO by doing:
+
+    makepkg --printsrcinfo > .SRCINFO
+
+Once we have a PKGBUILD file we can try it by doing:
+
+    mkdir /tmp/mypkg/; mv PKGBUILD /tmp/mypkg; cd /tmp/mypkg
+    makepkg --syncdeps
+
+This built the package, then to install it we can do:
+
+    makepkg --install
+
+To clean up leftover files and folders we can do:
+
+    makepkg --clean
+
+
+## Packetize python projects
+A useful project I found to automatically build PKGBUILD
+from packages uploaded to pypi is:
+https://pypi.org/project/pip2pkgbuild/
+
+We can simply do:
+
+    pip2pkgbuild <name_of_the_existing_pypi_pkg> -p python -b <name_of_the_aur_pkg>
+
+This approach is fine, if we want to import into AUR a stable version
+of a package that is already present within the pypi.
+
+But in the case we want to build a git-synchronized package (e.g., nameofmypackage-git)
+we can build a PKGBUILD from the template of kb or pdlist.
+Indeed these ones need a dynamic version string to be able to keep up
+with git commits/push.
+
+
+## Upload to AUR
+
+Once we have uploaded an SSH public key on our AUR account
+we can:
+
+    git clone ssh://aur@aur.archlinux.org/<name-of-the-package>.git
+
+Don't worry if you think that you are cloning a non-existing
+repo, since it will be created as soon as you clone.
+
+Note that the name of the package can also be ending with -git
+if we are building it from a git repo (e.g., bleeding-edge version)
+
+    cd <name-of-the-package>
+    cp /path/to/PKGBUILD .
+    cp /path/to/.SRCINFO .
+    git add .
+    git commit -m "Initial push to AUR"
+    git push
+
+## Manual Writing of PKGBUILD
+
+cp /usr/share/pacman/PKGBUILD.proto .
