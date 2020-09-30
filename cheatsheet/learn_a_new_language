@@ -7,7 +7,7 @@ and add:
     come controllo se un file esiste
     come scrivo in un file ? come faccio append?
 
-2) come gestire gli argomenti e le opzioni command line, fondamentnale
+2) come gestire gli argomenti e le opzioni command line, fondamentale
 per me che faccio principalmente cose da riga di comando
 
 3) come si esplorano le librerie/moduli senza doc, cioe' come elenco tutti

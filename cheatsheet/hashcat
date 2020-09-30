@@ -5,3 +5,6 @@ hashcat64.exe -a 0 -m 0 example0.hash example.dict -r rules/best64.rule
 
 # Crack Net-NTLMv2 passwords
 hashcat -m 5600 passwd_ntlmv2.txt passwordlists/*
+
+# Crack JWT tokens
+hashcat -m 16500 hash.txt -a 3 -w 3 ?a?a?a?a?a?a

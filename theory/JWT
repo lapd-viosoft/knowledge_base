@@ -1,0 +1,146 @@
+# JWT
+JSON Web Tokens (JWT) are URL-safe means ofo representing claims to be
+transferred between two parties.  The claims (e.g., "I claim to be joe99
+or I claim to have authorization for accessing this resource") in a JWT
+are encoded as a JSON object that is used as the payload of a JSON Web
+Signature (JWS) structure or as the plaintext of a JSON Web Encryption
+(JWE) structure, enabling the claims to be digitally signed or integrity
+protected with a Message Authntication Code (MAC) and/or encrypted.
+
+So JWT is errounsly (but acceptable because it is common) referred
+to the entire token, but to be precise JWT are only a part of the
+entire token which is the JWS.
+So let's forget about this detail and refer to JWT as if it was
+the entire token as normal people does.
+
+They are actually documented in different RFCs:
+- RFC 7519 JWT (tokens)
+- RFC 7518 JWA (algorithms)
+- RFC 7515 JWS (signatures)
+- RFC 7516 JWE (encryption)
+
+NOTE: The correct pronunciation of JWT is "jot" by RFC.
+
+# Rationale
+JSON web tokens are quite popular since they use the JSON notation,
+which is popular on the web due to the ubiquitousness of javascript
+and also because they are used a lot for federated authentication and
+authorization also in API. So whenever a provider of a service does
+not want to implement authentication/authorization from scratch it just
+uses JWT.
+
+Remember that JWT are only encoded (hence READABLE) and not encrypted.
+
+# JWT structure
+
+Here we will see how a decoded JWT looks like.
+A JWT is composed of three parts:
+    - JOSE Header (JSON Object Signing and Encryption)
+    - Payload  (the claims)
+    - Signature (not readable when decoded, i.e., gibberish)
+
+An example is:
+JOSE Header: 
+    {"typ": "JWT",
+     "alg": "HS256"}
+
+There can be more stuff, but this is typically what we find in a
+JOSE header.  The JOSE header states that this is a JWT (i.e., typ),
+and what kind of algorithm has been used for the signature i.e., alg).
+
+Payload:
+    {"iss": "joe",
+     "exp": 1300612689,
+     "role": customer}
+
+This is just a javascript object with a key-value structure
+that represent some sorts of claims.
+The fields may be custom, but the RFCs describe some common
+fields that can be used such as:
+    - iss: issuer
+    - sub: subject
+    - iat: issued at
+    - exp: expires
+    - nbf: "not before" (start date)
+
+Generally a payload may say literally everything such as: username,
+email address, role, permissions and sometimes has been used also to
+transmit passwords.
+
+# JWT Encoding
+
+JWT are not sent as plaintext, they are encoded, concatenated and signed.
+In particular what happens is:
+
+    Base64URLencoded(header).Base64URL(payload).Base64URL(signature)
+
+Note that this is Base64URL encoding which is slightly different from
+the classic Base64 encoding.
+
+## Base64 vs Base64URL encoding
+
+To convert a Base64 string to a Base64URL string we have to remove
+characters which are present inBase64 but have a special meaning
+in terms of URL, so:
+
+    + becomes - (dash)
+    / becomes _ (underscore)
+    = is removed (since padding is removed)
+
+
+# How do we find JWT tokens
+
+They generally start with the string "eyJ" within HTTP traffic
+and they typically have a dot in the first 40-60 characters.
+
+
+# Bypass JWT signature checks
+
+Set the algorithm "alg" in the header to "none" to bypass signature checks.
+
+
+# Signatures
+
+These are the "alg" values passed in the header for JWS, they are
+typically:
+
+- HS256 (HMAC using SHA-256) -> required
+- RS256 (RSASSA-PKCS1-v1_5 using SHA-256) -> recommended
+- non (no digital signature or MAC performed) -> optional
+
+# JWT Attacks
+
+The main attacks with JWT are:
+1 - Information Disclosure (just decode the payload), sensitive
+    info may be contained sometimes (e.g., passwords)
+2 - Forgery of JWT (if the "none" algorithm is supported)
+3 - Cracking (guess the secret if 1 and 2 don't work
+
+
+## JWT Attacks: Information Disclosure
+
+We can use some intercepting proxy extensions to help with our JWT
+attacks.  In Burp we can use JOSEPH that we can find in the store by
+searching "JSON Web Token Attacker".
+
+For this attack we can select "Signature Exclusion", which tries to
+send different HTTP requests by using "none" as value for "alg" with
+different cases for the string.
+
+We just have to send our request with the JWT to the "JOSEPH" tab and
+execute the signature exclusion attack.
+
+
+## JWT Attacks: Forgery
+
+This is based on the information disclosure attack, basically it involves
+tampering the information sent in the JWT token when the algorithm
+is none, or whenever we are able to crack the signature.
+
+## JWT Attacks: Cracking
+
+Many times the signature is produced with a very weak password.
+We can crack a JWT token with hashcat by doing:
+
+    hashcat -m 16500 hash.txt -a 3 -w ?a?a?a?a?a?a
+
