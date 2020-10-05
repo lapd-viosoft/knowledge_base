@@ -1,0 +1,44 @@
+# xpath
+# Reference: http://www.whitebeam.org/library/guide/TechNotes/xpath.rhtm
+# Reference: https://devhints.io/xpath
+
+# To test xpath from the browser, just open a console and type
+$x("//div")
+
+# Return all fields called "a", this will return all links
+//a 
+
+# Return all fields called "li" which are just after "ul" (ul li)
+//ul/li
+
+# Return all fields called "li" which are after (also very nested) "ul" (ul > li)
+//ul//li
+;; this set will contain all the //ul/li and also more if there are "li" fields
+;; after "ul" and under other nested field(s)
+
+# Return the number of  fields called "li" which are just after "ul"
+count(//ul/li)
+
+# Return all fields called "child" with an attribute "name" whose value is "beta"
+//child[@name='beta']
+
+# Return all divs with class="head" and id="top"
+//div[@class="head"][@id="top"]
+
+# Return all links "a" where the id field is xyz
+//a[@id = "xyz"]
+
+# Return all links "a" where the id field is not xyz
+//a[@id != "xyz"]
+
+# Return all links "a" where the price field is greater than 25
+//a[@price > 25]
+
+# Return the union of all the "ul" fields and of the "a" fields
+//ul|//a
+
+# Return all links ending with ".pdf"
+//a[ends-with(@href, '.pdf')]
+
+# Return all links startinw with "/"
+//a[starts-with(@href, '/')]

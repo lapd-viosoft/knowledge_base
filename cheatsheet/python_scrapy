@@ -1,0 +1,15 @@
+# scrapy
+# Please take a look at xpath for checking how to properly write queries
+
+# Launch a scrapy shell on a URL
+scrapy shell "http://vulnhub.com/timeline"
+;; from now on we can extract stuff from the response object
+;; either using CSS selectors or XPath, I prefer XPath
+
+
+# Extract all links ("a" fields)
+response.xpath("//a").extract()
+;; or
+response.xpath("//a").getall()
+
+
