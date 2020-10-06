@@ -5,6 +5,9 @@
 - picking up random elements from sequences;
 - generate random numbers
 
+# Generate a random integer number between 0 and 100 (extreme included)
+random.randint(0, 100)
+
 # Pick a random element from a sequence
 seq = [1,2,3,4,5, "a", "b", "c"]
 random.choice(seq)
@@ -19,6 +22,4 @@ random.choices(seq, [0.01,0.01,0.01,0.01,0.96])
 seq = [1,2,3,4,5]
 random.choices(seq, [0.01,0.01,0.01,0.01,0.96], k=3)
 5 5 5
-
-
 
