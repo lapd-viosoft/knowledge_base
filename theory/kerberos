@@ -1,0 +1,424 @@
+# Kerberos
+
+Kerberos is a network protocol used for authentication that uses tickets
+as a form of communication.  The protocol originated at MIT but over time
+different implementations have been popularized.  Its name is inspired
+by the Greek mythology three-headed dog, Cerberus.  In fact, Kerberos
+is based on the interaction of three parties: the client, the resource
+server, the Key Distribution Center (KDC).
+
+Active Directory implements its authentication and Single Sign
+On capabilities through a Microsoft implementation of Kerberos v5.
+This implementation slightly differs from the original Kerberos v5 RFC
+and the main difference is that the Microsoft implementation of
+Kerberos adds authorization features in addition to the pre-existing
+authentication mechanisms of the protocol.
+
+The Microsoft Kerberos implementation (also dubbed as NT Kerberos) is the
+most famous and common Kerberos implementation existing nowadays because
+of Active Directory. 
+
+Windows 2000 and later versions use Kerberos as its default authentication
+method. Some Microsoft additions to the Kerberos suite of protocols are
+documented in RFC 3244 "Microsoft Windows 2000 Kerberos Change Password
+and Set Password Protocols". RFC 4757 documents Microsoft's use of the
+RC4 cipher. While Microsoft uses and extends the Kerberos protocol,
+it does not use the MIT software.
+
+Kerberos is used as preferred authentication method: In general, joining
+a client to a Windows domain means enabling Kerberos as default protocol
+for authentications from that client to services in the Windows domain
+and all domains with trust relationships to that domain.
+
+In contrast, when either client or server or both are not joined to a
+domain (or not part of the same trusted domain environment), Windows
+will instead use NTLM for authentication between client and server.
+
+Note that Kerberos requires valid DNS names (for example,
+\\10.10.10.10\share will fall back to NTLM authentication).
+
+
+Kerberos works in what is in its lingo called "Kerberos Realm".
+and basically corresponds to the domain name in Active Directory
+environments. Kerberos Realms, in fact, are named after the domain names,
+e.g., "MYDOMAINNAME.ORG", but are always specified in the uppercase
+notation.
+
+Within a Kerberos environment, we refer to: 
+- Services, identified by **SPN**s (Service Principal Names), which are
+  basically names used to identify the services in a realm;
+- Users, identified by **UPN**s (User Principal Names);
+
+For example if a user called "John Doe" has a domain account in
+the "EXAMPLE.COM" Kerberos realm (i.e., that is corresponding to
+the domain name), then this user will have a UPN corresponding to
+"JohnDoe@EXAMPLE.COM".
+
+At the same time, if the user JohnDoe initiates a connection to the share path
+`\\server1.example.com\SharedDirectory` then John's workstation will first lookup
+the computer server1.example.com in the Active Directory database and then read its
+SPN attribute (cifs/server1.example.com). Note that "cifs" indicates a file sharing
+service type.
+We can find a list of well known SPNs at:
+[adsecurityt.org](https://adsecurity.org/?page_id=183).
+
+Remember that AD domains are an integrated system of DNS, LDAP, Kerberos
+and other services, so nowadays Kerberos comes embedded in AD environments
+and Domain Controllers act as KDCs.
+
+Internally domain names are converted to the equivalent
+"Kerberos principal name", which has a similar format and look like
+fred@SERVER.EXAMPLE.COM. The Kerberos realm name is always case-sensitive
+and by convention always uppercase. Each Active Directory domain acts
+as a Kerberos realm, and has exactly one realm name (even if multiple
+UPN suffixes are configured). Every AD domain controller also acts as
+a Kerberos KDC for the corresponding Kerberos realm.
+
+The "KDC" or Key Distribution Center represents the kerberos server in
+a Kerberos environment and is responsible for providing keys.
+
+Individually, the terms 'domain' and 'realm' mean nearly the same thing,
+but for different systems. Realms and realm names come from the Kerberos
+authentication protocol, where they serve practically the same purpose
+as domains and domain names. They have no direct relation, strictly
+speaking, but in practice nearly all Kerberos realms are named after
+the corresponding DNS domain.
+
+
+Note that current Kerberos implementations support both TCP and UDP
+communications over port 88. Active Directory makes use of both ports
+and in addition, provides the functionality of Kerberos password management
+on ports 464 TCP and 464 UDP.
+
+Kerberos authentication leverages both long-term asymmetric keys (public key)
+and short-term symmetric keys (session keys).
+
+Active Directory uses as of 2020 Kerberos version 5 in two components:
+- the **Authentication Service** (AS),
+- the **Ticket-Granting Service** (TGS);
+
+The Authentication Service is the first point of contact the client has
+with the Kerberos system.  Basically, this service is used to lookup the
+user's password and create the Ticket Granting Ticket (TGT). The AS
+also creates the session key the user will use for future communication
+with Kerberos.
+
+## The Kerberos metaphor
+
+As mentioned earlier, Kerberos has 3 components, the client, the server,
+and the KDC (trusted 3rd party). The process is similar to when you
+travel to a foreign country.
+
+- You visit the local passport office with a birth certificate
+  (get the Ticket Granting Ticket ticket from the KDC)
+- You request an entrance Visa for your passport in order to enter the country
+  (get the Ticket Granting Service ticket from the KDC – ok, so you
+  would get the Visa from the country’s embassy, but you still need
+  the passport and something authoritative the country’s immigration
+  guard will accept).
+- You travel to the country with the passport and the country’s entrance Visa
+  (present authoritative documentation to gain access to the resource server).
+
+## TGT
+
+The Ticket Granting Ticket (TGT) is the Kerberos ticket for the Ticket
+Granting Service which runs on the KDC.
+This ticket is encrypted using a key called **KDC key** belonging to the
+KRBTGT domain Kerberos account.
+This means that only a KDC can decrypt and read the TGT tickets.
+TGT have a default expiration of 10 hours within Active Directory systems,
+but it can be renewed by default for a maximum of 7 days of usage.
+
+TGT Tickets obtained by users are sent to the KDC to obtain Service Tickets
+for the Ticket Granting Service (TGS) on the KDC.
+
+A client requests a ticket by performing a requesting a TGT (Ticket Granting
+Ticket) along with credentials.
+
+The server at this point will check the credentials and if these are correct
+will send back a TGS (Ticket Granting Service) which comprehends a secret key
+which will be stored on the client.
+
+Now the client will have this ticket until it expires.
+
+Now let's say that there are on this networks other hosts/servers with
+available services. Services in Kerberos environments have what we call
+"SPN" or Service Principle Names, these can be SQL servers, antivirus
+or really any other kind of service we may come up with.
+
+At this point if the client wants to connect to one of these services, let's say
+an SQL database service, he has to know the SQL database SPN, and then has to
+send a request containing among other information the SPN which he wants to use
+in the form of a TGT request.
+
+At this point the server will reply with a TGS containing the session key to the
+SPN which will allow the client to connect.
+
+So remember if we have a valid TGT we can request for a TGS ticket for a
+specific SPN.
+
+
+## The Kerberos authentication process
+
+Let's see what happens when a user logged inside a domain wants to access
+a specific application server (i.e., service) within the domain.
+
+1. A user sends a timestamp encrypted with its NTLM hash
+   and sends it to the KDC, this kind of request is called **AS-REQ**.
+   Note that this step of encryption is skipped if the user has
+   preauthentication disabled. In this case, in fact, the user can
+   just request a TGT.
+2. At this point since the DC/KDC has access to all the secrets in the domain
+   it has the password of the user and can decrypt this request and verify that
+   the AS-REQ request was actually sent by a valid user. At this point
+   the KDC responds with a TGT; This TGT ticket is encrypted and signed with
+   the NTLM hash of a special account belonging to the domain controller
+   called **krbtgt**. Notice that this special account is used specifically
+   for this purpose. This kind of response is called **AS-REP**.
+   Notice that only krbtgt can open and read TGT data;
+3. Now the user can request a TGS ticket by sending a request called
+   **TGS-REQ** where it sends its TGT encrypted with the krbtgt hash to the
+   DC/KDC and requests a ticket which will be used to access a specific
+   service, (in our case the application server mentioned) this is the
+   TGS ticket;
+4. The KDC is able to decrypt the TGT because he is the only once
+   having access to the its hash and if the request is valid
+   it provides the requester with a TGS encrypted using the target service's
+   account NTLM hash. This type of response is called **TGS-REP**;
+5. The user connects to the server hosting the service on the appropriate
+   port and presents the TGS ticket. This request is called **AP-REQ**;
+   At this point the service will decide if the requesting user has
+   privileges/rights to access the requested reesource;
+6. (Optional) The application server may perform an optional mutual
+   authentication with the client called **AP-REP**;
+7. (Optional) In the Microsoft implementation of Kerberos, The application
+   server may perform additional validation steps to check for authorization
+   related to that specific user, this is related to the PAC (Privileged
+   Attribute Certificate) **VERIFY_PAC_REQUEST**.
+
+There can be an additional validation step to kerberos called "PAC"
+(Privileged Attribute Certificate).
+
+An additional kerberos packet is the **ERROR** packet type
+which can be used to communicate error conditions.
+
+
+Some interesting facts about kerberos:
+- NTLM password hash for kerberos uses RC4 encryption;
+- TGT can be used as a Logon Ticket when authenticating to DC on a domain;
+- DC validates user accounts only when the TGT > 20 minutes;
+- Service Ticket (TGS) PAC validation is optional and rarely used;
+
+Note that AS here stands for "Authentication Server" while AP
+stands for "Application".
+
+## Summary of most important Kerberos messages 
+
+Kerberos uses differents kinds of messages. The most interesting are
+the following:
+
+- KRB_AS_REQ: Used to request the TGT to KDC.
+- KRB_AS_REP: Used to deliver the TGT by KDC.
+- KRB_TGS_REQ: Used to request the TGS to KDC, using the TGT.
+- KRB_TGS_REP: Used to deliver the TGS by KDC.
+- KRB_AP_REQ: Used to authenticate a user against a service, using the TGS.
+- KRB_AP_REP: (Optional) Used by service to identify itself against the user.
+- KRB_ERROR: Message to comunicate error conditions.
+
+
+## Default AD Kerberos policy settings
+
+- Enforce user logon restrictions: Enabled
+- Maximum lifetime for service ticket: 600 minutes (10 hours)
+- Maximum lifetime for user ticket: 600 minutes (10 hours)
+- Maximum lifetime for user ticket renewal : 7 days
+- Maximum tolerance for computer clock synchronization: 5 minutes
+
+
+## Attacks
+
+### Bruteforce
+
+In first place, due to Kerberos is an authentication protocol, it
+is possible to perform brute-force attacks against it. Moreover,
+brute-forcing Kerberos has many advantages over brute-forcing other
+authentication methods, like the following:
+
+- No domain account is needed to conduct the attack, just connectivity
+  to the KDC.
+- Kerberos pre-authentication errors are not logged in Active Directory
+  with a normal Logon failure event (4625), but rather with specific logs
+  to Kerberos pre-authentication failure (4771).
+- Kerberos indicates, even if the password is wrong, whether the username
+  is correct or not. This is a huge advantage in case of performing this
+  sort of technique without knowing any username.
+- In Kerberos brute-forcing it is also possible to discover user accounts
+  without pre-authentication required, which can be useful to perform an
+  ASREPRoast attack.
+
+However, by carrying out a brute-force attack it is also possible to
+block user accounts. Thus, this technique should be used carefully.
+
+### AS-REPRoasting
+
+Pre-Condition:  One or more users that have preauthentication disabled
+Post-Condition: We get the hashes of the users with preauthentication disabled
+
+If we can enumerate any accounts in a Windows domain that don’t
+require Kerberos preauthentication, we can easily request a piece
+of encrypted information for said accounts and efficiently crack the
+material offline, revealing the user's password.
+
+Basically in the first step of a Kerberos communication the client
+performs an AS-REQ requests where he tries to identify and authenticate
+itself by sending the current timestamp encrypted with its NTLM hash.
+The Kerberos Server (Authentication Server) verifies if the user
+claims who it is (since he has the hashes of any user in the domain)
+and provides him with a TGT in the AS-REP response.
+Unfortunately, this kind of first authentication is skipped if the user
+in question has preauthentication disabled "DONT_REQ_PREAUTH".
+Hence a TGT for these users can be requested without any kind of
+validation. 
+While the AS-REP ticket itself is encrypted with the service key (in
+this case the krbtgt hash) the AS-REP "encrypted part" is signed
+with the client key, i.e. the key of the user we send an AS-REQ for.
+Hence we can attempt to offline bruteforce the user key and retrieve
+its password.
+
+Notice that as a matter of fact the reason for enabling Kerberos
+preauthentication is to prevent offline password guessing.
+
+
+NOTE: if you have GenericWrite/GenericAll rights over a target user, you
+can maliciously modify their userAccountControl to not require preauth,
+use ASREPRoast, and then reset the value.
+
+
+### Kerberoasting
+
+Precondition: Have valid user credentials
+Postcondition: Hashes of service accounts that can be bruteforced offline
+
+Kerberoasting takes advantage of how service accounts leverage Kerberos
+authentication with Service Principal Names (SPNs). If you remember,
+in the reconnaissance post we focused on discovering service accounts
+by scanning for user objects' SPN values. Kerberoasting allows us to
+crack passwords for those accounts. By logging into an Active Directory
+domain as any authenticated user, we are able to request service tickets
+(TGS) for service accounts by specifying their SPN value. Active Directory
+will return an encrypted ticket, which is encrypted using the NTLM hash
+of the account that is associated with that SPN. You can then brute
+force these service tickets until successfully cracked, with no risk
+of detection or account lockouts. Once cracked, you have the service
+account password in plain text.
+
+Even if you don't fully understand the inner-workings of Kerberos,
+the attack can be summarized as:
+
+- Scan Active Directory for user accounts with SPN values set;
+- Request service tickets from AD using SPN values;
+- Extract service tickets to memory and save to a file;
+- Brute force attack those passwords offline until cracked;
+
+With those steps in mind, you can imagine how easy it may be to get access
+to a domain and begin cracking all service accounts within minutes. From
+there, it's just a waiting game until you have compromised one or more
+service accounts.
+
+For a better understanding of the types of access that can be garnered
+using Kerberoasting, look at the list of SPN values maintained by Sean
+Metcalf on ADSecurity.org.
+
+### Pass The Key (Overpass the Hash)
+
+This attack aims to use user NTLM hash to request Kerberos tickets, as an
+alternative to the common Pass The Hash over NTLM protocol. Therefore,
+this could be especially useful in networks where NTLM protocol is
+disabled and only Kerberos is allowed as authentication protocol.
+
+In order to perform this attack, the NTLM hash (or password) of the
+target user account is needed. Thus, once a user hash is obtained,
+a TGT can be requested for that account. Finally, it is possible to
+access any service or machine where the user account has permissions.
+
+
+### Pass the Ticket
+
+This kind of attack is similar to Pass the Key, but instead of using
+hashes to request for a ticket, the ticket itself is stolen and used to
+authenticate as its owner. The way of recolecting these tickets changes
+from Linux to Windows machines, therefore each process will be introduced
+in its own section.
+
+### Golden Tickets [Persistence Method]
+
+Golden tickets attack are used for persistence purposes once we have
+conquered a domain admin account and are able to dump the hash of
+the krbtgt account.
+Basically this is possible if we are able to forge the TGS-REQ (step 3)
+by using a valid TGT ticket.
+The scenario here is that once we have obtained krbtgt hash (and to obtain
+this we must have conquered a domain controller) we can access any service
+with any account since we have the key which is able to give us
+any TGS for any user for any service.
+Basically having this key we can forge whatever request with any user
+account for any service.
+
+We only need a valid TGT encrypted by the kerberos krbtgt account.
+Since account validation is not done by the KDC until the TGT is older
+than 20 minutes we can also take advantage of prentending to be
+disabled/deleted accounts.
+
+This kind of ticket can be used to impersonate any account since 
+we can write anything in our request, since it is enough to encrypt
+it with the krbtgt hash.
+
+Notice that if we are able to get the hash of the krbtgt account on
+the domain controller, we can impersonate basically any user with any
+privileges on the domain.  Moreover, note that password changes have no
+effect on this attack.
+
+### Silver Tickets [Persistence Method]
+
+Silver tickets attack are used for persistence for a specific service.
+Basically this is possible if we are able to forge the AP-REQ (step 5)
+by using a valid TGS ticket.  Basically this happens when we have access
+to the NTLM hash of a service account, allowing us to forge valid TGS
+tickets as any user for that service.
+
+Silver tickets have a reasonable persistence of 30 days for computer
+accounts.
+
+Generally we are very interested in the machine account, which is
+indeed used as a service account for many different services.
+
+### Comparison between Golden and Silver Tickets [Persistence Methods]
+
+Golden tickets allows us to impersonate any user and request any service,
+since by having the hash of the krbtgt account we can forge our own TGS
+with any detail we want.  This is the holy grail of domain persistence.
+
+Silver tickets allows us to impersonate any user on a specific service,
+since by having the hash of the service account we can forge our own
+TGS for that service with any user detail we want.
+
+
+### Skeleton Key [Persistence Method]
+
+Skeleton key is another persistence technique where it is possible to patch
+a domain controller (lsass process) so that it allows access as any user
+with a single password.
+It was first found in a malware named "Skeleton key malware", but this
+persistence technique does not persist across reboots.
+
+We can use the following command to inject a skeleton key on a domain
+controller, notice that domain admin privileges are required:
+
+Note that now we can access also other machines as long as they use the
+domain controller to authenticate; all of this works until the domain
+controller gets rebooted.
+
+## References
+
+[Kerberos Notes on adsecurity.org](https://adsecurity.org/?p=227)
+[Explain Kerberos like I am 5](file:///home/giuseppe/Notes/windows/Explain%20like%20I%E2%80%99m%205%20%20Kerberos%20%E2%80%93%20roguelynn.html)

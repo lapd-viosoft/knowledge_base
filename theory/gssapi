@@ -1,0 +1,37 @@
+# GSSAPI
+# Generic Security Services Application Program Interface
+
+This is an interface with for programs to access security services. 
+
+Basically GSSAPI defines a set of functions that can be used by developers
+to use the security services.
+Basically the developer does not need to know the internals of a security
+service if she/he uses the GSSAPI interface.
+
+
+In fact, the GSSAPI, by itself, does not provide any security. Instead,
+security-service vendors provide GSSAPI implementations - usually in the
+form of libraries installed with their security software. These libraries
+present a GSSAPI-compatible interface to application writers who can
+write their application to use only the vendor-independent GSSAPI. If
+the security implementation ever needs replacing, the application need
+not be rewritten.
+
+There are different implementations and one of the most famous commonly
+used is the GSSAPI Kerberos implementation.
+
+
+The GSSAPI is standardized for the C (RFC 2744) language. Java implements
+the GSSAPI as JGSS, the Java Generic Security Services Application
+Program Interface.
+
+Some Limitation of GSSAPI are:
+
+- standardizing only authentication, rather not authorization too;
+- assuming a client–server architecture;
+
+Anticipating new security mechanisms, the GSSAPI includes a
+negotiating pseudo mechanism, called SPNEGO, that can discover and
+use new mechanisms not present when the original application
+was built.
+
