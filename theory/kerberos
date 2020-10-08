@@ -47,7 +47,20 @@ notation.
 Within a Kerberos environment, we refer to: 
 - Services, identified by **SPN**s (Service Principal Names), which are
   basically names used to identify the services in a realm;
-- Users, identified by **UPN**s (User Principal Names);
+  A service principal name (SPN) is a unique identifier of a service
+  instance. SPNs are used by Kerberos authentication to associate a
+  service instance with a service logon account.
+  They are in the form:
+  <service class>/<host>:<port>/<service name>
+  e.g.,
+  MSSQLSvc/sql.lab.local:1433/SQLEXPESS
+  or
+  CIFS/files.lab.local
+- Users, identified by **UPN**s (User Principal Names), they
+  are in the form:
+  <username>@<domain_name>
+  e.g.,
+  jdoe@example.com
 
 For example if a user called "John Doe" has a domain account in
 the "EXAMPLE.COM" Kerberos realm (i.e., that is corresponding to
@@ -418,7 +431,19 @@ Note that now we can access also other machines as long as they use the
 domain controller to authenticate; all of this works until the domain
 controller gets rebooted.
 
+## Mitigations against Kerberoast attacks
+
+- Check if preauthentication is disabled for some accounts (to prevent asreproasting)
+- Set long and complex passwords for service accounts (to prevent kerberoasting)
+- Recommended length: >28 characters
+- (Group) Managed Service Accounts
+- Limit privileges of service accounts
+- Service accounts should NOT be part of the domain admin group!
+- Use AES encryption instead of RC4 encryption
+
+
 ## References
 
 [Kerberos Notes on adsecurity.org](https://adsecurity.org/?p=227)
 [Explain Kerberos like I am 5](file:///home/giuseppe/Notes/windows/Explain%20like%20I%E2%80%99m%205%20%20Kerberos%20%E2%80%93%20roguelynn.html)
+[OWASP Kerberoasting](https://owasp.org/www-pdf-archive/OWASP_Frankfurt_-44_Kerberoasting.pdf)

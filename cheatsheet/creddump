@@ -1,0 +1,30 @@
+# creddump
+
+;; creddump is composed by three main tools:
+;; - cachedump
+;; - lsadump
+;; - pwdump
+
+;; We can generally dump passwords if we have the following files:
+;; - SAM
+;; - SYSTEM
+;; - SECURITY
+;; these files correspond to different hives in the Windows registry.
+
+## cachedump
+cachedump <system hive> <security hive>
+
+## lsadump
+lsadump <system hive> <security hive>
+
+# pwdump
+pwdump <system hive> <SAM hive>
+
+
+
+NOTE: on Windows10 v1607 and later you might need pwdump8.exe
+by Fulvio Zanetti and Andrea Petralia, supporting AES128 encrypted hashes.
+
+I am only able to run pwdump8.exe from a Linux wine command as follows:
+wine "c:\pwdump8.exe" -f SYSTEM SAM
+

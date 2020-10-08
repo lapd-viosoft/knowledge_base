@@ -1,0 +1,19 @@
+# bkhive
+
+From a windows partition we can do:
+;; go to the System32/config directory
+cd /media/Mounting Point value/Windows/System32/config
+bkhive SYSTEM ~/system.txt  ;; this stores the bootkey
+
+Dump the SAM file by doing:
+samdump2 SAM ~/system.txt > ~/hashes.txt
+
+Crack the passwords:
+john --format=nt2 –-users=jdoe ~/hashes.txt
+
+Note: on Windows10 v1607 and later you might need pwdump8.exe 
+by Fulvio Zanetti and Andrea Petralia, supporting AES128 encrypted hashes.
+
+I am only able to run pwdump8.exe from a Linux wine command as follows:
+~/.wine$ wine "c:\pwdump8.exe" -f SYSTEM SAM
+

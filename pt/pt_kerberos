@@ -273,8 +273,14 @@ mimikatz # kerberos::ptt <ticket_kirbi_file>
 ## Get NTLM hash from password
 python -c 'import hashlib,binascii; print binascii.hexlify(hashlib.new("md4", "<password>".encode("utf-16le")).digest())'
 
-## interacting with Kerberos
+## Interacting with Kerberos
 ;; SetSPN is a native windows binary which can be used to retrieve the
 ;; mapping between user accounts and services. This utility can add, delete
 ;; or view SPN registrations.
 setspn -T pentestlab -Q */*
+
+## Show all service accounts
+setspn.exe -q */*
+
+## Show all MSSQL service accounts
+setspn.exe -q MSSQLSvc/*

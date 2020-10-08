@@ -1,0 +1,7 @@
+kb add ./cheatsheet/*                   --category "cheatsheet"
+kb add ./config/*                       --category "config"
+kb add ./list/*                         --category "list"
+kb add ./programming_languages/bash/*   --category "programming"
+kb add ./programming_languages/python/* --category "programming"
+kb add ./pt/*                           --category "procedure"
+kb add ./theory/*                       --category "theory"
