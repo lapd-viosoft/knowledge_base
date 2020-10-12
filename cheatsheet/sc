@@ -1,0 +1,22 @@
+# sc
+# manage services on Windows cmd
+
+# Get the configuration of a service
+sc.exe qc <name>
+
+# Get current status of a service
+sc.exe query <name>
+
+# Get info on active services
+sc.exe query
+
+# Get info on all (active and inactive) services (the space is important)
+sc.exe query state= all
+
+# Modify a configuration option of a service (the space is important)
+sc.exe config <name> <option>= <value>
+
+# Start/Stop a service
+net start/stop <name>
+
+

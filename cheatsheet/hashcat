@@ -1,10 +1,31 @@
 # hashcat
+# common flags:
+# -a - specifies attack mode:
+#       0: dictionary
+#       3: brute force
+# -m - specifies type of hash
 
-# Crack raw md5 passwords
-hashcat64.exe -a 0 -m 0 example0.hash example.dict -r rules/best64.rule
+# Crack raw MD5 passwords
+hashcat -a 0 -m 0 example0.hash example.dict -r rules/best64.rule
+
+# Crack Old Windows System Passwords (LM)
+hashcat -m 3000 -a 3 hash.txt
+
+# Crack Modern Windows System Passwords (NT)
+hashcat -m 1000 -a 3 hash.txt
+;; or use a dictionary
+hashcat -m 1000 -a 0 hash.txt /usr/share/wordlists/rockyou.txt
+hashcat -m 1000 --force <hashhere> /usr/share/wordlists/rockyou.txt
+
+# Crack Net-NTLMv1 passwords
+hashcat -m 5500 -a 3 hash.txt
 
 # Crack Net-NTLMv2 passwords
 hashcat -m 5600 passwd_ntlmv2.txt passwordlists/*
 
 # Crack JWT tokens
 hashcat -m 16500 hash.txt -a 3 -w 3 ?a?a?a?a?a?a
+
+
+# Show cracked hashes
+hashcat -m <mode> <file_with_hashes> --show

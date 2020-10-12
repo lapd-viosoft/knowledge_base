@@ -1,0 +1,15 @@
+# winPEAS
+# winPEAS is the best privesc tool as of 2020
+
+# Enable colors (very useful, for identifying misconfigs)
+reg add HKCU\Console /v VirtualTerminalLevel /t REG_DWORD /d 1
+;; remember to restart the command line
+
+# Run all checks
+.\winPEASany.exe
+
+# Run help
+.\winPEASany.exe -h
+
+# Run specific check
+.\winPEASany.exe <checkname>

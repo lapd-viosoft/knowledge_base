@@ -1,0 +1,11 @@
+# Seatbelt
+
+
+# List all seatbelt functions
+.\Seatbelt.exe
+
+# Run all enumeration checks
+.\Seatbelt.exe all
+
+# List all non-standard services
+.\Seatbelt.exe NonstandardServices

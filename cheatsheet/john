@@ -46,7 +46,7 @@ john --wordlist=[filename] --min-length=4 --max-length=7 [passwordfile]
 john --wordlist=[filename] --rules [passwordfile]
 
 # To show your results after running john (shows ~/.john/john.pot)
-john --show
+john --show  ;; in some recent versions we also have to specify the format
 
 # Show results
 john --show --pot=.john/john.pot --format=raw-md5 breach_superwebsite_hashes.txt
@@ -87,8 +87,17 @@ john --incremental=lowernum --min-length=5 --max-length=8 [passwordfile]
 unshadow passwd.txt shadow.txt > passwords.txt
 john --wordlist=/usr/share/wordlists/rockyou.txt passwords.txt
 
+# Old Windows System Passwords
+meterpreter> hashdump  ;; copy-paste into hashes.txt
+john ./hashes.txt --format=LM --wordlist=/usr/wordlists/rockyou.txt
+
+# Modern Windows System Passwords
+meterpreter> hashdump  ;; copy-paste into hashes.txt
+john ./hashes.txt --format=NT --wordlist=/usr/wordlists/rockyou.txt
+john ./hashes.txt --format=NT --show ;; to show the passwords
+
 # Net-NTLMv2 Hashes
-john --fork=4 --format=netntlmv2 --wordlist=/usr/wordlists/rockyout.txt passwd_ntlmv2hash.txt
+john --fork=4 --format=netntlmv2 --wordlist=/usr/wordlists/rockyou.txt passwd_ntlmv2hash.txt
 
 # MD5
 john --wordlist=/usr/share/wordlists/passwords/rockyou.txt  --format=Raw-MD5 pwd.txt

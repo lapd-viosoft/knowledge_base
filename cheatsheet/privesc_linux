@@ -57,6 +57,9 @@ locate password
 find / -name authorized_keys 2> /dev/null
 find / -name id_rsa 2> /dev/null
 
+## Search each user's owned files
+find / -user <username> -type f 2>/dev/null
+
 ## Last Edited Files
 find / -mmin -10 2>/dev/null | grep -Ev "^/proc"
 

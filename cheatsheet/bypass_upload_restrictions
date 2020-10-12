@@ -1,5 +1,6 @@
 # Bypass Upload Restrictions
 
+file.php -> file.php3 ;; or php4 or php5 or phtml
 file.php -> file.jpg
 file.php -> file.php.jpg
 file.asp -> file.asp;.jpg

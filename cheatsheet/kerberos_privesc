@@ -1,4 +1,4 @@
-# Windows Kerberos Privesc
+# Windows Kerberos Privilege Escalation
 
 ## Simple logic for kerberoast is requesting tickets and cracking them(offline, doesn’t produce any logs)
 ## – For kerberos to work, times have to be within 5 minutes between attacker and victim.

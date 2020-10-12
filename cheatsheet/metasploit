@@ -1,5 +1,27 @@
+# Initialize Database (outside msfconsole)
+msfdb init
+;; note that after you might need to add some pgsql executables to the PATH
+;; they generally reside in /usr/lib/postgresql$version/bin/
+;; hemce something like: export PATH=$PATH:/usr/lib/postgresql/9.5/bin/
+
+# Check db connection
+db_status
+
 # See help
 help
+
+# Save everything that we do in a file
+spool /tmp/msfconsole.log
+spool off ;; to shut down the recording to a file
+
+# Saving variables to a file
+save
+
+# Perform nmap scan and save results in DB
+db_nmap -sV <ipaddress>
+
+# Using metasploit as netcat
+connect -C <ipaddress> <port>
 
 # Search for Something
 search <something>
@@ -21,6 +43,8 @@ use <exploit>
 
 # To see the current settings for a selected exploit
 show options
+;; or
+show options full
 
 # To see compatible payloads for a selected exploit
 show payloads
@@ -77,3 +101,18 @@ background (or ctrl+z)                  ;; sets the shell in  background
 # Transform a generic reverse shell to a meterpreter shell
 ## This is equivalent to use post/multi/manage/shell_to_meterpreter
 sessions -u <session-id>
+;; or
+use post/multi/manage/shell_to_meterpreter ;; set session <id> ;; run
+
+
+# Other database commands
+hosts
+services
+vulns
+
+
+# Pivoting
+run autoroute -h ;; show menu for autoroute
+
+# Add a route for network 172.18.1.0/24
+run autoroute -s 172.18.1.0 -n 255.255.255.0
