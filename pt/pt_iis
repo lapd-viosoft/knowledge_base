@@ -1,0 +1,11 @@
+# Pentesting IIS
+
+
+
+# Check if WebDAV is enabled on the server
+use auxiliary/scanner/http/webdav_scanner
+
+NOTE: Mostly old IIS like 5.1/6.0 would have WebDAV enabled. It is
+disabled by default in the newer versions.
+
+

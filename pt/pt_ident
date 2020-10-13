@@ -1,0 +1,11 @@
+# Pentesting Ident (port 113)
+
+# Nmap ident enumeration
+auth-owners.nse : Attempts to find the owner of an open TCP port by querying an auth daemon which must also be open on the target system.
+nmap --script=auth-owners.nse <targetIP>
+
+
+If the port ident 113 is open, it might be a good idea to try pentest
+monkey ident-user-enum Perl Script. The same result is also achieved by:
+
+perl ident-user-enum.pl 10.10.xx.xx 22 53 111 113 512 513 514 515

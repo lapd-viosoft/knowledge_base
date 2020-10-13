@@ -11,21 +11,68 @@
 ## In particular port 135 TCP works as service mapper, so that
 ## we can query the system to understand which services are running
 ## on that host.
+#
+## Depending on the host configuration, the RPC endpoint mapper can
+## be accessed through TCP and UDP port 135, via SMB with a null or
+## authenticated session (TCP 139 and 445), and as a web service listening
+## on TCP port 593.
 
 
 # Nmap Scan
 nmap -n -v -sV -Pn -p 135 --script=msrpc-enum 192.168.1.10 
 
-# If vulnerable
+# Enumeration - Hidden DCERPC Service Discovery (metasploit)
+;; Module will query the endpoint mapper and make a list of all ncacn_tcp
+;; RPC services. It will then connect to each of these services and use the
+;; management API to list all other RPC services accessible on this port. Any
+;; RPC service found attached to a TCP port, but not listed in the endpoint
+;; mapper, will be displayed and analyzed to see whether anonymous access
+;; is permitted.
+use auxiliary/scanner/dcerpc/hidden
+run
+
+# Enumeration - Remote Management Interface Discovery (metasploit)
+;; Module can be used to obtain information from the Remote Management Interface DCERPC service.
+use auxiliary/scanner/dcerpc/management
+run
+
+# Enumeration - DCERPC TCP Service Auditor (metasploit)
+;; Determine what DCERPC services are accessible over a TCP port.
+use auxiliary/scanner/dcerpc/tcp_dcerpc_auditor
+run
+
+
+# Exploit ms03-026
 msf > use exploit/windows/dcerpc/ms03_026_dcom
 
-# We can also use a very useful metasploit module:
-`auxiliary/scanner/dcerpc/endpoint_mapper` 
+# Enumeration - Endpoint Mapping (metasploit)
+;; Module can be used to obtain information from the Endpoint Mapper service
+msf > auxiliary/scanner/dcerpc/endpoint_mapper
+msf > run
+
+# Enumeration (impacket)
+;; We can use rpcdump from Impacket to dump the RPC information. This tool
+;; can communicate over Port 135, 139 and 445. The rpcdump tool from rpctools
+;; can also extract information from Port 593.
+rpcdump.py 10.10.xx.xx
+
+
+
+
+# Enumerate NFS mounts
+msf > use auxiliary/scanner/nfs/nfsmount
+msf > run
+
 # to get a lot of information on the RPC interface.
 
 
 # Get Information with IP address
 rpcinfo $IP
+;; or
+rpcinfo -p $IP
+
+# Get information about NFS
+showmount -a 172.30.xx.xx
 
 # Connect to the RPC console
 rpcclient -U "" $IP

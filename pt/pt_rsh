@@ -1,0 +1,5 @@
+# Pentest rsh
+
+msf > use auxiliary/scanner/rservices/rsh_login
+msf > run 
+

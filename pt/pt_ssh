@@ -1,4 +1,8 @@
+# SSH Bruteforce with Metasploit
 msf > use auxiliary/scanner/ssh/ssh_login
+msf > run
+
+# SSH Enumeration with nmap
 nmap --script ssh2-enum-algos 192.168.108.197
 nmap --script ssh-hostkey 192.168.108.197
 nmap --script sshv1 192.168.108.197

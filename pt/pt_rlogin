@@ -1,0 +1,7 @@
+# Pentest Rlogin
+
+rlogin <ipaddress>
+
+# Bruteforce (metasploit)
+msf > use auxiliary/scanner/rservices/rlogin_login
+

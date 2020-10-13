@@ -1,0 +1,10 @@
+# Pentest rexec
+
+# Brutefoce (metasploit)
+msf > auxiliary/scanner/rservices/rexec_login
+msf > run
+
+
+# Bruteforce (nmap)
+nmap -p 512 --script rexec-brute <ip>
+

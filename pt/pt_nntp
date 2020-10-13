@@ -1,0 +1,37 @@
+# Pentesting NNTP Network News Transfer Protocol
+
+Here we can do basic information gathering by issuing
+the following commands:
+
+
+CAPABILITIES [keyword] allows a client to determine the capabilities of the server at any given time.
+
+MODE READER
+
+QUIT  to disconnect the session
+
+LISTGROUP [group [range]] : The LISTGROUP command selects a newsgroup
+     in the same manner as the GROUP command (see Section 6.1.1) but also
+     provides a list of article numbers in the newsgroup. If no group is
+     specified, the currently selected newsgroup is used.
+
+
+ARTICLE message-id The ARTICLE command selects an article according to
+     the arguments and presents the entire article (that is, the headers,
+     an empty line, and the body, in that order) to the client
+
+POST    post an article
+
+Example
+
+[Client] POST
+[Server] 340 Input article; end with <CR-LF>.<CR-LF>
+[Client] From: "Demo User" <nobody@example.net>
+[Client] Newsgroups: misc.test
+[Client] Subject: I am just a test article
+[Client] Organization: An Example Net
+[Client]
+[Client] This is just a test article.
+[Client] .
+[Server] 240 Article received OK
+

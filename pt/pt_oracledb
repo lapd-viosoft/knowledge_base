@@ -1,7 +1,13 @@
-```sh
+# Pentest OracleDB
+# OracleDB by default runs on port 1521
+## Can be accessed through ftp. Some default passwords here: https://docs.oracle.com/cd/B10501_01/win.920/a95490/username.htm
+## Default logins:
+##    - sys:sys
+##    - scott:tiger
+
+
 tnscmd10g version -h <ip_address>
 tnscmd10g status -h <ip_address> 
-```
 
 We can also enumerate SIDs and users and check for default credentials with the
 following nmap scripts:

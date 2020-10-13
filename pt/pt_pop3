@@ -1,0 +1,22 @@
+# Pentesting POP
+
+# Note that bruteforcing POP3 service is faster than bruteforcing SSH services.
+
+# Enumerate POP3 server version
+msf > use auxiliary/scanner/pop3/pop3_version
+msf > run 
+;; or for running on multiple machines
+msf > services -p 110 -R -u
+
+# Check POP3 capabilities
+nmap --script=pop3-capabilities <targetIP>
+
+# Login to a POP3 server
+use auxiliary/scanner/pop3/pop3_login
+
+
+# Bruteforce
+;; Tries to log into a POP3 account by guessing usernames and passwords.
+nmap --script=pop3-brute.nse <targetIP>
+
+

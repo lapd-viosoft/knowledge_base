@@ -12,6 +12,7 @@
 # -D specify username@domain 
 # -w specify password, -w "Winter2020"
 # -W prompt for credentials after command, as an alternative to "-w"
+# NOTE: We can authenticate against kerberos instead of NTLM by using the parameter `-Y GSSAPI`
 
 # ldapsearch general syntax
 ldapsearch <bind options> -b <base to search from> <search filter> <attributes>
@@ -21,13 +22,15 @@ In all ldapsearch commands we may see timestamps in the LDAP format,
 we can convert them to a human readable form with:
 date -d "1970-01-01 $((($lastLogon/10000000)-11676009600)) sec GMT"
 
-# Get everything
-ldapsearch -x -b "dc=domainname,dc=com" -H ldap://192.168.178.29
-
 # Get domain metadata
 ldapsearch -LLL -x -H ldap://pdc01.lab.ropnop.com -b '' -s base '(objectclass=*)'
 
-# List all the domains of a forest
+# Get everything
+ldapsearch -x -h <IP> -D '<DOMAIN>\<username>' -w '<password>' -b "DC=<1_SUBDOMAIN>,DC=<TDL>"
+;; or 
+ldapsearch -x -b "dc=domainname,dc=com" -H ldap://192.168.178.29
+
+# List all the Domains of a forest
 ldapsearch -x -b "cn=Partitions,cn=Configuration,dc=nicodomain,dc=prv"\
     -D "administrator@nicodomain.prv" -h 192.168.1.70 -W "NETBIOSName=*"
 
@@ -39,6 +42,7 @@ ldapsearch -x -b "OU=Domain Controllers,DC=NICODOMAIN,DC=PRV"\
 # List all the computers in a domain
 ldapsearch -x -b "dc=nicodomain,dc=prv" -D "administrator@nicodomain.prv"\
     -h 192.168.1.70 -W "ObjectClass=Computer"
+;; or
 
 # List all the unconstrained delegation computers in a domain
 ldapsearch -x -b "dc=nicodomain,dc=prv" -D "administrator@nicodomain.prv" \
@@ -48,6 +52,21 @@ ldapsearch -x -b "dc=nicodomain,dc=prv" -D "administrator@nicodomain.prv" \
 # List all the users (accounts) in a domain
 ldapsearch -x -b "dc=nicodomain,dc=prv" -D "administrator@nicodomain.prv" \
     -h 192.168.1.70 -W "(&(objectCategory=person)(objectClass=user))"
+
+# List all users
+ldapsearch -x -h <IP> -D '<DOMAIN>\<username>' -w '<password>' -b "CN=Users,DC=<1_SUBDOMAIN>,DC=<TDL>"
+
+# List all Domain Users
+ldapsearch -x -h <IP> -D '<DOMAIN>\<username>' -w '<password>' -b "CN=Domain Users,CN=Users,DC=<1_SUBDOMAIN>,DC=<TDL>"
+
+# List all Domain Admins
+ldapsearch -x -h <IP> -D '<DOMAIN>\<username>' -w '<password>' -b "CN=Domain Admins,CN=Users,DC=<1_SUBDOMAIN>,DC=<TDL>"
+
+# List all Enterprise Admins
+ldapsearch -x -h <IP> -D '<DOMAIN>\<username>' -w '<password>' -b "CN=Enterprise Admins,CN=Users,DC=<1_SUBDOMAIN>,DC=<TDL>"
+
+# List all Administrators
+ldapsearch -x -h <IP> -D '<DOMAIN>\<username>' -w '<password>' -b "CN=Administrators,CN=Builtin,DC=<1_SUBDOMAIN>,DC=<TDL>"
 
 # List all the unconstrained delegation users in a domain
 ldapsearch -x -b "dc=nicodomain,dc=prv" -D "administrator@nicodomain.prv" \
@@ -62,6 +81,12 @@ ldapsearch -x -b "dc=nicodomain,dc=prv" -D "administrator@nicodomain.prv" \
 # List all the groups in a domain
 ldapsearch -x -b "dc=nicodomain,dc=prv" -D "administrator@nicodomain.prv" \
     -h 192.168.1.70 -W "objectClass=Group"
+
+# List the Remote Desktop Users Group
+ldapsearch -x -b "CN=Remote Desktop Users,CN=Builtin,DC=<1_SUBDOMAIN>,DC=<TDL>" \
+    -h 192.168.1.70 -D '<DOMAIN>\<username>' -w '<password>'
+    
+
 
 # List all the Organizational Units (OU) in a domain
 ldapsearch -x -b "dc=nicodomain,dc=prv" -D "administrator@nicodomain.prv" \
@@ -112,3 +137,7 @@ ldapsearch-LLL -x -H ldap://pdc01.lab.domain.com -D "joe@lab.domain.com" -W -b \
 # Find GPO names and Locations
 ldapsearch-LLL -x -H ldap://pdc01.lab.domain.com -D "joe@lab.domain.com" -w Summer2017 \
     -b dc=lab,dc=ropnop,dc=com "objectClass=groupPolicyContainer" displayNamegPCFileSysPath
+
+# Check if we have access to any passwords
+<ldapsearchcmd...> | grep -i -A2 -B2 "userpas"
+

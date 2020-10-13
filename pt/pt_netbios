@@ -1,0 +1,7 @@
+# Pentesting netbios
+
+# Enumeration with nmap
+;; broadcast-netbios-master-browser.nse : Attempts to discover master browsers and the domains they manage.
+nmap --script=broadcast-netbios-master-browser
+
+

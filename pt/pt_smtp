@@ -1,6 +1,24 @@
+# Pentesting SMTP
+
+# Enumerate SMTP with metasploit
+use auxiliary/scanner/smtp/smtp_version
+run
+;; or for multiple machines
+services -p 25 -u -R
+
+# Check if the SMTP server can be used as an open relay
+use auxiliary/scanner/smtp/smtp_relay
+run
+;; or for multiple machines
+services -p 25 -u -R
+
+
 # Enumerate SMTP Users
 ## User Enum: Nmap
 nmap --script=smtp-commands,smtp-enum-users,smtp-vuln-cve2010-4344,smtp-vuln-cve2011-1720,smtp-vuln-cve2011-1764 -p 25 <target-ip>
+## User Enum: Metasploit
+use auxiliary/scanner/smtp/smtp_enum
+
 
 ## User Enum: VRFY and EXPN method
 telnet/nc <ip_address> <port> (default: 25)
@@ -42,6 +60,8 @@ nmap -p 25 --script smtp-brute target
 nmap --script smtp-commands.nse [--script-args smtp-commands.domain=domain] -pT:25,465,587 target
 nmap -p 25,465,587 --script smtp-ntlm-info --script-args smtp-ntlm-info.domain=domain.com target
 nmap --script smtp-open-relay.nse [--script-args smtp-open-relay.domain=domain,smtp-open-relay.ip=address,...] -p 25,465,587 target
+;; for example:
+nmap -iL email_servers -v --script=smtp-open-relay -p 25
 nmap --script=smtp-vuln-cve2010-4344 --script-args="smtp-vuln-cve2010-4344.exploit" -pT:25,465,587 target
 nmap --script=smtp-vuln-cve2010-4344 --script-args="exploit.cmd='uname -a'" -pT:25,465,587 target
 nmap --script=smtp-vuln-cve2011-1720 --script-args='smtp.domain=domain' -pT:25,465,587 target

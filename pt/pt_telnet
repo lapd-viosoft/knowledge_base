@@ -1,4 +1,12 @@
-msf > use auxiliary/scanner/telnet/telnet_login
-nmap -p 23 --script telnet-brute --script-args userdb=myusers.lst,passdb=mypwds.lst,telnet-brute.timeout=8s target
-nmap -p 23 --script telnet-encryption target
+# Enumerate Telnet with metasploit
+msf > use auxiliary/scanner/telnet/telnet_version
+
+# Enumerate Telnet
+nmap -p 23 --script telnet-encryption target (check if it supports encryption)
 nmap -p 23 --script telnet-ntlm-info target
+
+# Bruteforce Telnet with metasploit
+msf > use auxiliary/scanner/telnet/telnet_login
+
+# Bruteforce Telnet with nmap
+nmap -p 23 --script telnet-brute --script-args userdb=myusers.lst,passdb=mypwds.lst,telnet-brute.timeout=8s target

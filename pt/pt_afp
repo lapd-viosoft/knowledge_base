@@ -1,0 +1,29 @@
+# Pentest AFP
+;; AFP is a proprietary network protocol that offers file services for MAC OS X and original MAC OS.
+
+# Enumeration (metasploit)
+msf > use auxiliary/scanner/afp/afp_server_info
+msf > run
+;; or for multiple hosts
+msf > services -p 548 -u -S AFP -R
+
+# Enumeration (nmap)
+
+afp-serverinfo
+afp-serverinfo.nse : Shows AFP server information.
+
+afp-brute
+afp-brute.nse : Performs password guessing against Apple Filing Protocol (AFP).
+
+afp-ls
+afp-ls.nse : Attempts to get useful information about files from AFP volumes. The output is intended to resemble the output of ls.
+
+afp-showmount
+afp-showmount.nse : Shows AFP shares and ACLs.
+
+afp-path-vuln
+afp-path-vuln.nse : Detects the Mac OS X AFP directory traversal vulnerability, CVE-2010-0533.
+
+nmap --script=afp* <targetIP>
+
+

@@ -1,11 +1,82 @@
+# Pentesting SSL/TLS Services
+
+# Enumeration of web SSL/TLS certificate (metasploit)
+;; Parses the server SSL certificate to obtain the common name and signature algorithm.
+msf > use auxiliary/scanner/http/ssl
+msf > run 
+
+# Enumeration of SSL/TLS version & POODLE scanner (metasploit)
+msf > use auxiliary/scanner/http/ssl_version
+msf > run
+;; if Sample output shows [+] 10.10.xx.xx:443 accepts SSLv3, system is vulnerable to POODLE
+
+# Enumeration - OpenSSL Server-Side ChangeCipherSpec Injection Scanner
+;; Checks for the OpenSSL ChangeCipherSpec (CCS) Injection vulnerability
+;; (CVE-2014-0224). The problem exists in the handling of early CCS
+;; messages during session negotiation. There's a NSE for the same
+;; ssl-ccs-injection.nse.
+msf > use auxiliary/scanner/ssl/openssl_ccs
+msf > run
+
+# Enumeration - OpenSSL Heartbeat (Heartbleed) Information Leak
+msf > use auxiliary/scanner/ssl/openssl_heartbleed
+msf > run
+;; vulnerable if sample output is [+] 10.10.xx.xx:443 - Heartbeat response with leak
+
+# Check POODLE (nmap)
+nmap -p 443 --script ssl-poodle 223.30.xx.xx -n
+
+# Check LogJam
+;; ssl-dh-params : Weak ephemeral Diffie-Hellman parameter detection
+;; for SSL/TLS services. This script simulates SSL/TLS handshakes using
+;; ciphersuites that have ephemeral Diffie-Hellman as the key exchange
+;; algorithm.
+;; Diffie-Hellman MODP group parameters are extracted and analyzed for
+;; vulnerability to Logjam (CVE 2015-4000) and other weaknesses.
+nmap --script=ssl-dh-params -p 443 10.10.xx.xx -n
+
+
+# Check Heartbleed (nmap)
+nmap -p 443 --script ssl-heartbleed 223.30.xx.xx -n
+
+# Enumeration - SSLv2 (nmap)
+nmap --script sslv2 www.yahoo.com
+
+
+# Enumeration - Certificate (nmap)
+;; Retrieves a server’s SSL certificate. The amount of information printed
+;; about the certificate depends on the verbosity level. With no extra
+;; verbosity, the script prints the validity period and the commonName,
+;; organizationName, stateOrProvinceName, and countryName of the subject.
+nmap --script ssl-cert www.yahoo.com
+
+
+# Enumeration - Date and Time of target host (nmap)
+nmap --script ssl-date www.yahoo.com      ;; retrieves the target date
+
+# Enumeration - Ciphers (nmap)
+;; Each ciphersuite is shown with a letter grade (A through F) indicating
+;; the strength of the connection.
+nmap --script ssl-enum-ciphers www.yahoo.com
+
+
+# Enumeration - Check Google Certification Catalog
+;; ssl-google-cert-catalog.nse : Queries Google’s Certificate Catalog for the SSL certificates retrieved from target hosts.
+;; The Certificate Catalog provides information about how recently and
+;; for how long Google has seen the given certificate. If a certificate
+;; doesn’t appear in the database, despite being correctly signed by a
+;; well-known CA and having a matching domain name, it may be suspicious.
+nmap --script ssl-google-cert-catalog www.yahoo.com msf > use auxiliary/pro/web_ssl_scan
+
+
+# Enumeration (openssl)
 openssl s_client -host www.yahoo.com -port 443
+
+# Vulnerability Check
 sslscan www.yahoo.com
 tlssled www.yahoo.com 443
-nmap --script sslv2 www.yahoo.com
-nmap --script ssl-cert www.yahoo.com
-nmap --script ssl-date www.yahoo.com
-nmap --script ssl-enum-ciphers www.yahoo.com
-nmap --script ssl-google-cert-catalog www.yahoo.com
-msf > use auxiliary/pro/web_ssl_scan
+
+# Other
+## Metasploit Modules that can be useful
 msf > use auxiliary/scanner/ssl/openssl_heartbleed
 msf > use auxiliary/server/openssl_heartbeat_client_memory

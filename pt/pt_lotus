@@ -1,0 +1,8 @@
+# Pentesting Lotus
+
+
+msf > auxiliary/scanner/lotus/lotus_domino_hashes  ;; Lotus Domino Password Hash Collector
+msf > auxiliary/scanner/lotus/lotus_domino_login   ;; Lotus Domino Brute Force Utility
+msf > auxiliary/scanner/lotus/lotus_domino_version ;; Lotus Domino Version
+
+

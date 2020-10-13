@@ -1,4 +1,7 @@
 # responder
+# NOTE: do not use the Spiderlab original version of responder since it is not
+# mantained anymore, instead use: https://github.com/lgandx/Responder
+# Reference: https://byt3bl33d3r.github.io/practical-guide-to-ntlm-relaying-in-2017-aka-getting-a-foothold-in-under-5-minutes.html
 # Common flags:
 # -f    fingerprint hosts
 # -r    Enable answers for netbios wredir suffix queries. This may break stuff (Default: Off)

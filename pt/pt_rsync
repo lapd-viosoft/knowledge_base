@@ -1,7 +1,23 @@
-rsync -a user@host::tools/
+# Pentest rsync
 
-nmap -p 873 --script rsync-brute --script-args 'rsync-brute.module=www' target
+# Enumeration - List available shares (may require a password)
+rsync rsync://share@your-ip-or-hostname/
 
+# Enumeration - Determin modules and if password required (nmap)
 nmap -p 873 --script rsync-list-modules target
 
+# Enumeration - Determine modules and if password required (metasploit)
 msf >use auxiliary/scanner/rsync/modules_list
+
+# rsync a target
+rsync -a user@host::tools/
+;; or 
+
+rsync -v --progress --partial rsync://pub@your-ip-or-hostname/pub/someFile
+;; (you can abbreviate --partial --progress as -P). Your file should now be downloading.
+
+rsync -aPv rsync://pub@your-ip-or-hostname/pub/someDirectory .
+;; Your directory should now be downloading
+
+# Bruteforce (nmap)
+nmap -p 873 --script rsync-brute --script-args 'rsync-brute.module=www' target

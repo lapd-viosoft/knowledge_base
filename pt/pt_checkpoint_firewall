@@ -1,0 +1,11 @@
+# Pentesting Checkpoint Firewall-1 Topology (port 264)
+
+
+# Enumeration (metasploit)
+;; Module sends a query to the port 264/TCP on CheckPoint Firewall-1
+;; firewalls to obtain the firewall name and management station (such as
+;; SmartCenter) name via a pre-authentication reques
+msf > use auxiliary/gather/checkpoint_hostname
+msf > set RHOST <targetIP>
+msf > run
+

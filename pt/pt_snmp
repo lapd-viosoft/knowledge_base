@@ -59,7 +59,7 @@ snmp-check $TARGET
 1.3.6.1.2.1.6.13.1.3 TCP Local Ports
 
 
-# Metasploit Modules
+# Metasploit Modules for SNMP enumeration
 
 auxiliary/scanner/snmp/snmp_enum
 auxiliary/scanner/snmp/snmp_enum_hp_laserjet
@@ -72,6 +72,8 @@ auxiliary/scanner/snmp/snmp_login
 snmpcheck -p 161 -c public -t target
 snmpwalk -v1 -c public target
 msf > use auxiliary/scanner/snmp/snmp_enum
+;; show creds
+creds -p 161 -R
 
 
 

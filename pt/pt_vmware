@@ -1,0 +1,5 @@
+# Pentesting VMware ESXi
+
+# Fingerprint esxi
+use auxiliary/scanner/vmware/esx_fingerprint
+

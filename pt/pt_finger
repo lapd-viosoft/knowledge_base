@@ -10,6 +10,17 @@
 
 # Gather information about user at specific IP address
 finger <username>@<IP>
+;; or
+finger root <IP>
 
 # Gather information from metasploit 'finger_users'
 use auxiliary/scanner/finger/finger_users
+;; is we imported a db we can check all the finger enabled hosts
+msfconsole > services -p 79 -u -R
+
+# Nmap finger script
+;; finger.nse : Attempts to retrieve a list of usernames using the finger service
+nmap --script=finger <target_IP>
+
+# OffTopic (get wather for your city)
+finger newdelhi@graph.no

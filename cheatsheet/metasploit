@@ -1,11 +1,25 @@
+# Create a new workspace for an engagement
+workspace -a <Engagement_Name>
+
+# Switch to a workspace
+workspace <Engagement_Name>
+
 # Initialize Database (outside msfconsole)
 msfdb init
 ;; note that after you might need to add some pgsql executables to the PATH
 ;; they generally reside in /usr/lib/postgresql$version/bin/
-;; hemce something like: export PATH=$PATH:/usr/lib/postgresql/9.5/bin/
+;; hence something like: export PATH=$PATH:/usr/lib/postgresql/9.5/bin/
 
 # Check db connection
 db_status
+
+# Import nmap scans
+db_import /root/Documents/Project_Location/Engagement_Name/Internal/Site_10.*.*.0_*/nmap_scans/Port_Scan/*.xml
+
+# Show open services
+services -c port,name -u -o /tmp/ports
+cat /tmp/ports | cut -d , -f2,3 | sort | uniq | tr -d \" | grep -v -E 'port|tcpwrapped' | sort -n
+
 
 # See help
 help

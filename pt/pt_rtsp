@@ -1,0 +1,8 @@
+# Pentest RTSP
+
+# Enumeration - Supported Methods (nmap)
+nmap -p 8554 --script rtsp-methods 10.10.xx.xx -sV
+
+# Bruteforce (nmap)
+nmap --script rtsp-url-brute -p 554 <ip>
+

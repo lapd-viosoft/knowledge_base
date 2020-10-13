@@ -90,8 +90,9 @@ rpcclient -U "DOMAINNAME.LOCAL\fsmith" 10.10.10.175
 enum4linux <ip_target>
 
 
-# Identify SMB versions
-Metasploit module `scanner/smb/smb_version`
+# Identify SMB versions (metasploit)
+msf > use auxiliary/scanner/smb/smb_version
+msf > run
 
 
 # Try to Bruteforce Windows Credentials
