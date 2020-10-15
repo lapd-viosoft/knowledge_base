@@ -23,6 +23,12 @@ The process to find and use kernel exploits is:
 NOTE: Kernel exploits are often unstable and may be one-shot
 or cause system crash.
 
+We can get some suggestions also from a metasploit meterpreter
+session by doing:
+meterpreter > run post/multi/recon/local_exploit_suggester
+
+NOTE: This does not work so well on x64 machines.
+
 ## Kernel Exploits (wes)
 python wes.py systeminfo.txt -i 'Elevation of Privilege' --exploits-only | less
 ;; where systeminfo.txt is the output provided by `systeminfo` that we should collect
@@ -512,7 +518,9 @@ meterpreter > getuid
 ;; handles permissions - it uses the Primary Token of the process and not
 ;; the impersonated token to determine what the process can or cannot
 ;; do). Ensure that you migrate to a process with correct permissions
-meterpreter > migrate <PID_of_some_system_process_that_is_stable_such_as_services.exe>
+meterpreter > migrate <PID_of_some_system_process_that_is_stable_such_as_services.exe_or_spoolsv.exe>
+;; or
+meterpreter > migrate -n <name_of_some_system_process_that_is_stable_such_as_services.exe_or_spoolsv.exe>
 
 
 # Other Helpful Tools for Privesc Enumeration

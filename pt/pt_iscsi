@@ -1,0 +1,28 @@
+# Pentest iSCSI
+# Default Port is 3260
+
+Internet Small Computer Systems Interface, an Internet Protocol (IP)-based
+storage networking standard for linking data storage facilities.
+Good articles are:
+https://pig.made-it.com/iSCSI.html
+https://ptestmethod.readthedocs.io/en/latest/LFF-IPS-P2-VulnerabilityAnalysis.html#iscsi-port-3260
+
+# Enumeration (nmap)
+nmap -sV -p 3260 192.168.xx.xx --script=iscsi-info
+
+# Enumeration (iscsiadm)
+iscsiadm -m discovery -t sendtargets -p <IP>
+;; returns
+ <IP>:3260,1 iqn.1992-05.com.emc:fl1001433000190000-3-vnxe
+
+# Enumeration - Interface (iscsiadm)
+iscsiadm -m node --targetname="iqn.1992-05.com.emc:fl1001433000190000-3-vnxe" -p <IP>
+
+# Login (iscsiadm)
+iscsiadm -m node --targetname="iqn.1992-05.com.emc:fl1001433000190000-3-vnxe" -l -p <IP> --login -
+
+# Logout (iscsiadm)
+iscsiadm -m node --targetname="iqn.1992-05.com.emc:fl1001433000190000-3-vnxe" -p <IP> --logout
+
+
+

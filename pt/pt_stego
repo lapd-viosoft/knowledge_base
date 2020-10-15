@@ -1,8 +1,8 @@
-### Steghide
-# Steghide is a steganography program that hides data in various kinds of image
-# and audio files, only supports these file formats: JPEG, BMP, WAV and AU. but
-# it’s also useful for extracting embedded and encrypted data from other files.
-# It can be installed with apt however the source can be found on github.
+# Steghide
+## Steghide is a steganography program that hides data in various kinds of image
+## and audio files, only supports these file formats: JPEG, BMP, WAV and AU. but
+## it’s also useful for extracting embedded and encrypted data from other files.
+## It can be installed with apt however the source can be found on github.
 
 
 # displays info about a file whether it has embedded data or not
@@ -12,6 +12,10 @@ steghide info <file>
 steghide extract -sf <file>
 OR 
 steghide -xf <filename.jpg>
+
+# Crack password for image metadata
+pip3 install stegcracker
+stegcracker image.png /usr/share/wordlists/rockyou.txt
 
 # Alternative tools that may be worth to check out and try are:
 # - [OpenStego](https://www.openstego.com/)

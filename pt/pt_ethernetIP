@@ -1,0 +1,21 @@
+# Pentest EthernetIP-TCP-UDP 
+# Default Port: 44818
+
+If we found TCP Port 44818, probably it’s running Ethernet/IP. Rockwell
+Automation/ Allen Bradley developed the protocol and is the primary
+maker of these devices, e.g. ControlLogix and MicroLogix, but it is an
+open standard and a number of vendors offer an EtherNet/IP interface
+card or solution.
+
+MicroLogix 1100: Default Username:password is administrator:ml1100
+MicroLogix 1400: Default Username:password is administrator:ml1400
+User manual is MicroLogix 1400 guest:guest is another default
+password.
+
+# Enumeration (nmap)
+nmap -p 44818 -n --script enip-enumerate x.x.x.x -Pn
+
+
+Rockwell Automation has
+
+

@@ -1,22 +1,78 @@
 # Pentest OracleDB
-# OracleDB by default runs on port 1521
+## References:
+## https://ptestmethod.readthedocs.io/en/latest/LFF-IPS-P2-VulnerabilityAnalysis.html#oracle-port-1521
+## https://github.com/rapid7/metasploit-framework/wiki/How-to-get-Oracle-Support-working-with-Kali-Linux
+## http://www.blackhat.com/presentations/bh-usa-09/GATES/BHUSA09-Gates-OracleMetasploit-SLIDES.pdf
+
+## OracleDB by default runs on port 1521
 ## Can be accessed through ftp. Some default passwords here: https://docs.oracle.com/cd/B10501_01/win.920/a95490/username.htm
 ## Default logins:
 ##    - sys:sys
 ##    - scott:tiger
+## Typically you will be able to connect to Oracle as an unprivileged
+## account such as SCOTT/TIGER
+
+##We need 4 things to connect to an Oracle DB.
+##  - IP
+##  - Port
+##  - Service Identifier (SID)
+##  - Username/Password
 
 
+# Enumeration - Get Version (metasploit)
+use auxiliary/scanner/oracle/tnslsnr_version
+run
+
+# Enumeration - Get Version (tnscmd10g)
 tnscmd10g version -h <ip_address>
+
+# Enumeration - Get Status (tnscmd10g)
 tnscmd10g status -h <ip_address> 
 
+# Bruteforce - SIDs (nmap)
 We can also enumerate SIDs and users and check for default credentials with the
 following nmap scripts:
-```sh
 nmap --script=oracle-sid-brute  $IP
 nmap --script=oracle-brute  $IP
-```
-Typically you will be able to connect to Oracle as an unprivileged
-account such as SCOTT/TIGER
+;; or
+nmap -n -v -sV -Pn -p 1521 --script=oracle-enum-users --script-args sid=ORCL,userdb=users.txt 192.168.1.10
+nmap -n -v -sV -Pn -p 1521 --script=oracle-sid-brute 192.168.1.10
+;; or if multiple ports are used
+nmap --script=oracle-sid-brute --script-args=oraclesids=/path/to/sidfile -p 1521-1560 <host>
+nmap --script=oracle-sid-brute -p 1521-1560 <host>
+
+
+# Enumeration - SIDs (metasploit)
+;; Oracle TNS Listener SID Enumeration: This module simply queries the TNS
+;; listner for the Oracle SID. With Oracle 9.2.0.8 and above the listener
+;; will be protected and the SID will have to be bruteforced or guessed.
+use auxiliary/scanner/oracle/sid_enum
+run
+
+# Bruteforce - SIDs (metasploit)
+;; Oracle TNS Listener SID Bruteforce: This module queries the TNS listner
+;; for a valid Oracle database instance name (also known as a SID). Any
+;; response other than a “reject” will be considered a success. If a
+;; specific SID is provided, that SID will be attempted. Otherwise, SIDs
+;; read from the named file will be attempted in sequence instead.
+use auxiliary/scanner/oracle/sid_brute
+run
+
+
+# Login (metasploit)
+;; requires RHOSTS, RPORTS, SID to test the default usernames and passwords.
+use auxiliary/scanner/oracle/oracle_login
+run
+
+# Other Metasploit Modules
+
+auxiliary/scanner/oracle/emc_sid
+auxiliary/scanner/oracle/oracle_login 
+auxiliary/scanner/oracle/sid_brute
+auxiliary/scanner/oracle/sid_enum
+auxiliary/scanner/oracle/tnslsnr_version
+auxiliary/scanner/oracle/tnspoison_checker
+
 
 After connecting you may want to:
 - Escalate privileges to become

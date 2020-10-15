@@ -1,0 +1,10 @@
+# Pentest AJP
+# Default Port: 8009
+
+;; AJP is a wire protocol. Its an optimized version of the HTTP
+;; protocol to allow a standalone web server such as Apache to talk to
+;; Tomcat. Historically, Apache has been much faster than Tomcat at serving
+;; static content. The idea is to let Apache serve the static content when
+;; possible, but proxy the request to Tomcat for Tomcat related contents.
+
+# Reference: https://ptestmethod.readthedocs.io/en/latest/LFF-IPS-P2-VulnerabilityAnalysis.html#ajp-apache-jserv-protocol-port-8009

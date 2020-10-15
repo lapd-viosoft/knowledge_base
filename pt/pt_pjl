@@ -1,0 +1,16 @@
+# Pentest PJL
+# Default Port: 9100
+
+Use the following metasploit modules:
+
+Name                                             Disclosure Date  Rank    Description
+----                                             ---------------  ----    -----------
+auxiliary/scanner/printer/printer_delete_file                     normal  Printer File Deletion Scanner
+auxiliary/scanner/printer/printer_download_file                   normal  Printer File Download Scanner
+auxiliary/scanner/printer/printer_env_vars                        normal  Printer Environment Variables Scanner
+auxiliary/scanner/printer/printer_list_dir                        normal  Printer Directory Listing Scanner
+auxiliary/scanner/printer/printer_list_volumes                    normal  Printer Volume Listing Scanner
+auxiliary/scanner/printer/printer_ready_message                   normal  Printer Ready Message Scanner
+auxiliary/scanner/printer/printer_upload_file                     normal  Printer File Upload Scanner
+auxiliary/scanner/printer/printer_version_info                    normal  Printer Version Information Scanner
+auxiliary/server/capture/printjob_capture                         normal  Printjob Capture Service

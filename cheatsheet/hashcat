@@ -1,31 +1,47 @@
 # hashcat
+# general syntax:
+# hashcat <file_with_hashes> <wordlist(s)> -o <output_results>
 # common flags:
 # -a - specifies attack mode:
 #       0: dictionary
 #       3: brute force
 # -m - specifies type of hash
+# Identify hash with "hash-id" or with online tools such as:
+# https://www.tunnelsup.com/hash-analyzer/
 
 # Crack raw MD5 passwords
-hashcat -a 0 -m 0 example0.hash example.dict -r rules/best64.rule
+hashcat -a 0 -m 0 example0.hash example.dict -r rules/best64.rule -o results.txt
+
+# Crack raw SHA1 passwords
+hashcat64.exe -m 100 hash.txt /usr/share/wordlists/passwords/rockyou.txt -o results.txt
+
+# Crack raw SHA256 (sha2-256) passwords
+hashcat64.exe -m 1400 hash.txt /usr/share/wordlists/passwords/rockyou.txt -o results --force
+
+# Crack bcrypt passwords
+;; these start with $2<something>*$
+hashcat64.exe -m 3200 hash.txt /usr/share/wordlists/passwords/rockyou.txt -o results --force
 
 # Crack Old Windows System Passwords (LM)
-hashcat -m 3000 -a 3 hash.txt
+hashcat -m 3000 -a 3 hash.txt -o results.txt
 
 # Crack Modern Windows System Passwords (NT)
-hashcat -m 1000 -a 3 hash.txt
+hashcat -m 1000 -a 3 hash.txt -o results.txt
 ;; or use a dictionary
-hashcat -m 1000 -a 0 hash.txt /usr/share/wordlists/rockyou.txt
-hashcat -m 1000 --force <hashhere> /usr/share/wordlists/rockyou.txt
+hashcat -m 1000 -a 0 hash.txt /usr/share/wordlists/rockyou.txt -o results.txt
+hashcat -m 1000 --force <hashhere> /usr/share/wordlists/rockyou.txt -o results.txt
 
 # Crack Net-NTLMv1 passwords
-hashcat -m 5500 -a 3 hash.txt
+hashcat -m 5500 -a 3 hash.txt -o results.txt
 
 # Crack Net-NTLMv2 passwords
-hashcat -m 5600 passwd_ntlmv2.txt passwordlists/*
+hashcat -m 5600 passwd_ntlmv2.txt passwordlists/* -o results.txt
+
+# Crack sha512crypt passwords (used by modern GNU/Linux systems)
+hashcat -m 1800 hash2_3.txt /usr/share/wordlists/rockyou.txt
 
 # Crack JWT tokens
-hashcat -m 16500 hash.txt -a 3 -w 3 ?a?a?a?a?a?a
-
+hashcat -m 16500 hash.txt -a 3 -w 3 ?a?a?a?a?a?a -o results.txt
 
 # Show cracked hashes
 hashcat -m <mode> <file_with_hashes> --show

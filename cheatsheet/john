@@ -1,4 +1,11 @@
 ﻿# John
+# Installation:
+# git clone https://github.com/magnumripper/JohnTheRipper -b bleeding-jumbo
+# Compile JtR and enable/disable required features
+# cd JohnTheRipper/src/
+# ./configure
+# make clean && make -s
+#
 # John the Ripper has different modes:
 # - single:      use GECOS/Full Field of accounts + lots of mangling rules;
 # - wordlist:    use a wordlist;
@@ -8,7 +15,7 @@
 # and finally go for "incremental" mode.
 # This is a good way to proceed in case of system passwords.
 #
-# Incremental modes are:
+# Incremental modes (for bruteforce) are:
 # - ascii       (95 chars, all ASCII printable)
 # - alnum       (62 chars, all letters + digits)
 # - alpha       (52 chars, all letters)
@@ -20,9 +27,16 @@
 # - upper       (26 chars, uppercase letters)
 # - digits      (10 chars, digits)
 #
+# Note: If we want to check what wordlist is generated when appllying rules/modes
+# we can use the --stdout option.
+#
+# Identify hash with "hash-id" or with online tools such as:
+# https://www.tunnelsup.com/hash-analyzer/
+#
 # For guidance on how to choose password list see cheatsheets:
 # - list_passwords
 # - list_common_passwords
+#
 
 # To show the types of passwords that John can crack with crack speed (in cracks/second)
 john --test
@@ -102,6 +116,25 @@ john --fork=4 --format=netntlmv2 --wordlist=/usr/wordlists/rockyou.txt passwd_nt
 # MD5
 john --wordlist=/usr/share/wordlists/passwords/rockyou.txt  --format=Raw-MD5 pwd.txt
 
+# SHA1
+john --wordlist=/usr/share/wordlists/passwords/rockyou.txt  --format=Raw-sha1 pwd.txt
+
+# SHA256
+john --wordlist=/usr/share/wordlists/passwords/rockyou.txt  --format=Raw-sha256 pwd.txt
+
+# bcrypt
+;; these hashes start with $2<something>$...
+john --wordlist=/usr/share/wordlists/passwords/rockyou.txt  --format=bcrypt pwd.txt
+
+# MD4 + Jumbo Rules
+john --wordlist=/usr/share/wordlists/passwords/rockyou.txt --rules=jumbo --format=Raw-MD4 pwd.txt
+
+# NT (these are the modern windows passwords)
+john ./hashes.txt --format=NT --wordlist=/usr/wordlists/rockyou.txt
+
+# SHA512crypt (used by modern GNU/Linux systems)
+john --wordlist=/usr/share/wordlists/passwords/rockyou.txt --rules=jumbo --format=sha512crypt pwd.txt
+
 
 # ZIP / RAR
 ## Check if archive is encrypted
@@ -119,3 +152,4 @@ john hashes.txt --wordlist /usr/share/wordlists/rockyou.txt
 aircrack-ng Kalip300-01.cap -J john
 hccap2john john.hccap > wpa_hashes.txt
 john wpa_hashes.txt --wordlist /usr/share/wordlist/rockyou.txt
+

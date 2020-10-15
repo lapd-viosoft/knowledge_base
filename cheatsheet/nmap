@@ -1,4 +1,5 @@
 # nmap
+# Reference: https://nmap.org/presentations/BHDC08/bhdc08-slides-fyodor.pdf
 # nmap operations can be subdivided into two phases:
 # - discovery phase (or ping phase), where hosts are discovered
 #       controlled through the -P options
@@ -170,3 +171,18 @@ searchsploit --nmap nmap_scan.xml
 
 # Port Knocking with nmap
 for x in 7000 8000 9000; do nmap -Pn --host-timeout 201 --max-retries 0 -p $x 1.1.1.1; done
+
+## Nmap Scan Strategies
+
+# Nmap Scan strategy 1 (TCP and UDP)
+nmap -sS -T4 -Pn -oA TopTCP -iL LiveHosts.txt
+nmap -sU -T4 -Pn -oA TopUDP -iL LiveHosts.txt
+nmap -sS -T4 -Pn --top-ports 3674 -oA TopTCP_3674 -iL LiveHosts.txt
+nmap -T5 --open -oA AllTCP -sS -vvv --min-rate=1000 --max-retries=2 -p- -iL LiveHosts.txt
+;; once we found the open ports we can run the scripts with:
+nmap -T4 -p <ports> -sS -sV -sC -iL LiveHosts.txt
+
+# Nmap Scan strategy 2 (Fast TCP)
+nmap -T5 --open -oA AllTCP -sS -vvv --min-rate=1000 --max-retries=2 -p- -iL LiveHosts.txt
+;; once we found the open ports we can run the scripts with:
+nmap -T4 -p <ports> -sS -sV -sC -iL LiveHosts.txt

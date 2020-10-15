@@ -1,7 +1,50 @@
-# Find
+# find
 # Remember that:
 # - `-name`  is for case-sensitive search
 # - `-iname` is for case-INsensitive search
+# Basic syntax:
+# find <where> <what>
+# It is useful to redirect errors with 2>/dev/null
+
+# Specifying size of a file
+# The size of a file is specified with the -size flag. When using
+# numerical values, the formats -n, +n, and n can be used, where n is a
+# number. 
+# -n matches values lesser than n,
+# +n matches values greater than n, 
+# n matches values exactly n.
+# To specify a size, you also need a suffix. c is the suffix for bytes,
+# k for KiB's, and M for MiB's. So, if you want to specify a size less
+# than 30 bytes, the argument -30c should be used.
+
+# Specifying permissions
+# The -perm flag is used to specify permissions, either in octal
+# form (ex. 644) or in symbolic form (ex. u=r). See here for a short
+# reference. If you specify the permission mode as shown above (ex. 644 or
+# u=r), then find will only return files with those permissions exactly. You
+# can use the – or / prefix to make your search more inclusive. Using the
+# – prefix will return files with at least the permissions you specify;
+# this means that the -444 mode will match files that are readable by
+# everyone, even if someone also has write and/or execute permissions. Using
+# the / prefix will return files that match any of the permissions you have
+# set; this means that the /666 mode will match files that are readable
+# and writeable by at least one of the groups (owner, group, or others).
+
+# Specifying time
+#  time-related are more complex but may
+#  prove useful. The flag consists of a word and a prefix. The words are
+#  min and time, for minutes and days, respectively. The prefixes are a, m,
+#  and c, and are used to specify when a file was last accessed, modified,
+#  or had its status changed. As for the numerical values, the same rules of
+#  the -size flag apply, except there is no suffix. To put it all together:
+#  in order to specify that a file was last accessed more than 30 minutes
+#  ago, the option -amin +30 is used. To specify that it was modified less
+#  than 7 days ago, the option -mtime -7 is used. (Note: when you want to
+#  specify that a file was modified within the last 24 hours, the option
+#  -mtime 0 is used.)
+
+# Find all regular files who contain in their name the word "exploit"
+find / -type f -name *exploit*
 
 # Find files by case-insensitive extension (ex: .jpg, .JPG, .jpG)
 find . -iname "*.jpg"
@@ -9,11 +52,38 @@ find . -iname "*.jpg"
 # Find files named <randomstring>-00-music-<randomstring>-<artist>-2000.mp3 (case insensitive)
 find . -iname "*-00-music-*-*-2000.mp3"
 
-# Find directories
+# Find all directories
 find . -type d
 
-# Find regular files
+# Find all regular files
 find . -type f
+
+# Find all files owned by the user "kittycat"
+find / -type f -user kittycat
+
+# Find all files that are exactly 150 bytes in size
+find / -type f -size n 150
+
+# Find all files in the /home directory (recursive) with size less than 2 KiB’s and extension ".txt"
+find /home -type f -size -2k -name *.txt
+
+# Find all files that are exactly readable and writeable by the owner, and readable by everyone else (octal format)
+find / -type f -perm 644
+
+# Find all files that are only readable by anyone (use octal format)
+find / -type f -perm 444
+
+# Find all files with write permission for "others" with extension ".sh" (symbolic format)
+find / -type f -perm o=w -name *.sh
+
+# Find all files in the /usr/bin directory that are owned by root and have at least the SUID permission (symbolic format)
+find /usr/bin -type f -user root -perm u=s
+
+# Find all files that were not accessed in the last 10 days with extension ".png"
+find / -type f -atime +10 -name *.png
+
+# Find all files in the /usr/bin directory (recursive) that have been modified within the last 2 hours
+find /usr/bin -type f -mmin -120
 
 # Find files matching a string/regex
 find . | grep -i '<regex here>'

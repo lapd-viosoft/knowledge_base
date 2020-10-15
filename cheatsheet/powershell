@@ -1,0 +1,4 @@
+# powershell
+
+# Bypass Execution Policy (allowing to run scripts)
+powershell -ep bypass

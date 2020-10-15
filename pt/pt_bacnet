@@ -1,0 +1,10 @@
+# Pentest BACNet
+# Default Port: 47808
+
+If we found UDP Port 47808 open, we can use BACnet-discover-enumerate
+NSE created by Redpoint Should read Discover Enumerate bacnet devices.
+
+
+# Enumeration (nmap)
+nmap -sU -p 47808 -n -vvv --script BACnet-discover-enumerate --script-args full=yes 182.X.X.X
+

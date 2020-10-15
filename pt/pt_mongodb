@@ -1,4 +1,30 @@
-msf >use auxiliary/scanner/mongodb/mongodb_login
-$ mongo host:port/database
-MongoDB shell version: 2.6.12
+# Pentest MongoDB
+# Default Port: 27017
+
+
+# Enumeration - Get Info on mongoDB instance (nmap)
+nmap <IP> -p 27017 -sV --script mongodb-info
+
+# Enumeration - Find Databases (nmap)
+nmap <IP> -p 27017 -sV --script mongodb-databases.nse
+
+# Bruteforce (nmap)
+nmap <IP> -p 27017 -sV --script mongodb-brute -n
+
+# Bruteforce (metasploit)
+msf > use auxiliary/scanner/mongodb/mongodb_login
+msf > run
+
+# Connect to a mongo instance
+mongo host:port/database
+;; or
+mongo <ip> /<databasename>
 > help
+
+
+# Enumeration (mongodb shell)
+mongos> show dbs          ;; show the list of databases
+
+mongos> use <dbname>      ;; use a database
+
+mongos> show collections  ;; show collections can be used to see the tables;

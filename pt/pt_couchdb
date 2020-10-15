@@ -1,0 +1,21 @@
+# Pentest CouchDB
+# Default Port: 5984
+
+# Enumeration - Is It a CouchDB Instance? (curl)
+curl http://IP:5984/
+;;The reply should look something like:
+{"couchdb":"Welcome","version":"0.10.1"}
+
+
+# Enumeration - List DBs
+curl -X GET http://IP:5984/_all_dbs
+;; or
+curl -X GET http://user:password@IP:5984/_all_dbs
+
+
+# Enumeration - List Documents
+curl -X GET http://IP:5984/{dbname}/_all_docs
+
+# Enumeration - Read Value Document
+curl -X GET http://IP:5984/{dbname}/{id}
+
