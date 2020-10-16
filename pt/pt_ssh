@@ -1,8 +1,15 @@
-# SSH Bruteforce with Metasploit
-msf > use auxiliary/scanner/ssh/ssh_login
-msf > run
+# Pentest SSH
+# Default Port: 22
 
-# SSH Enumeration with nmap
+# Enumeration (nmap)
 nmap --script ssh2-enum-algos 192.168.108.197
 nmap --script ssh-hostkey 192.168.108.197
 nmap --script sshv1 192.168.108.197
+
+# Bruteforce (metasploit)
+msf > use auxiliary/scanner/ssh/ssh_login
+msf > run
+
+# Bruteforce (hydra)
+hydra -L users.txt -P 10_million_password_list_top_1000.txt -t 4 192.168.1.69 ssh -vv
+

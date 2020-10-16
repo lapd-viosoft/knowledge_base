@@ -1,0 +1,7 @@
+# SOC Analyst Notes
+
+If we work as SOC analysts, it is appropriate to read the hardening guide
+for the technologies used by our company.
+
+We can find many hardening guides here:
+[CIS](https://www.cisecurity.org/cis-benchmarks/)

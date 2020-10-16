@@ -18,10 +18,10 @@ pip3 install stegcracker
 stegcracker image.png /usr/share/wordlists/rockyou.txt
 
 # Alternative tools that may be worth to check out and try are:
-# - [OpenStego](https://www.openstego.com/)
-# - [Stegpy](https://github.com/Baldanos/Stegpy)
-# - [Outguess](https://outguess.rbcafe.com/)
-# - [jphide](http://linux01.gwdg.de/~alatham/stego.html)
+- [OpenStego](https://www.openstego.com/)
+- [Stegpy](https://github.com/Baldanos/Stegpy)
+- [Outguess](https://outguess.rbcafe.com/)
+- [jphide](http://linux01.gwdg.de/~alatham/stego.html)
 
 
 

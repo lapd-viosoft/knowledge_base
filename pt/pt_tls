@@ -1,4 +1,6 @@
 # Pentesting SSL/TLS Services
+# Reference: http://www.exploresecurity.com/wp-content/uploads/custom/SSL_manual_cheatsheet.html
+# NOTE: Remember that everything above or equal to TLS 1.2 is ok
 
 # Enumeration of web SSL/TLS certificate (metasploit)
 ;; Parses the server SSL certificate to obtain the common name and signature algorithm.

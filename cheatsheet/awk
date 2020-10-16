@@ -30,3 +30,6 @@ seq 10 | awk '{print 2*$1, $1*$1}'
 
 # Get a random sample from a file
 awk 'BEGIN {srand()} {printf "%05.0f %s \n",rand()*99999, $0; }' data.txt | sort -n | head -100 | sed 's/^[0-9]* //'
+
+# Get all strings with a length of 7
+awk ' length($0) == 7 ' file 
