@@ -95,6 +95,9 @@ Get-NetComputer -Ping
 Get-NetGroup
 Get-NetGroup -FullData
 
+# List administrative groups
+Get-NetGroup -GroupName *admin*
+
 # List groups from another domain
 Get-NetGroup -Domain myforest.local
 

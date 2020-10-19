@@ -1,0 +1,12 @@
+# SMB Server
+
+# Impacket (python)
+python smbserver.py WORKSPACE /dir
+smbserver.py devel /root/Desktop/htb/devel 
+
+# Impacket bash function (docker)
+smbservehere() {
+    local sharename
+    [[ -z $1 ]] && sharename="SHARE" || sharename=$1
+    docker run --rm -it -p 445:445 -v "${PWD}:/tmp/serve" rflathers/impacket smbserver.py -smb2support $sharename /tmp/serve
+}

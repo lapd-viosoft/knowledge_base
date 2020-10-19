@@ -18,6 +18,7 @@ pip3 install stegcracker
 stegcracker image.png /usr/share/wordlists/rockyou.txt
 
 # Alternative tools that may be worth to check out and try are:
+- [Aperisolve](https://aperisolve.fr/) (this does most, if not all, of the things)
 - [OpenStego](https://www.openstego.com/)
 - [Stegpy](https://github.com/Baldanos/Stegpy)
 - [Outguess](https://outguess.rbcafe.com/)

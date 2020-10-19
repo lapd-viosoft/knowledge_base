@@ -1,0 +1,3 @@
+# wmiexec from Impacket
+
+python wmiexec.py  Joe@192.168.2.100 "dir C:\Users"

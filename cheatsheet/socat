@@ -29,6 +29,11 @@ socat TCP4:127.0.0.1:2222 TCP4:127.0.0.1:9999
 # To transform our machine as a forwarder to google.com
 socat TCP-LISTEN:8080,fork,reuseaddr TCP:google.com:443
 
+# To connect port 81 with port 9000, this is useful to let unprivileged users use privileged ports
+;; We can use this with ncat or metasploit to let target machines connect to port 80,53 or 443
+;; but still use metasploit as a non-root user
+sudo socat TCP4-LISTEN:80,reuseaddr,fork TCP4:127.0.0.1:9000
+
 # To connect to http-server (port 80 on 'butzel.info')
 socat TCP4:butzel.info:80 -
 

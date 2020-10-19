@@ -8,6 +8,10 @@
 # -m - specifies type of hash
 # Identify hash with "hash-id" or with online tools such as:
 # https://www.tunnelsup.com/hash-analyzer/
+# NOTE: For serious cracking, consider using the OneRuleToRuleThemAll
+# with the rockyou.txt password list.
+# We could also consider using colabcat on the google cloud
+# if we don't have physical hardware
 
 # Crack raw MD5 passwords
 hashcat -a 0 -m 0 example0.hash example.dict -r rules/best64.rule -o results.txt
@@ -26,6 +30,8 @@ hashcat64.exe -m 3200 hash.txt /usr/share/wordlists/passwords/rockyou.txt -o res
 hashcat -m 3000 -a 3 hash.txt -o results.txt
 
 # Crack Modern Windows System Passwords (NT)
+;; these are the hashes extracted with mimikatz lsadump::lsa /patch
+;; or the ones extracted with SAM and SYSTEM
 hashcat -m 1000 -a 3 hash.txt -o results.txt
 ;; or use a dictionary
 hashcat -m 1000 -a 0 hash.txt /usr/share/wordlists/rockyou.txt -o results.txt

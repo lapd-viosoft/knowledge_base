@@ -1,0 +1,9 @@
+# FTP Server
+
+# pyftpdlib (python)
+pip install pyftpdlib
+python -m pyftpdlib -p 21
+
+# FTP Server (metasploit)
+use auxiliary/server/ftp
+auxiliary/server/tftp

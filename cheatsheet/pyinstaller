@@ -8,3 +8,7 @@ pyinstaller script.py --onefile
 
 # Convert python module to executable
 pyinstaller --paths pymodule/ --onefile pymodule/__main__.py -n exename
+
+# Convert python module to executable from GNU/Linux for Windows (wine)
+wine ~/.wine/drive_c/Python38/Scripts/pyinstaller.exe --onefile 18176.py
+
