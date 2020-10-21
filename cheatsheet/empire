@@ -1,0 +1,28 @@
+# Powershell Empire
+Generally Empire nowadays is installed with a GUI
+called "starkiller".
+
+Powershell has different components:
+- Listeners: listeners will listen on a specific port similar to netcat or msf multi/handler;
+- Stagers: these will send off an agent which is similar to a payload;
+- Agents: these are the payloads, and this is where the majority of the interaction happens;
+- Modules: these are specific tools and exploits that can be used with agents like enumeration
+          scripts, privilege escalation tools and so on;
+- Credentials: here we can manage any enumerated credentials found from a device or module;
+- Reporting: this allows us to see shell commands and modules we have run in the past;
+
+
+## Install
+git clone https://github.com/BC-SECURITY/Empire/
+cd Empire/
+./setup/install.sh
+
+## Launch Empire with REST interface
+;; By using --rest with Empire we start the server as a rest API, which allows us to connect Empire with Starkiller
+./empire --rest
+
+
+
+
+
+
