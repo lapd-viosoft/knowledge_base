@@ -49,3 +49,9 @@ wmic os list brief
 # Installed Programs  
 wmic product list brief                    
 
+# Get Antivirus
+WMIC /Node:localhost /Namespace:\\root\SecurityCenter2 Path AntiVirusProduct Get displayName /Format:List
+
+# Get Antivirus (and additional info)
+WMIC /Node:localhost /Namespace:\\root\SecurityCenter2 Path AntiVirusProduct Get * /value
+

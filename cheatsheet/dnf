@@ -1,13 +1,16 @@
-# To install a package:
+# dnf
+# Package manager for Red Hat/Fedora
+
+# Install a package
 dnf install <package>
 
-# To find packages matching <phrase>:
+# Search for packages matching <phrase>
 dnf search <phrase>
 
 # To find which package provides an executable:
 dnf provides <executable>
 
-# The following are available after installing "dnf-plugins-core"
+## The following are available after installing "dnf-plugins-core"
 
 # To download a package:
 dnf download <package>

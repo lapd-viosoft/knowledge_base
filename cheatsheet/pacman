@@ -1,31 +1,72 @@
-# To search for a package:
-pacman -Ss <package>...
+# pacman
+# package manager for arch and arch-based distros
+Logs are in `/var/log/pacman.log`
+Config is in `/etc/pacman.conf`
 
-# To update the local package base and upgrade all out-of-date packages:
-pacman -Suy
+# Search for a package
+pacman -Ss <package>
 
-# To force an update of local package base and upgrade all packages
-pacman -Suyy
+# Update the local package base and upgrade all out-of-date packages
+pacman -Syu
 
-# To install a package:
-pacman -S <package>...
+# Force an update of local package base and upgrade all packages
+pacman -Syyu
 
-# To uninstall a package:
-pacman -R <package>...
+# Install a package
+pacman -S <package>
+;; but the preferred action is:
+pacman -Syu <package>
 
-# To uninstall a package and its depedencies, removing all new orphans:
-pacman -Rcs <package>...
+# Uninstall a package
+pacman -Rs <package>
 
-# To get information about package:
-pacman -Si <package>...
+# Uninstall a package and its depedencies, removing all new orphans
+pacman -Rcs <package>
+
+# Removes packages not included in any repos
+;; Remove dependencies that are no longer needed, because e.g. 
+;; the package which needed the dependencies was removed.
+pacman -Rs - 
+
+# Performs an Autoclean
+;; Autoclean removes only unneeded, obsolete information
+pacman -Sc 
+
+# Performs a Clean
+;; Clean up all local caches. Options might limit what is actually cleaned.
+pacman -Scc 
+
+# Checks which is the package containing a specific file/executable
+pacman -Fs <command>
+;; e.g.,
+pacman -Fs ifconfig
+
+# Checks which is the package containing a specific file/executable (alternative)
+;; checks wich program we have to install in order to have esint.sty
+pkgfile esint.sty 
+
+# To get information about a remote package
+pacman -Si <package>
+
+# To get information about a local package
+pacman -Qi <package>
 
 # To install a package from builded package file (.tar.xz):
 pacman -U <file>
 
-# To list the commands provided by an installed package:
-pacman -Ql <package>... | sed -n -e 's/.*\/bin\///p' | tail -n +2
+# To list all files provided by a local installed package
+pacman -Ql <package>
 
-# To list explicitly installed packages:
+# To list the commands provided by a local installed package
+pacman -Ql <package> | sed -n -e 's/.*\/bin\///p' | tail -n +2
+
+# Display files provided by a remote package
+pacman -Fl
+
+# List all installed packages
+pacman -Q
+
+# List explicitly installed packages
 pacman -Qe
 
 # To list the top-most recent explicitly installed packages (not in the base groups):
@@ -34,9 +75,8 @@ expac --timefmt='%Y-%m-%d %T' '%l\t%n' $(comm -23 <(pacman -Qeq|sort) <(pacman -
 # To list orphan packages (installed as dependencies and not required anymore):
 pacman -Qdt
 
-
 # You can't directly install packages from the Arch User Database (AUR) with pacman.
-# You need yaourt to perform that. But considering yaourt itself is in the AUR, here is how to build a package from its tarball.
+# You need yaourt/yay to perform that. But considering yaourt itself is in the AUR, here is how to build a package from its tarball.
 # Installing a package from AUR is a relatively simple process:
 # - Retrieve the archive corresponding to your package from AUR website
 # - Extract the archive (preferably in a folder for this purpose)

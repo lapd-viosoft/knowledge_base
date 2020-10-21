@@ -1,28 +1,31 @@
-# To find packages matching <phrase>:
+# APT
+# Package management on Debian and Debian based distros
+
+# Find packages matching <phrase>
 apt search <phrase>
 
-# To install package(s):
+# Install package(s)
 apt install <package>...
 
-# To uninstall package(s):
+# Uninstall package(s)
 apt remove <package>...
 
-# To uninstall package(s) and its configuration:
+# Uninstall package(s) and its configuration
 apt purge <package>...
 
-# To show information on a package:
+# Show information on a package
 apt show <package>
 
-# To fetch package list:
+# Fetch an updated package list (update repos)
 apt update
 
-# To download and install updates without installing new package:
+# Download and install updates without installing new package
 apt upgrade
 
-# To perform a full system upgrade:
+# Perform a full system upgrade
 apt update && apt dist-upgrade
 
-# To download a package without installing it. (The package will be downloaded in your current working dir)
+# Download a package without installing it. (The package will be downloaded in your current working dir)
 apt download <package>
 
 # To download source of a package
@@ -31,8 +34,13 @@ apt source <package>
 # To clean cache
 apt clean && apt autoclean
 
-# To display package versions, reverse dependencies and forward dependencies of a package
+# Display package versions, reverse dependencies and forward dependencies of a package
 apt-cache showpkg <package>
 
-# To change cache dir and archive dir (where .deb are stored):
+# Search for a package providing a specific file
+apt install apt-file
+apt-file update
+apt-file search <filename>
+
+# To change cache dir and archive dir (where .deb are stored)
 apt-get -o Dir::Cache="/path/to/destination/dir/" -o Dir::Cache::archives="./" install ...

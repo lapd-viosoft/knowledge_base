@@ -1,0 +1,19 @@
+# Setting aliases in Windows cmd
+
+
+## Setting Aliases
+;; Here I basically create a registry entry telling Windows
+;; that everytime we open cmd.exe the "autorun.cmd" script should run.
+reg add "HKEY_LOCAL_MACHINE\Software\Microsoft\Command Processor" /v "AutoRun" /t REG_EXPAND_SZ /d "%USERPROFILE%\autorun.cmd"
+
+;; then we can copy paste this inside autorun.cmd
+(
+echo @echo off
+echo doskey kbl=kb list $*
+echo doskey kbe=kb edit $*
+echo doskey kba=kb add $*
+echo doskey kbv=kb view $*
+echo doskey kbd=kb delete --id $*
+echo doskey kbg=kb grep $*
+echo doskey kbt=kb list --tags $*
+)> %USERPROFILE%\autorun.cmd

