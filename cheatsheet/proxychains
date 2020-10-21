@@ -1,3 +1,18 @@
+# proxychains
+#
+# Remember that there are three main modes with proxychains:
+# dynamic (favorite): goes through the list of proxies in the same order
+#                     but dynamically skips non-responding proxies
+# strict-mode: goes through a list of proxies and stops if one does not work
+# random: goes through a list of proxies randomly
+
+# Good resources for proxies
+;; always remember that many don't work, so we should test them before usage
+spys.one
+
+# Run a command through proxychains
+proxychains firefox
+
 # Config file can be found at 
 /etc/proxychains.conf
 
