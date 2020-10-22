@@ -1,0 +1,23 @@
+# Managing Windows Firewall
+
+# Turn off Windows Firewall (this will notify the user)
+netsh advfirewall set allprofiles state off
+
+# Turn on Windows Firewall
+netsh advfirewall set allprofiles state on
+
+# Reset the firewall back to default
+netsh advfirewall reset
+
+# Block Everything
+netsh advfirewall set allprofiles firewallpolicy blockinbound,allowoutbound
+
+# Open a Port
+netsh advfirewall firewall add rule name="HTTP" protocol=TCP localport=80 action=allow dir=IN
+
+# Close a Port
+netsh advfirewall firewall add rule name="HTTP" protocol=TCP localport=80 action=block dir=IN
+
+# Delete a Rule
+netsh advfirewall firewall delete rule name="HTTP"
+

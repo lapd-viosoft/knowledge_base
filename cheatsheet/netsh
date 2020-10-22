@@ -1,3 +1,12 @@
+# netsh 
+
+> Netsh is a command-line scripting utility that allows you to, either
+> locally or remotely, display or modify the network configuration of a
+> computer that is currently running.
+
+## Show Network Configuration (interfaces, IPs, and so on)
+netsh interface ip show config
+
 # Wifi Troubleshooting
 netsh winsock reset
 netsh int ip reset
@@ -9,14 +18,21 @@ netsh interface ip show config <interface>
 netsh -c interface dump > config.txt     # dump config
 netsh -f config.txt                      # import config
 
-## Static IP
-netsh interface ip set address local static [ip] [netmask] [gw] 1
+## Set a Static IP Configuration
+netsh interface ip set address "Local Area Connection" static [ip] [netmask] [gw] 1
 
-## DHCP
-netsh interface ip set address local dhcp
+## Set a DHCP Configuration
+netsh interface ip set address "Local Area Connection" dhcp
 netsh interface ip set dns <NIC name> dhcp        # Ensure to get DNS servers via DHCP
 
 # DNS
+
+
+# Setup a static DNS address
+netsh interface ip set dns "Local Area Connection" static 192.168.0.2
+
+# Setup DNS address automatically from DHCP
+netsh interface ip set dns "Local Area Connection" dhcp
 
 ## Overwrite currrent DNS config with a single static DNS server
 netsh interface ipv4 set dns <NIC name> static <dns server> primary
@@ -30,22 +46,58 @@ netsh interface ipv4 add    route x.x.x.x/x <interface name> <gw>
 netsh interface ipv4 delete route x.x.x.x/x <interface name> <gw>
 
 # Firewall
-## Note "netsh firewall" is deprecated since Vista. Use "netsh advfirewall
-## firewall" instead!  Config dumping
+;; Note "netsh firewall" is deprecated since Vista. Use "netsh advfirewall firewall" instead!
 
+## Config dumping
 netsh advfirewall firewall export c:\temp\wfas.wfw
 netsh advfirewall firewall import c:\temp\wfas.wfw
-
 netsh advfirewall firewall reset [export  c:\temp\wfas.wfw]
 
-# Toggling states
-
+## Turn on Firewall
 netsh advfirewall firewall set [profiletype]state on
-netsh advfirewall firewall set [profiletype]state off
+netsh advfirewall set allprofiles state on
+or
+netsh advfirewall firewall set allprofiles state on
 
-# Changing rules
+## Turn off Firewall
+netsh advfirewall firewall set [profiletype] state off
+netsh advfirewall set allprofiles state off
+or
+netsh advfirewall firewall set allprofiles state off
 
+## Block Everything
+netsh advfirewall set allprofiles firewallpolicy blockinbound,allowoutbound
+
+## Open a Port
+netsh advfirewall firewall add rule name="HTTP" protocol=TCP localport=80 action=allow dir=IN
+
+## Close a Port
+netsh advfirewall firewall add rule name="HTTP" protocol=TCP localport=80 action=block dir=IN
+
+## Delete a Rule
+netsh advfirewall firewall delete rule name="HTTP"
+
+## Changing rules
 netsh advfirewall firewall add rule name="newrule" dir=in action=allow program="%ProgramFiles%\some\program.exe"
 netsh advfirewall firewall show rule "newrule" verbose
 netsh advfirewall firewall set rule group=”Windows Firewall Remote Management” new enable =yes
 
+
+# Capture Packets
+    
+Perform netsh trace
+
+;; Start Capture
+netsh trace start capture=yes
+
+;; Stop Capture
+netsh trace stop
+
+Open the generated file with Microsoft Message Analyzer
+Export as pcap (File -> Save As -> Export)
+Since The Microsoft Message Analyzer has been retired
+we can use an etl to pcap converter such as:
+https://github.com/microsoft/etl2pcapng
+
+Downloadable directly here:
+https://github.com/microsoft/etl2pcapng/releases

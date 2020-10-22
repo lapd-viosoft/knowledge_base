@@ -1,0 +1,71 @@
+# Windows Important Registry Keys
+
+# OS Information
+HKML\Software\Microsoft\Windows NT\CurrentVersion
+
+# Product Name
+HKLM\Software\Microsoft\Windows NT\CurrentVersion /v ProductName
+
+# Date of Install
+HKLM\Software\Microsoft\Windows NT\CurrentVersion /v InstallDate
+
+# Registered Owner
+HKLM\Software\Microsoft\Windows NT\CurrentVersion /v RegisteredOwner
+
+# System Root
+HKLM\Software\Microsoft\Windows NT\CurrentVersion /v SystemRoot
+
+# Time Zone
+HKLM\System\CurrentControlSet\Control\TimeZoneInformation /v ActiveTimeBias
+
+# Mapped Network Drives
+HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Map Network Drive MRU
+
+# Mounted Devices
+HKLM\System\MountedDevices
+
+# USB Devices
+HKLM\System\CurrentControlSet\Enum\USBStor
+
+# Turn on IP Forwarding
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters - IPEnableRouter = 1
+
+# Password Keys: LSA Secrets can contain VPN, Autologon, Other passwords
+HKEY_LOCAL_MACHINE\Security\Policy\Secrets
+HKCU\Software\Microsoft\Windows NT\CurrentVersion\Winlogon\autoadminlogon
+
+# Audit Policy
+HKLM\Security\Policy\PolAdTev
+
+# Kernel/User Services
+HKLM\Software\Microsoft\Windows NT\CurrentControlSet\Services
+
+# Installed Software on Machine
+HKLM\Software
+
+# Installed Software for User
+HKCU\Software
+
+# Recent Documents
+HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs
+
+# Recent User Locations
+HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedMRU & \OpenSaveMRU
+
+# Typed URLs
+HKCU\Software\Microsoft\Internet Explorer\TypedURLs
+
+# MRU Lists
+HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU
+
+# Last Registry Key Accessed
+HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\RegEdit /v LastKey
+
+# Startup Locations
+HKLM\Software\Microsoft\Windows\CurrentVersion\Run & \Runonce
+HKLM\SOFTWARE\Microsfot\Windows\CurrentVersion\Policies\Explorer\Run
+HKCU\Software\Microsoft\Windows\CurrentVersion\Run & \Runonce
+HKCU\Software\Microsoft\Windows NT\CurrentVersion\Windows\Load & \Run
+
+
+

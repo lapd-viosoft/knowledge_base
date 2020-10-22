@@ -1,0 +1,20 @@
+# Windows net command
+
+
+# Get account policies
+net accounts
+
+
+# Get domain users
+net users /domain
+
+# Get domain groups
+net groups /domain
+
+
+# Get info on a user
+net users USERNAME_HERE /domain
+
+# Get info on a group
+net groups GROUP_HERE /domain
+

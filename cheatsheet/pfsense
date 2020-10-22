@@ -1,0 +1,31 @@
+# pfSense
+
+
+# pfSense Shell System
+pfSsh.php
+
+# Allow all inbound WAN connections
+pfSsh.php
+playback -> enableallowallwan
+
+# Allow all inbound SSH connections
+pfSsh.php
+playback -> enablesshd
+
+# Show NAT rules
+pfctl -sn
+
+# Show Filter Rules
+pfctl -sr
+
+# Show all rules
+pfctl -sa
+
+# Edit config
+viconfig
+
+# Remove cached (backup) config after editing the current running
+rm /tmp/config.cache
+
+# Reload entire config
+/etc/rc.reload_all

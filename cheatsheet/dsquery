@@ -1,0 +1,39 @@
+# dsquery
+# Note: If you get an error for a command
+# try to execute dsquery with a "*" just after "dsquery".
+
+# List Users on Domain with no limit on results
+dsquery user -limit 0
+
+# List Groups for domain example.com
+dsquery group "cn=users, dc=example, dc=com"
+
+# List Domain Administrator Accounts
+dsquery group -name "domain adminds" | dsget group -members -expand
+
+# List all groups a user belongs to
+dsquery user -name joe | dsget user -memberof -expand
+
+# Get Login ID of a User
+dsquery user -name joe | dsget user -samid
+
+# Get Accounts that have been inactive for 2 weeks
+dsquery user -inactive 2
+
+# Add a Domain User
+dsadd user "CN=Joe,CN=Users,DC=example,DC=com" -samid joe -pwd myPassword123 -display "Joe" -pwdneverexpires yes -memberof "CN=Domain Admins, CN=Users, DC=example, DC=com"
+
+# Get all Site names
+dsquery site -o rdn -limit 0
+
+# Get all Subnets within a Site
+dsquery subnet -site sitename -o rdn
+
+# Get all Servers in a Site
+dsquery server -site sitename -o rdn
+
+# Get Servers in the Domain
+dsquery domainroot -filter "(&(objectCategory=Computer)(objectClass=Computer)(operatingSystem='Server'))" -limit 0
+
+# Get Domain Controllers for a Site
+dsquery "CN=Sites,CN=Configuration,DC=forestRootDomain" -filter (objectCategory=Server)

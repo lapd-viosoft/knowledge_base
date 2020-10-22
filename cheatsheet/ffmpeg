@@ -53,6 +53,9 @@ for f in *.m4a; do ffmpeg -i "$f" -acodec libmp3lame -vn -b:a 320k "${f%.m4a}.mp
 # Split audio/video into multiple parts (if a movie/audio is too long)
 ffmpeg -i input.mp4 -t 00:00:30 -c copy part1.mp4 -ss 00:00:30 -codec copy part2.mp4
 
+# Extract video from minute 45:36 to the end 01:59:52 and save it in out.mp4
+ffmpeg -ss 00:45:36 -i SOC_intro.mp4 -to 01:59:52  -c copy  out.mp4
+
 # Join multiple parts
 ;; join.txt must contain the path to the list of files to join
 ffmpeg -f concat -i join.txt -c copy output.mp4
