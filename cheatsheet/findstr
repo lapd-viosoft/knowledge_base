@@ -1,0 +1,35 @@
+# findstr
+# this is similar to grep but for Windows
+
+# Search for a string in a file
+findstr Windows CLItips.txt
+
+# Search for a string (case-insensitive) in a file
+findstr windows /I CLItips.txt
+
+# Search for the provided string in the current directory
+;; You can use wildcard '*” to specify that all the files in a directory should be searched for the given string
+findstr windows *
+
+# Search for the string "windows" in all .txt files in the data directory
+findstr windows C:\data\*.txt
+
+# Search for text matching a regex
+findstr /R [a-z]*xyz  filename.txt
+
+# Search for pattern with multiple words
+findstr /C:"word1 word2 word3..."  filename
+
+# Print only the lines where the given string is at the beginning of the line
+;; You can add /B switch to indicate that the specified string should be in the beginning of the line.
+findstr /B /C:windows CLItips.txt
+
+# Print only the lines where the given string is at the end of the line
+findstr /E /C:windows CLItips.txt
+
+# Print line numbers for all the matched lines.
+;; You can add /N switch to the findstr command to print line numbers for the matched lines.
+findstr /N indows CLItips.txt
+
+# Print only the filenames
+finstr /M /C:"pattern"  *.log

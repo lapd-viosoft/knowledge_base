@@ -1,0 +1,39 @@
+# Managing AppLocker with Powershell
+
+AppLocker can allow or block applications based on three types of
+criteria. Files can be grouped by their path, their publisher, or their
+hash. As the Windows AppLocker Guide points out, individual rules should
+be built in this order and for these reasons:
+
+- Publisher: Uses the least amount of administrative work and is the most flexible.
+- Hash: More secure than a path rule, inflexible when a program updates.
+- Path: Least desirable. Path locations should not allow standard users to have write access. 
+
+# Get All applocker related comamnds
+Get-Command -Module AppLocker 
+
+
+# Get Information about a file in order to apply an AppLocker policy
+Get-AppLockerFileInformation -Path C:\my\path\to\file.exe | Format-List
+;; this will show, publisher of the file, its hash and its path
+;; so that we can easily grab these as information for applying our
+;; applocker rule
+
+# Get Applied Domain AppLocker Policies
+Get-AppLockerPolicy -Domain
+
+# Get Applied Local AppLocker Policies
+Get-AppLockerPolicy -Local
+
+# Get Applied and Effective AppLocker Policies
+Get-AppLockerPolicy -Effective
+
+# Create a new AppLocker Policy
+Get-AppLockerFileInformation -Path C:\path\to\file.exe | New-AppLockerPolicy -RuleType Publisher,Hash -User Everyone -RuleNamePrefix "myEXE"
+
+# Test an AppLocker Policy
+;; Test-AppLockerPolicy: This cmdlet is used to determine whether or not a
+;; specific user or group of users will be able to perform an action based
+;; on the policy
+Get-AppLockerPolicy -Effective | Test-AppLockerPolicya -Path C:\Path\to\my\file.exe -User Everyone
+

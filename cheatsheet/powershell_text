@@ -1,0 +1,70 @@
+# Powershell: Working with Text
+
+# Get Number of lines / charactes/ words for a file
+Get-Content file.xml | Measure-Object –Line # Count Lines
+Get-Content file.xml | Measure-Object –Character # Count Characters
+Get-Content file.xml | Measure-Object –Word # Count Words
+
+# Sort a file
+Get-Content file.txt | Sort-Object
+
+# Sort output by a specific property
+Get-GPO -All | Sort-Object -Property CreationTime
+
+# Get only unique lines in a file
+Get-Content file.txt | Get-Unique
+
+
+# Head of a file
+gc file.xml -head 10 # first 10 lines (head -n 10)
+
+# Tail of a file
+gc file.xml -tail 10 # last 10 lines (tail -n 10)
+
+# Tail -f of a file
+gc file.xml -tail 10 -wait # last 10 lines and keep open (tail -f)
+
+# Grep in Files
+;; get all lines in csv files ending with ",2018"
+Select-String *.csv -Pattern ",2018$"
+
+# Get all occurrences in a file of the word "polo"
+((gc countpolos).Split(" ") | where {$_ -eq 'polo'}).count
+
+# Negated Grep in Files (grep -v)
+Get-Content file.txt | Select-String -Pattern "Mozilla" -NotMatch
+
+# Negated Grep in Files (grep -v) with multiple patterns
+Get-Content file.txt | Select-String -Pattern "Mozilla|Opera" -NotMatch
+
+
+# Search for text in CaSe-SenSiTiVe mode
+Get-ChildItem c:\windows\system33\*.txt -Recurse | Select-String -Pattern "Microsoft" -CaseSensitive
+
+# Search for text in CaSe-SenSiTiVe mode and match all the matches 
+;; AllMatches finds all pattern matches in a line, instead of just finding the first match in each line.
+Select-String *.yml -AllMatches -Pattern "Microsoft" -CaseSensitive
+
+# Get the first 200 bytes of a file
+[char[]](gc file.xml -Encoding byte -TotalCount 200) -join ''
+
+
+# Convert Base64 to UTF8
+[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String("blahblah=="))
+[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String((get-content cypher.txt)))
+
+
+# Convert UTF8 to Base64
+[System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("nVnV"))
+
+
+# Get the MD5 of a file
+Get-FileHash <filepath> -Algorithm MD5
+
+# Get specific chars from a file (from char 100 to char 107)
+(gc elements.txt).substring(100,7)
+;; or
+(Get-Content -Path ..\Desktop\elements.txt)[100..107] -join ""
+
+# Get the diff between two files
+Compare-Object (Get-Content file1.txt) (Get-Content file2.txt)

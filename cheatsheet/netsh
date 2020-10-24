@@ -11,6 +11,12 @@ netsh interface ip show config
 netsh winsock reset
 netsh int ip reset
 
+# Show WiFi Profiles
+netsh wlan show profiles
+
+# Export WiFi Profiles
+netsh wlan export profile folder=. key=clear
+
 # Interface Configuration
 ## Show/dump/import active config
 netsh interface ip show config

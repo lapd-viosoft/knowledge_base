@@ -1,9 +1,11 @@
 # Windows net command
 
 
-# Get account policies
-net accounts
+# Get local users
+net users
 
+# Get local groups
+net localgroup
 
 # Get domain users
 net users /domain
@@ -11,10 +13,17 @@ net users /domain
 # Get domain groups
 net groups /domain
 
-
 # Get info on a user
 net users USERNAME_HERE /domain
 
 # Get info on a group
 net groups GROUP_HERE /domain
 
+# Get account policies
+net accounts
+
+# Get File Shares
+net share
+
+# Get Mapped Drives
+net use

@@ -1,0 +1,47 @@
+# Managing RPC Interfaces with Powershell
+# Reference: https://decoder.cloud/2020/02/05/the-strange-rpc-interface-ms-are-you-trolling-me/
+
+We can find the list of services run by SYSTEM in the registry at:
+HKLM\SYSTEM\Current_Control_Set\Services\<servicename>\<itsparameters>
+
+We can gather info on the service by doing:
+
+    sc qc <servicename>
+
+And understand what triggers a specific service by doing:
+
+    sc qtriggerinfo <servicename>
+
+If here we see "RPC Interface Event", it means that it is triggered
+by an RPC call.
+
+
+We can take a look at DLLs if we have downloaded the Windows SDK and
+the NtObjctManager powershell module by doing:
+
+    $r = Get-RpcServer C:\path\to\the\library.dll -SymbolPath C:\symbols
+
+NOTE: The symbols can be retrieved like this:
+
+    symchk.exe /v c:\windows\system32\<pathtothedllfile>.dll /s 
+    SRV*c:\symbols\*http://msdl.microsoft.com/download/symbols
+
+Then in the "Procedures" list we can see what are the exposed functions.
+
+
+We can create a client for a specific RpcServer by doing:
+
+    $c = Get-RpcClient $r
+
+And then check the available methods by doing:
+
+    $c | Get-Member
+
+At this point we can connect an RPC client to a server by doing:
+
+    Connect-RpcClient $c
+
+and use the methods exposed by doing:
+
+    $c.<nameofthemethod>("param1","param2")
+

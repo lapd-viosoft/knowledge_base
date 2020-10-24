@@ -1,0 +1,12 @@
+# Managing Group Policy with Powershell
+
+
+# Get All Group Policies
+Get-GPO -All
+
+# Order Group Policy by Time
+Get-GPO -All | Select-Object Name,CreationTime | Sort-Object -Property CreationTime
+
+# Generate an HTML Report of the GPO for a specific Domain
+Get-GPOReport -Name TestGPO1 -ReportType HTML -Path C:\GPOReports\GPOReport1.html   
+

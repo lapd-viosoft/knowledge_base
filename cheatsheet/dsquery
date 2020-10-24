@@ -8,6 +8,18 @@ dsquery user -limit 0
 # List Groups for domain example.com
 dsquery group "cn=users, dc=example, dc=com"
 
+# List Computers in domain
+dsquery computer "dc=example,dc=local"
+
+# List Computers in domain by name
+dsquery computer -name PC*
+
+# List specific Organizational Units (OUs)
+dsquery ou "ou=Naples,dc=example,dc=local"
+
+# List Domain Controller
+dsquery server
+
 # List Domain Administrator Accounts
 dsquery group -name "domain adminds" | dsget group -members -expand
 

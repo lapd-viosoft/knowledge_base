@@ -1,0 +1,44 @@
+# Get List of Users
+Get-ADUser -Filter *
+
+# Get List of Groups
+Get-ADGroup -Filter *
+
+# Search for a user
+Get-ADUser -Filter {Name -like "*rogers*"}
+
+# Search for a group
+Get-ADGroup -Filter {Name -like "*admin*"}
+
+# Get all members of a group
+Get-ADGroupMember "ITDept"
+;; to get the number just do:
+Get-ADGroupMember "ITDept" | Measure-Object
+
+# Get all Domain Controllers
+Get-ADComputer -Filter 'primarygroupid -eq "516"'
+-Properties Name,Operatingsystem,OperatingSystemVersion,IPv4Address |
+Sort-Object -Property Operatingsystem |
+Select-Object -Property Name,Operatingsystem,OperatingSystemVersion,IPv4Address
+
+# Get all Computers a user is allowed to log into
+Get-ADUser -Filter {SamAccountName -eq "jsmith"} -Properties LogonWorkstations | Select -ExpandProperty LogonWorkstations
+
+# Resolve DNS Name
+Resolve-DNSName CYBORG718W100N
+
+# Get All Records for a Specific Zone Name (similar to dig)
+Get-DnsServerResourceRecord -ZoneName example.com
+
+# Get DNS Server Zone Aging and Refresh Intervals
+Get-DnsServerZoneAging myexampledomain.com
+
+# Get Users whose "logonhours" are set to something (not-null)
+Get-ADUser -Filter * -Property * | Where-Object {$_.LogonHours -ne $null} | Select -Property Name,LogonHours | Format-List
+
+
+# Get all Organizational Units with a subset of the properties
+Get-ADOrganizationalUnit -Filter * -Properties *| Select-Object CanonicalName,DistinguishedName,ProtectedFromAccidentalDeletion
+
+# Get all Group Policy Links Related to each Organizational Unit
+Get-ADOrganizationalUnit -Filter * -Properties * | Select-Object DistinguishedName,GPLink

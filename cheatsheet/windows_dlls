@@ -1,0 +1,17 @@
+# Windows Common DLLs
+
+
+- Kernel32.dll 
+    Used for interacting with Processes, File Systems and Threads
+
+- Advapi32.dll 
+    Handles the Windows Registry, Services, User Accounts and Shutting Down the system
+
+- User32.dll
+    Handles the Graphical User Interface, Fonts, Windows, Keyboard, Mouse and other Inputs
+
+- Netapi32.dll
+    Handles the access to Networking components
+
+- Shell32.dll
+    Handles the access to Windows Shell

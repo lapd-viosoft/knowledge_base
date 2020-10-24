@@ -1,0 +1,25 @@
+# Managing Windows System Registry with Powershell
+
+# Get Registry Paths
+Get-PSDrive
+;; here we should see HKCU and KHLM
+
+# Browse User-Related Registry Entries
+Get-ChildItem HKCU:
+
+# Browse System Registry Entries
+Get-ChildItem HKLM:
+
+# Filter Entries by Name
+Get-ChildItem HKCU: -Recurse | Where-Object {$_.Name -like "*run*"}
+
+# Filter Entries by Property
+Get-ChildItem HKCU: -Recurse | Where-Object {$_.Property -like "*run*"}
+;; e.g., get the registered owner of the system
+Get-ChildItem HKLM: -Recurse | Where-Object {$_.Property -eq "RegisteredOwner"}
+
+# Get the list of services
+Get-ChildItem HKLM:SYSTEM\CurrentControlSet\Services
+
+# Get a nicer output for entry properties
+Get-ItemProperty "hklm:\software\microsoft\windows\currentversion\uninstall\windows media player"

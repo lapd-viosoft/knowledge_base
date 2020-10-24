@@ -1,0 +1,99 @@
+# DCOM
+# References:
+https://www.varonis.com/blog/dcom-distributed-component-object-model/
+
+
+## What is DCOM?
+DCOM is a programming construct that allows a computer to run programs
+over the network on a different computer as if the program was running
+locally. DCOM is an acronym that stands for Distributed Component Object
+Model. DCOM is a proprietary Microsoft software component that allows
+COM objects to communicate with each other over the network. (Network OLE
+was the precursor to DCOM if anyone remembers seeing that in Windows 3.1.)
+
+An extension of COM, DCOM solves a few inherent problems with the COM
+model to better use over a network:
+- Marshalling: Marshalling solves a need to pass data from one COM object
+  instance to another on a different computer – in programming terms, this
+  is called “passing arguments.” For example, if I wanted Zaphod’s
+  last name, I would call the COM Object LastName with the argument of
+  Zaphod. The LastName function would use a Remote Procedure Call (RPC)
+  to ask the other COM object on the target server for the return value
+  for LastName(Zaphod), and then it would send the answer – Beeblebrox
+  – back to the first COM object.
+- Distributed Garbage Collection: Designed to scale DCOM in order to
+  support high volume internet traffic, Distributed Garbage Collection
+  also addresses a way to destroy and reclaim completed or abandoned
+  DCOM objects to avoid blowing up the memory on webservers. In turn,
+  it communicates with the other servers in the transaction chain to let
+  them know they can get rid of the objects related to a transaction.
+- Using DCE/RPC as the underlying RPC mechanism: To achieve the previous
+  items and to attempt to scale to support high volume web traffic,
+  Microsoft implemented DCE/RPC as the underlying technology for DCOM –
+  which is where the D in DCOM came from.
+
+
+## How Does DCOM Work?
+
+In order for DCOM to work, the COM object needs to be configured correctly
+on both computers – in our experience they rarely were, and you had
+to uninstall and reinstall the objects several times to get them to work.
+
+The Windows Registry contains the DCOM configuration data in 3
+identifiers:
+
+- CLSID – The Class Identifier (CLSID) is a Global Unique Identifier
+  (GUID). Windows stores a CLSID for each installed class in a
+  program. When you need to run a class, you need the correct CLSID,
+  so Windows knows where to go and find the program.
+- PROGID – The Programmatic Identifier (PROGID) is an optional
+  identifier a programmer can substitute for the more complicated
+  and strict CLSID. PROGIDs are usually easier to read and
+  understand. A basic PROGID for our previous example could be
+  Hitchiker.LastName. There are no restrictions on how many PROGIDs
+  can have the same name, which causes issues on occasion.
+- APPID – The Application Identifier (APPID) identifies all
+  of the classes that are part of the same executable and the
+  permissions required to access it. DCOM cannot work if the
+  APPID isn’t correct. You will probably get permissions
+  errors trying to create the remote object, in my experience.
+
+A basic DCOM transaction looks like this:
+
+- The client computer requests the remote computer to
+  create an object by its CLSID or PROGID. If the client
+  passes the APPID, the remote computer looks up the CLSID using the PROGID.
+- The remote machine checks the APPID and verifies
+  the client has permissions to create the object.
+- DCOMLaunch.exe (if an exe) or DLLHOST.exe (if a dll) will create an
+  instance of the class the client computer requested.
+- Communication is successful!
+- The Client can now access all functions in the class on the remote computer.
+
+If the APPID isn’t configured correctly, or the client doesn’t have
+the correct permissions, or the CLSID is pointing to an old version of
+the exe or any other number of issues, you will likely get the dreaded
+"Can’t Create Object" message.
+
+
+## DCOM vs. CORBA
+
+Common Object Request Broker Architecture (CORBA) is a JAVA based
+application and functions basically the same as DCOM. Unlike DCOM, CORBA
+isn’t tied to any particular Operating System (OS), and works on UNIX,
+Linux, SUN, OS X, and other UNIX-based platforms.
+
+Neither proved secure or scalable enough to become a standard for high
+volume web traffic. DCOM and CORBA didn’t play well with firewalls,
+so HTTP became the default standard protocol for the internet.
+
+## Why is DCOM necessary?
+
+DCOM didn't win the battle to become the standard protocol for the
+internet, but it remains integrated into the Windows OS and is how many
+Windows services communicate – like Microsoft Management Console (MMC).
+
+Since DCOM can run programs on other computers, hackers can leverage
+it for lateral movement attacks through your network, gaining access to
+more data. This activity can be difficult to detect because it’s not
+malware or hacker tools: all it takes to access DCOM is PowerShell.

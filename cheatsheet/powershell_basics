@@ -1,0 +1,105 @@
+# Powershell Basics
+
+# whoami
+$env:username
+
+# hostname
+$env:computername
+
+# cd
+Set-Location
+
+# path
+Get-Location
+
+# wget
+Invoke-WebRequest -Uri https://mydomain.com/myfile.txt -OutFile myfile.txt
+
+# Check Environment Variables
+Get-ChildItem env:
+
+# Count objects
+Get-ChildItem ..\desktop\ | Measure-Object
+;; or
+(Get-ChildItem).count
+
+# Filter on contains
+;; this gets all files containing one or more spaces in their name
+Get-ChildItem | Where-Object {$_.contains(' ')}
+;; or
+Get-ChildItem | Where-Object {$_ -like '* *'}
+
+# Get Permissions on a File
+Get-Acl \path\to\file.txt
+
+# Get Current Domain Name
+$env:userdomain
+;; or
+Get-ADDomain
+;; or
+Get-WmiObject -Class Win32_ComputerSystem
+;; or
+Get-ChildItem env: | where-object {$_.Name -eq 'USERDOMAIN'}
+
+# Get Current Domain Controllers
+Get-ADDomainController | Select-Object name
+
+# Get unique elements from a file
+Get-Content filename.txt | Get-Unique
+
+# Get the 161 word in a string
+$content = Get-Content filename.txt
+$content.split(' ')[160]
+
+# Get number of words in a file
+Get-Content filename.txt | Measure-Object -Word
+
+# Get Service Description
+get-service | where-object {$_.displayname -like "*update*"}
+;; here we find the name of the service we want to inspect
+Get-CimInstance Win32_Service -Filter 'Name = "wuauserv"' | fl description
+
+# Get Service path to executable
+Get-WmiObject win32_service | ?{$_.Name -eq 'servicenamehere'} | select Name, DisplayName, State, PathName
+
+# Search for Hidden Files in a list of directories
+Get-Content -Recurse -Attributes Hidden -Path Contacts\,Downloads\,Desktop\
+
+# Search For Files whose names start with "readme" and print them
+Get-ChildItem Desktop\OtherFolder -Recurse -File -Filter readme* | get-content
+
+# Search for files and silently ignore errors
+Get-Childitem –Path C:\ -Recurse -ErrorAction SilentlyContinue
+
+# Search for files that include "HSG" but do not belong to certain extensions
+Get-Childitem –Path C:\ -Include *HSG* -Exclude *.JPG,*.MP3,*.TMP -File -Recurse -ErrorAction SilentlyContinue
+
+# Get computers in AD
+Get-ADComputer -Filter *
+;; or to get all properties
+Get-ADComputer -Filter * -Properties *
+;; or to get only a subset of the properties we can do
+Get-ADComputer -Filter * -Properties * | Format-List -Property name,distinguishedname,description
+
+# Get Alternate Data Streams (ADS) for a file
+Get-Item filename.png -Stream *
+Get-Content filename.png -Stream mystreamname
+
+# Finding all files with Alternate Data Streams
+Get-ChildItem -recurse | ForEach { Get-Item $_.FullName -stream * } | Where stream -ne ':$DATA'
+
+# Storing an executable in an hidden Alternate Data Stream
+Set-Content -path .\hello.txt -value $(Get-Content $(Get-Command calc.exe).Path -readcount 0 -encoding byte) -encoding byte -stream exestream
+
+# Launching Code within an Alternate Data Stream
+wmic process call create $(Resolve-Path .\hello.txt:exestream)
+
+# Get Startup Programs
+Get-WmiObject Win32_StartupCommand | Select-Object Name, command, Location, User  | Format-List
+
+# Loop Over Files
+$files = Get-ChildItem "C:\Users\gerhardl\Documents\My Received Files\"
+foreach ($f in $files){
+    $outfile = $f.FullName + "out" 
+    Get-Content $f.FullName | Where-Object { ($_ -match 'step4' -or $_ -match 'step9') } | Set-Content $outfile
+}

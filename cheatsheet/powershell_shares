@@ -1,0 +1,8 @@
+# Manage File Shares with Powershell
+
+
+# Get Share related commands
+Get-Command *share*
+
+# Get the list of SMB Shares
+Get-SmbShare

@@ -1,0 +1,11 @@
+# Powershell Modules
+
+# Get Modules loaded in the current session
+Get-Module
+
+# Get a list of all available modules that can be imported in the current session
+;; Get-Module looks for available modules in the path specified by the $env:PSModulePath environment variable
+Get-Module -ListAvailable
+
+# Get Commands for a Module
+Get-Command -Module AppLocker

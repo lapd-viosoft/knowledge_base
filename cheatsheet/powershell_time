@@ -1,0 +1,6 @@
+# Managing Date and Time with Powershell
+
+# Get Current TimeZone
+Get-TimeZone
+
+

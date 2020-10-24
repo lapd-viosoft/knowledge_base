@@ -1,0 +1,5 @@
+# Powershell and WMI
+
+# Get all objects of the class DCOMApplication
+;; The Win32_DCOMApplication WMI class provides an easy method to enumerate available DCOM applications by AppID
+Get-WMIObject -Class "Win32_DCOMApplication"

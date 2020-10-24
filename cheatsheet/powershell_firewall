@@ -1,0 +1,8 @@
+# Managing Windows Firewall with Powershell
+
+
+# Get all Firewall Rules
+Get-NetFirewallRule -All
+
+# Get all Firewall Rules with a filter
+Get-NetFirewallRule -All | where {$_.action -eq 'block' -and $_.displayname -like "*mysql*"}

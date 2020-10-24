@@ -1,0 +1,15 @@
+# Windows Registry and Its Interesting Locations
+
+
+# Location of all the system Services
+HKLM\SYSTEM\CurrentControlSet\Services
+
+# User Last Visited URLs
+HKCU\Software\Microsoft\Internet Explorer\TypedURLs
+
+# Network Drive Mappings
+HKCU\Network
+
+# IP of the system a user has previously established a remote desktop with (RDP History)
+HKCU\Software\Microsoft\Terminal Server Client
+HKCU\Software\Microsoft\Terminal Server Client\Default

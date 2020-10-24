@@ -1,0 +1,94 @@
+# Windows CMD basics
+
+
+# Who am I?
+whoami
+whoami /all
+whoami /priv
+
+# Get info about a user
+finger <username>
+
+# Remove a file
+del <file>
+
+# Remove a Directory
+rmdir /s .\path\to\dir\
+;; if we want to bypass confirmation "Y" we can add the /q
+rmdir /q /s .\path\to\dir\
+
+# List files
+dir
+
+# List files with relative owners
+dir /q
+
+# Copy a file
+copy file1.txt .\path\dest\
+
+# Copy a directory (only files, 1 level deep)
+xcopy Apples\ Bacon\
+
+# Copy a directory
+xcopy /s Apples\ Bacon\
+
+# Move a file/directory within another directory
+move Apples Bacon
+
+# Rename a file/directory
+rename Bacon Ham
+
+# Searches for all files and directories containing "foo" recursively
+dir /s *foo*
+
+# Searches for all files and directories containing "foo" recursively (with more info)
+dir /s /p *foo*
+
+
+# Get Windows PATH (all the directories loaded for executables)
+path
+
+# Get list of available drives
+wmic logicaldisk get name
+
+# Change font/background colors
+color 0B
+color 07
+color ;; sets the default
+color 0A
+
+
+# Get attributes related to all files in current directory 
+attrib 
+
+# Make a file hidden by adding the "h" attribute
+attrib +h <filename>
+
+# Make a file read-only and re-make it visible if it was hidden
+attrib +r -h <filename>
+
+# Get Time
+time
+
+# Open something
+start <something>
+
+# Get list of processes
+tasklist
+
+# Get a sorted list of lines
+type file.txt | sort
+
+
+# Get differences between two files
+fc file1 file2
+;; FC can also be used to compare binary files:
+fc /B file1 file2
+
+# Get info on a service
+sc qc <servicename>
+
+# Get info about how a service is triggered
+sc qtriggerinfo <servicename>
+
+
