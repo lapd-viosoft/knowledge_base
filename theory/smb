@@ -1,0 +1,10 @@
+# SMB
+
+SMB/CIFS/SMB 1 - 1993,
+    inefficient, since uses a lot of broadcast, was supporting IPX and Ethernet.
+SMB2 Vista/ Server 2006
+SMB3 2012 Cifratura
+
+
+
+Active Directory came from Windows 2000.

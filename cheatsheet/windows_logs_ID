@@ -1,3 +1,18 @@
+# Windows Events and IDs in Logs
+# Reference: https://www.andreafortuna.org/2019/06/12/windows-security-event-logs-my-own-cheatsheet/
+
+According to the version of Windows installed on the system under
+investigation, the number and types of events will differ, so the events
+logged by a Windows XP machine may be incompatible with an event log
+analysis tool designed for Windows 8.
+
+For example, Event ID 551 on a Windows XP machine refers to a logoff
+event; the Windows 7 equivalent is Event ID 4647.
+
+Old Windows events can be converted to new events by adding 4096 to
+the Event ID.
+
+
 # Windows 2000/XP and Windows Server 2003
 
 512 – Windows NT is starting up

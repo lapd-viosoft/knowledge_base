@@ -1,0 +1,54 @@
+# IPv6
+# Reference: Hurricane Electric
+
+So what is "IPv6", and why do I need to know about it?
+
+IPv6 or IP version 6 is the next generation Internet protocol which
+will eventually replace the current protocol IPv4. IPv6 has a number
+of improvements and simplifications when compared to IPv4. The primary
+difference is that IPv6 uses 128 bit addresses as compared to the 32 bit
+addresses used with IPv4. This means that there are more available IP
+addresses using IPv6 than are available with IPv4 alone. For a very clear
+comparison, in IPv4 there is a total of 4,294,967,296 IP addresses. With
+IPv6, there is a total of 18,446,744,073,709,551,616 IP addresses in a
+single /64 allocation.
+
+To also help illustrate the sheer magnitude of available IP addresses
+using IPv6, you can get 65536 /64 allocations out of a single /48, and
+then 65536 /48 allocations out of a single /32. Many Service Providers
+are getting /32 allocations from their Regional Internet Registry (RIR)
+like ARIN, APNIC, RIPE, etc.
+
+A significant difference between IPv6 and IPv4 is the address
+notation. IPv4 uses a period (.) between each octet, compared to IPv6
+which uses a colon (:). With IPv6, if you have a series of zeroes
+in a row, the address need not be written out completely. You can
+use a double colon (::) to represent that series of zeroes, however
+you can only use that once. For example, if you have an address like
+"2001:0DB8:0000:0003:0000:01FF:0000:002E", it can be written like
+"2001:DB8::3:0:1FF:0:2E" or "2001:DB8:0:3:0:1FF::2E", but would never be
+written like "2001:DB8::3::1ff::2E". You also cannot have three colons
+in a row (:::).
+
+IPv6 availability depends on your Service Provider, either at home or
+for work. In a dual-stack environment, IPv4 and IPv6 co-exist along
+the same connection and don't require any special kind of connection. If
+dual-stack is not available, you might find yourself using an IP tunneling
+product or service to bring IPv6 connectivity to you. Even though IPv4
+exhaustion has happened at IANA, IPv4 won't simply disappear off the face
+of the Internet, but continued explosive growth requiring more unique
+IP address assignments will mean using more and more of the abundant
+IPv6 address space.
+
+Many Operating System platforms have native IPv6 support these days. The
+UNIX based platforms like Linux, BSD (Free, Open, Net) & MacOSX have had
+IPv6 support enabled for years now. Microsoft Windows starting having
+native IPv6 support enabled by default with its Vista and Windows 2008
+products. Earlier Windows versions like 2000/2003/XP had to have it
+installed optionally, and did not have as robust features that are
+available in the newer versions of Windows. Even common web browsing
+and email software will use IPv6 if it is enabled and available, without
+having to check off an option or special configuration. The transition
+from IPv4 to IPv6 is being worked on to be as seamless as possible,
+and many might not even notice the subtle changes in the coming years.
+

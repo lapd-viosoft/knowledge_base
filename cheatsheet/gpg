@@ -1,22 +1,49 @@
+# gpg
+# Reference: https://www.devdungeon.com/content/gpg-tutorial
+
 # Encrypt a file (with a password) -> Symmetric Crypto
+;; provides an encrypted binary file (.gpg)
 gpg -c ~/path/to/file.pdf
 
+# Encrypt a file (with a password) -> Symmetric Crypto (example 2)
+;; provides an encrypted binary file (.gpg)
+gpg --symmetric message.txt
+
+# Encrypt a file (with a password) -> Symmetric Crypto (example 3)
+;; Same, but ASCII format output instead of binary (.asc)
+gpg --symmetric --armor message.txt
+
+# Encrypt a file (with a password) and specify encryption algorithm
+;; to get a list of supported algorithms type `gpg -v`
+gpg --symmetric --cipher-algo AES256
+
+# Encrypt a file and sign (all in the single output file)
+gpg --sign --symmetric message.txt
+
 # Encrypt a file with a public key -> Asymmetric crypto
-## This will prompt you to type in the persons name (public key) to encrypt with.
+## This will prompt you to type in the persons name (public key) or email to encrypt with.
 sudo gpg -e ~/Desktop/file.doc
+
+# Encrypt a file with a public key -> Asymmetric crypto (example 2)
+gpg  --recipient nanodano@devdungeon.com --encrypt message.txt
+
+# Encrypt a file with a public key and sign (all in the single output file)
+gpg --encrypt --sign --recipient nanodano@devdungeon.com message.txt
 
 # Decrypt a file
 gpg -d ~/path/to/file.pdf.gpg  > ~/path/to/file.pdf
 
-# Create a key
+# Create a new private key
 gpg --gen-key
 
 # Import other users' public keys
 sudo gpg --import <key>
 
-
-# To list a summary of all keys
+# To list all public keys (our friends and us)
 gpg --list-keys
+
+# To list private keys (generally only our own)
+gpg --list-secret-keys
 
 # To show your public key
 gpg --armor --export
@@ -27,7 +54,6 @@ gpg --fingerprint KEY_ID
 # Search for keys
 gpg --search-keys 'user@emailaddress.com'
 
-
 # To Encrypt a File
 gpg --encrypt --recipient 'user@emailaddress.com' example.txt
 
@@ -36,10 +62,20 @@ gpg --output example.txt --decrypt example.txt.gpg
 
 
 # Export keys
+;; first list keys:
+gpg --list-keys        ;; public
+gpg --list-secret-keys ;; private
+;; then export them
 gpg --output ~/public_key.txt --armor --export KEY_ID
 gpg --output ~/private_key.txt --armor --export-secret-key KEY_ID
 
 Where KEY_ID is the 8 character GPG key ID.
+NOTE:
+;; Omitting the --armor flag will give you binary output instead of ASCII
+;; which would result in a slightly smaller file but the ASCII
+;; formatted (armored) can be printed physically, is human readable,
+;; and transfered digitally easier.
+;; Both formats can be imported back in to GPG later
 
 Store these files to a safe location, such as a USB drive, then
 remove the private key file.
@@ -55,6 +91,9 @@ gpg --allow-secret-key-import --import ~/private_key.txt
 Then delete the private key file.
 shred -zu ~/private_key.txt
 
+## Import keys from a remote server
+gpg --keyserver pgp.mit.edu  --recv C104CDF0EDA54C82
+
 # Revoke a key
 Create a revocation certificate.
 gpg --output ~/revoke.asc --gen-revoke KEY_ID
@@ -66,6 +105,16 @@ gpg --import ~/revoke.asc
 
 Then ensure that key servers know about the revokation.
 gpg --send-keys KEY_ID
+
+# Delete a key
+
+## Delete Private keys
+;; Use the ID listed with --list-secret-keys
+gpg --delete-secret-keys XXXXXXXX
+
+## Delete Public keys
+;; Use the ID listed with --list-keys
+gpg --delete-keys XXXXXXXX
 
 
 # Signing and Verifying files

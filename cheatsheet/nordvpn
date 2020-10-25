@@ -1,0 +1,50 @@
+# NordVPN
+
+;; we can check at any time if we are leaking DNS and other info by visiting:
+;; https://ipleak.net
+
+# Enable the NordVPN service
+sudo systemctl enable --now nordvpnd.service
+sudo systemctl start nordvpnd.service
+
+# Connect to account
+;; this will ask username/password
+nordvpn connect 
+;; we can check at any time if we are leaking DNS and other info by visiting:
+;; https://ipleak.net
+
+# Show info on account (ID, expiration, ...)
+nordvpn account
+
+# Check the Status of the connection
+nordvpn status
+
+# Show a list of server categories (P2P, Europe, America, Onion, ...)
+nordvpn groups
+
+# Show a list of available countries
+nordvpn countries
+
+# Show a list of available cities for a country
+nordvpn cities <country>
+nordvpn cities germany
+
+# Connect to a country/city/group
+nordvpn connect frankfurt       ;; connects to a VPN server in Frankfurt
+nordvpn connect spain           ;; connects to a VPN server in Spain
+nordvpn connect P2P             ;; connects to the best P2P server
+nordvpn connect Onion_Over_VPN  ;; connects to the best Onion over VPN server
+
+# Connect to best/fastest VPN server
+nordvpn connect
+;; we can check at any time if we are leaking DNS and other info by visiting:
+;; https://ipleak.net
+
+# Show current settings
+nordvpn settings
+
+# Set a setting
+nordvpn set ;; from here follow the help
+
+# Logout
+nordvpn logout
