@@ -1,0 +1,8 @@
+# Onionshare
+;; This is a safe way to share files, We can make a file available
+;; through a temporary onion link and once the file is downloaded,
+;; the link is closed automatically
+
+
+# Share a file
+onionshare /path/to/the/file.pdf

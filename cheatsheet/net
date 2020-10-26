@@ -1,29 +1,87 @@
 # Windows net command
 
+# View the domain name of the current host
+net config server/workstation 
 
 # Get local users
 net users
+;; we can find users that weren't cleaned up if they do not appear in net users
+;; but they do appear in these locations
+;; dir /b /ad "C:\Users\"
+;; dir /b /ad "C:\Documents and Settings\" # Windows XP and below
+
+# Get info/settings on a specific local user
+net user <username>
 
 # Get local groups
 net localgroup
 
+# Get local Administrators
+net localgroup Administrators 
+
 # Get domain users
 net users /domain
+
+# Create a new local user account
+net user /add <username>  <newuserPassword11>
+
+# Add a user to the local administrators group
+net localgroup Administrators <username> /add 
+
+# Create a new domain user account
+net user /add <username>  <newuserPassword11> /domain
+
+# Disable a domain user account
+net user username  /ACTIVE:NO /domain
+
+# Enable a domain user account
+net user username  /ACTIVE:YES /domain
+
+# Prevent a user from changing its password
+net user username  /Passwordchg:No
+
+# Allow a user to change its password
+net user username  /Passwordchg:Yes
 
 # Get domain groups
 net groups /domain
 
-# Get info on a user
+# Get info on a domain user
 net users USERNAME_HERE /domain
 
-# Get info on a group
+# Get info on a domain group
 net groups GROUP_HERE /domain
+net groups "Domain Admins" /domain
 
 # Get account policies
 net accounts
 
+# Get domain account policies
+net accounts /domain 
+
 # Get File Shares
 net share
 
-# Get Mapped Drives
+# Get Connected Drives
 net use
+
+# Mount a Remote Network Share
+net use X: \\<IP_Address>\c$
+
+# List all host in the current WORKGROUP or Domain
+net view
+
+# List all domains available
+net view /domain
+
+# Stop a process
+;; to check list of processes:
+;; tasklist /svc
+;; tasklist /v
+net stop <servicename>
+
+# Start a process
+;; to check list of processes:
+;; tasklist /svc
+;; tasklist /v
+net start <servicename>

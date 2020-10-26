@@ -390,3 +390,14 @@ rm -rf data/graph.db ;; and restart the database
 
 # Find all movies related to tom hanks and print title and relationship type:
 match (:person {name:"tom hanks"})-[r]->(m:movie) return m.title,type(r)
+
+# Export a JSON
+CALL apoc.export.json("file:///all.json")
+;; or
+CALL apoc.export.json("file:////home/joesmith/data/all.json")
+
+# Import a JSON
+CALL apoc.import.json("file:///all.json")
+;; or
+CALL apoc.import.json("file:////home/joesmith/data/all.json")
+

@@ -1,0 +1,4 @@
+# Windows nltest
+
+# Get Domain Trusts
+nltest /domain_trusts 
