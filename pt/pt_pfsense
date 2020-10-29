@@ -1,0 +1,13 @@
+# pfSense
+
+Default creds may be:
+admin:pfsense
+
+In the menu Diagnostics-> Command Prompt
+we may attempt a remote command execution.
+
+There is also space to include PHP code where
+we can insert a reverse shell.
+
+Just remember not to include "<?php" and "?>"
+here.

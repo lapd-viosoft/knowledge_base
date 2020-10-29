@@ -1,0 +1,92 @@
+# Windows Services
+
+Each service on windows is coupled with a service account.
+
+Configuration for each service is found in:
+HKLM\SYSTEM\CurrentControlSet\Services
+
+
+How do we recognize a service?
+All the services on the system are child of the services.exe
+process which is also called the Service Control Manager.
+Services are processes in session 0, which is a session
+dedicated for services.
+
+From a source perspective they use functions like:
+SvcInstall(), SvcMain(), SvcCtrlHandler(), and so on...
+
+The NT Kernel recognizes a service with the SID
+S-1-5-6 Service, that is a group including all the security
+principals that have logged on as a service.
+
+
+The Windows Service Accounts are special Windows accounts whose
+passwords are managed internally by the Operating System.
+
+There are three different service accounts:
+- Local System, the most privileged account;
+- Local Service / Network Service Accounts;
+- Managed Service & Virtual Accounts.
+
+These are allowed to logon as a service, (logon type 5).
+
+## Windows Service Security
+
+Until Windows XP/2003 all services were running as SYSTEM.
+If you compromised a service you also had compromised the whole
+machine.
+
+Microsoft introduced an hardening system called WSH (Windows
+Service Hardening).
+
+### WSH
+
+The Windows Service Hardening included:
+- Limited Service Accounts, Introduction of the LOCAL SERVICE and
+  NETWORK SERVICE accounts, that are accounts with less privileges
+  than the SYSTEM account.
+  Basically if a service is configured as a LOCAL SERVICE account
+  it will have limited privilege for what concerns network interaction
+  (accessing a network share and so on), while if the service
+  is run as NETWORK SERVICE it will authenticate as a MACHINE account
+  (MACHINENAME$).
+- Reduced Privileges, we can specify which privileges our Service does have
+  (hopefully following the least privilege principle).
+- Write-Restricted Token
+- Per-Service SID, we can have unique SID for our service so that we can avoid
+  multiple services having the same SID. 
+  In this case, Service access token has a dedicated and unique owner SID;
+- Session 0 Isolation, disables interaction with user processes and GUI;
+- System Integrity Level, a security level with which processes are
+  generated;
+- UIPI (User Interface Privilege Isolation), allows a segregation
+  between processes with different integrity levels;
+
+## Impersonation
+
+Impersonation is the ability of a thread to execute in a security context
+that is different fromm the context of the process that owns the thread.
+
+Basically impersonaation allows to execute code on behalf of another user.
+Token forged by impersonation are called "secondary token or impersonation
+token".
+
+Your process must hold the SeImpersonatePrivilege ("Impersonate a client
+after authentication") to perform the impersonation.
+
+This is a prerequisite for many privilege escalation techniques.
+
+
+Impersonation assigns a token to a thread, replaces the token used in
+access chekf for the majority of system calls.
+
+We have three ways to set impersonation:
+1) Direct Setting (SetThreadToken(), ImpersonateLoggedOnUser(), NtSetInformationThread())
+1) Indirect Setting (ImpersonateNamedPipeClient(), RpcImpersonateClient(), CoImpersonateClient()),
+   this can happen through a client server interaction with a PIPE Server, an RPC Server or a COM Server,
+   in this case we impersonate the connection arriving from a client, so if this connection is from a
+   a privileged user we can impersonate it;
+3) Kernel Setting, (PsImpersonateClient(), SeImpersonateClient/Ex())
+
+
+By design, services have impersonation privileges.

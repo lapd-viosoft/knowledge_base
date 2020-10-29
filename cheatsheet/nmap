@@ -186,3 +186,12 @@ nmap -T4 -p <ports> -sS -sV -sC -iL LiveHosts.txt
 nmap -T5 --open -oA AllTCP -sS -vvv --min-rate=1000 --max-retries=2 -p- -iL LiveHosts.txt
 ;; once we found the open ports we can run the scripts with:
 nmap -T4 -p <ports> -sS -sV -sC -iL LiveHosts.txt
+
+
+# Hunt for default web logins
+;; we can also use this wrapper https://github.com/gnebbia/default-http-login-hunter
+;; Reference: https://www.infosecmatter.com/hunter-of-default-logins-web-http/
+;; Download the .lua from here : https://github.com/nnposter/nndefaccts
+nmap --script http-default-accounts \
+--script-args http-default-accounts.fingerprintfile=~/http-default-accounts-fingerprints-nndefaccts.lua \
+-p 80,443 192.168.1.1
