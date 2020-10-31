@@ -1,0 +1,17 @@
+# Github Dorks
+# For this we can also use gitminer
+
+There is also an awesome list of dorks located here 
+https://github.com/techgaun/github-dorks/blob/master/github-dorks.txt
+
+
+filename:.bash_history paypal.com
+filename:id_rsa paypal.com
+filename:token paypal.com
+filename:apikey paypal.com
+language:python username paypal.com
+language:python:username
+
+app.secret.key 
+
+

@@ -1,0 +1,14 @@
+# Analysis  with the Rapid 7 Dataset
+
+Be sure to install jq and pigz to analyze the datasets.
+
+# Rapid7 FDNS
+
+This is a huge 19GB and contains A Names there are seperate downloads for other records at:
+https://opendata.rapid7.com/sonar.fdns_v2/
+
+
+wget https://opendata.rapid7.com/sonar.fdns_v2/2019-11-29-1574985929-fdns_a.json.gz
+cat 20170417-fdns.json.gz | pigz -dc | grep ".target.org" | jq`
+
+
