@@ -8,7 +8,16 @@
 
 # Good resources for proxies
 ;; always remember that many don't work, so we should test them before usage
-spys.one
+- spys.one (best one imho)
+- Hide My Ass 
+- Proxy Server List 
+- Anonymous Public Proxy Servers 
+- Daily HTTP Proxies 
+- Valid-Proxy.com
+
+BE ALERT! Free Public Proxy Servers can insert your IP address 
+into the headers of requests or listen to your traffic! Don't use 
+them to transfer sensitive data and do not expect for anonymity!
 
 # Run a command through proxychains
 proxychains firefox

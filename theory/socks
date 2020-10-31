@@ -1,0 +1,17 @@
+# SOCKS
+
+SOCKS is an Internet protocol that exchanges network packets between
+a client and server through a proxy server. SOCKS5 optionally provides
+authentication so only authorized users may access a server. Practically,
+a SOCKS server proxies TCP connections to an arbitrary IP address, and
+provides a means for UDP packets to be forwarded.  Basically the SOCKS
+protocols are used to build proxies. There are three main versions:
+SOCKS4, SOCKS4a and SOCKS5.
+SOCKS is the abbreviation of "SOCKetS" and its advantage is the ease
+of implementation and the flexible independence from the application
+layer protocol.
+
+The SOCKS5 protocol is defined in RFC 1928. It is an incompatible
+extension of the SOCKS4 protocol; it offers more choices for
+authentication and adds support for IPv6 and UDP, the latter of which can
+be used for DNS lookups.

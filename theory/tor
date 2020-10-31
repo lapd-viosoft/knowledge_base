@@ -1,0 +1,259 @@
+# Tor
+
+Tor is free and open-source software for enabling anonymous
+communication. The name derived from the acronym for the original software
+project name "The Onion Router".[6][7] Tor directs Internet traffic
+through a free, worldwide, volunteer overlay network consisting of more
+than seven thousand relays[8] to conceal a user's location and usage
+from anyone conducting network surveillance or traffic analysis. Using
+Tor makes it more difficult to trace Internet activity to the user:
+this includes "visits to Web sites, online posts, instant messages,
+and other communication forms".[9] Tor's intended use is to protect the
+personal privacy of its users, as well as their freedom and ability to
+conduct confidential communication by keeping their Internet activities
+unmonitored.
+
+Tor stands for "The Onion Router" è un sistema di comunicazione 
+anonima per Internet basato sulla seconda generazione del 
+protocollo di onion routing. Tramite l'utilizzo di Tor è molto 
+più difficile tracciare l'attività Internet dell'utente; di fatti 
+l'uso di Tor è finalizzato a proteggere la privacy degli utenti, 
+la loro libertà e la possibilità di condurre delle comunicazioni 
+confidenziali senza che vengano monitorate.
+
+Col documento RFC7686 dello Internet Engineering Task Force 
+(IETF) i domini di primo livello della darknet Tor (che hanno 
+estensione .onion) entrano in una lista ristretta di domini 
+speciali (.local, .localhost, .example, .invalid, .test e altri), 
+inaccessibili alla Internet pubblica e che ICANN non può 
+assegnare a pagamento ai singoli indirizzi: i .onion sono 
+assegnati solo dalla rete Tor, di essi si può ottenere un 
+certificato di cifratura, e sono esclusi dal global-DNS, cioè non 
+compaiono nel file Internet-root di zona per prevenire problemi 
+di sicurezza e stabilità. Il protocollo RFC "istruisce" i vari 
+software, quando l'utente cerca un indirizzo .onion, rimbalzare 
+la richiesta non verso la Internet pubblica, ma alla rete tor.
+
+## Theory
+
+The core principle of Tor is onion routing which is a technique 
+for anonymous & secure communication over a public network. In 
+onion routing messages are encapsulated in several layers of 
+encryption.
+
+"Onions have layers" - Shrek. So does a message going through 
+Tor. Each layer in Tor is encryption, you are adding layers of 
+encryption to a Tor message, as opposed to just adding 1 layer of 
+encryption.
+
+This is why it's called The Onion Routing Protocol, because it 
+adds layers at each stage.
+
+## Additional Notes
+
+Each user can decide how to use the Tor network by having
+different roles, that are:
+
+- Client
+- Middleman Router
+- Exit Router
+- Bridge Router
+
+### Client
+
+In questa comune configurazione , Tor gestisce unicamente 
+le connessioni dell'utente permettendogli di collegarsi alla rete 
+Tor. 
+
+### Middleman router
+
+È un nodo Tor che gestisce traffico di terzi da e per la rete 
+Tor, senza collegarsi direttamente all'esterno. Nel caso funga 
+anche da client, esso gestisce anche le connessioni dell'utente, 
+garantendo un maggiore anonimato. Tutti i router sono 
+pubblicamente noti, per scelta progettuale. 
+
+### Exit router
+
+È un nodo Tor che gestisce traffico di terzi da e per la rete 
+Tor, e verso l'esterno. È possibile definire una exit policy 
+sulle connessioni in uscita all'esterno della rete Tor. Come il 
+caso precedente, offre una protezione maggiore all'utente che lo 
+usi per le proprie connessioni. Come tutti i router Tor, essi 
+sono pubblicamente noti. 
+
+### Bridge router
+
+I bridge router sono dei nodi semi-pubblici di tipo sperimentale, 
+studiati per permettere di collegarsi alla rete Tor anche in 
+presenza di un filtraggio efficace contro Tor (come in Cina, Iran 
+ecc.). Non compaiono nelle liste pubbliche dei nodi noti ma 
+devono venire richiesti esplicitamente.
+
+
+# Tor vs Tor-Browser
+
+Tor è semplicemente il software che fa da proxy, questo di 
+default creerà un proxy su cui possiamo appoggiarci sul localhost 
+su porta 9050 (attualmente), ad ogni modo poi starà a noi “
+torificare” le varie applicazioni, cioè fare in modo che 
+appoggino su questo proxy, inoltre per alcuni software ci 
+sarebbero altre accortezze da prendere in considerazione e non 
+basta appoggiarsi su un proxy, infatti è qui che nasce la 
+necessità di un Browser apposito che gestisca l'anonimo 
+utilizzando diverse accortezze, ad esempio il dns leak, o la 
+gestione di cookies, dimensioni della finestra per renderci 
+indistinguibile da altri utenti e molte altre cose, insomma è 
+fortemente consigliato utilizzare “tor-browser” per la 
+navigazione sul web, mentre per altre applicazioni tor classico.
+
+## Tor Usage and Torifying Applications
+
+We generally have two ways to use tor:
+- Using the tor browser (used to achieve anonymity while browsing the web);
+- Using the tor daemon, which will install a listening
+  proxy by default on 127.0.0.1:9050 (used to achieve anonymity with
+  other services other than the web);
+
+
+To use the tor daemon we have multiple options, we can either execute:
+
+    tor 
+    ;; or
+    sudo systemctl start tor
+
+Once this has successfully launched, we will have a proxy
+listening on localhost port 9050.
+
+But at this point we can torify the desired applications.
+Torifying an application means that the specific application
+will use tor and hence we can achieve some degree of anonymity
+through tor.
+In order to torify an application we have to:
+
+- configure the application to let all of its traffic pass through tor;
+- configure the application to let DNS requests pass through tor;
+
+NOTE: DNS Leaks are a common problem/misconfiguration among VPN/Proxy/Tor
+users.
+
+A simple way to torify an application (without preventing DNS leaks),
+so beware that this may be dangerous if DNS is not anonimized, is to
+use the "torify" application:
+
+    torify curl ifconfig.me 
+
+NOTE: This has DNS Leak and is deprecated (see torsocks).
+
+We can execute a DNS request through Tor by doing:
+
+    tor-resolve ifconfig.me 
+
+Another way to torify everything we do in a shell is to
+setup the proxy environment variables like this:
+
+    export {http,https,ftp,all}_proxy="socks://localhost:9050"
+
+
+A better alternative with respect to torify is to use torsocks,
+which will spawn a shell where all the operations will be done
+through tor:
+
+    torsocks --shell 
+    ;; or
+    . torsocks on
+
+
+## Good conventions when using tor
+
+A good list of rules to follow whn using tor is:
+
+- When using tor and not tor-browser beware of DNS leaks
+- Use tor and tor-browser over a VPN if possible
+- Use tor and tor-browser in a virtual machine if possible
+- When using tor-browser, do not open downloaded files while 
+  the internet connection is on, this can de-anonymize us
+  or worse be dangerous.
+- Don't enable or install browser plugins
+- Prefer HTTPS versions of websites
+- Never use personal details
+- Use bridges if the connection is blocked
+
+4.5 Configurazioni di TOR e pratiche utili
+
+4.5.1 Check the IP Address
+
+We can check our IP address once the Tor service is up by doing:
+
+    curl --socks5 127.0.0.1:9050 http://checkip.amazonaws.com/ 
+    curl --socks5 127.0.0.1:9050 ifconfig.me
+
+or if we have setup proxychains we can just do:
+
+    proxychains curl ifconfig.me
+
+
+### Specify specific country exit nodes
+
+In general it is not adviced to make changes to the tor configuration
+by choosing a circuit or specific nodes, since this works against our
+anonymization goal.  Anyway there are few cases where setting exit nodes
+may be useful.  An example may be if certain websites do check the origin
+country for the connection using services such as IP geolocalization,
+for example facebook or other websites. By doing this, we can bypass these
+checks.  In order to specify the list of countries we have to modify the
+`torrc` configuration file.  REMEMBER that there are two torrc files,
+one is related to the general tor proxy usage while the other is specific
+to the tor-browser.  Within the torrc file we have to set:
+
+    ExitNodes {fr},{de}
+    StrictExitNodes 1
+
+NOTE: This will not have any effect if we are using Tor bridges. 
+
+### Change Circuit
+
+While Tor is running, we can change the circuit (set of nodes
+connected) at any time by doing:
+
+    killall -HUP tor 
+
+This basically sends the HUP signal to the Tor process, at this point
+the process will start a new connection to a new established circuit. 
+
+## Tor Services
+
+E' possibile utilizzare Tor come piattaforma anche per servizi 
+diversi dal browsing web anonimo, ad esempio, possiamo utilizzare 
+SSH attraverso Tor. Questo puo' essere molto utile e fornire un 
+servizio molto piu' sicuro, vediamo una lista dei servizi piu' 
+popolari utilizzati con Tor:
+
+- Ricochet (Per messaggistica istantanea, tipo XMPP-based)
+- SSH attraverso Tor
+- qTox/uTox/toxic
+- OnionShare (per download sicuri, fornisce un link onion che si 
+  autoelimina dopo il download)
+
+Usare servizi tor ha principalmente due vantaggi:
+
+- Utilizzare in modo anonimo un servizio, e.g., ssh
+- Bypassare NAT e firewall, quindi possoo effettuare connessioni 
+  a quel servizio su qualsiasi macchina senza abilitare port 
+  forwarding sul router
+
+When a normal, non-hidden service is behind a NAT router / 
+firewall, it cannot accept incoming connections from the 
+internet, unless some port forwarding is configured on the 
+router.
+
+Hidden services get around this problem because nobody needs to 
+connect from outside the firewall to inside the firewall. When a 
+client connects to a hidden service, both parties use an outbound 
+connection to a rendez-vous point inside the Tor network. (Edit: 
+not directly. It's Tor connection through a guard etc..). All 
+that is needed is that both are able to make outbound connections 
+to the Tor network. So NAT is not a factor anymore. The firewall 
+doesn't see any connections from outside to the (web?)-server 
+inside.
+

@@ -1,4 +1,6 @@
 # Kerberos
+# Reference on Security: https://m0chan.github.io/2019/07/31/How-To-Attack-Kerberos-101.html#unconstrained-delegation
+# Reference on how to use silver tickets: https://adsecurity.org/?p=2011
 
 Kerberos is a network protocol used for authentication that uses tickets
 as a form of communication.  The protocol originated at MIT but over time
@@ -250,7 +252,25 @@ the following:
 
 ## Attacks
 
+
+A summary of the attacks:
+
+- Kerbrute Enumeration/Bruteforce - No domain access required 
+- Pass the Ticket - Access as a user to the domain required
+- Kerberoasting - Access as any user required
+- AS-REP Roasting - Access as any user required
+- Golden Ticket - Full domain compromise (domain admin) required 
+- Silver Ticket - Service hash required 
+- Skeleton Key - Full domain compromise (domain admin) required
+
+
 ### Bruteforce
+
+By brute-forcing Kerberos pre-authentication, you do not trigger the
+account failed to log on event which can throw up red flags to blue
+teams. When brute-forcing through Kerberos you can brute-force by only
+sending a single UDP frame to the KDC allowing you to enumerate the
+users on the domain from a wordlist.
 
 In first place, due to Kerberos is an authentication protocol, it
 is possible to perform brute-force attacks against it. Moreover,
@@ -405,6 +425,12 @@ accounts.
 Generally we are very interested in the machine account, which is
 indeed used as a service account for many different services.
 
+Most think that Silver Tickets are nothing compared to Golden Tickets
+but they are mistaken, silver tickets are just as dangerous and even
+more stealthier.
+This is because giving the nature of the attack there is no communication
+with the DC hence the stealth.
+
 ### Comparison between Golden and Silver Tickets [Persistence Methods]
 
 Golden tickets allows us to impersonate any user and request any service,
@@ -431,6 +457,80 @@ Note that now we can access also other machines as long as they use the
 domain controller to authenticate; all of this works until the domain
 controller gets rebooted.
 
+Along with maintaining access using golden and silver tickets mimikatz has
+one other trick up its sleeves when it comes to attacking Kerberos. Unlike
+the golden and silver ticket attacks a Kerberos backdoor is much more
+subtle because it acts similar to a rootkit by implanting itself into
+the memory of the domain forest allowing itself access to any of the
+machines with a master password.
+
+The Kerberos backdoor works by implanting a skeleton key that abuses the
+way that the AS-REQ validates encrypted timestamps. A skeleton key only
+works using Kerberos RC4 encryption.
+
+The default hash for a mimikatz skeleton key is
+60BA4FCADC466C7A033C178194C03DF6 which makes the password -"mimikatz"
+
+This will only be an overview section and will not require you to do
+anything on the machine however I encourage you to continue yourself
+and add other machines and test using skeleton keys with mimikatz.
+
+The skeleton key works by abusing the AS-REQ encrypted timestamps as I
+said above, the timestamp is encrypted with the users NT hash. The domain
+controller then tries to decrypt this timestamp with the users NT hash,
+once a skeleton key is implanted the domain controller tries to decrypt
+the timestamp using both the user NT hash and the skeleton key NT hash
+allowing you access to the domain forest.
+
+
+## Unconstrained Delegation
+
+Just to provide a little bit of a background back in the older days of
+Servers & Authentication probably when I was still a kid and Server
+2000 first introduced Active Directory, Microsoft had to find a way
+to allow Servers authenticate to other resources in the context of a
+user. This was called the "Kerberos Double-Hop Issue" - That’s
+where Unconstrained Delegation comes into play.
+
+Unconstrained Delegation is a privilege that can be granted to User
+Accounts or Computer Accounts in a active directory environment that
+allows a resources to authenticate to another resource on BEHALF of
+a user.
+
+An example is:
+joe – Authenticates – CRM Server – authenticates on behalf of joe – DB Server to fetch information.
+
+What is really happening here is you are sending your TGS ticket to
+access the service on CRM Server for example http but you were ALSO
+sending your TGT so that the CRM Server is able to further request a
+TGS on behalf of yourself to access the DB Server in your context.
+
+From an attackers point of view there is a couple of things to bare
+in mind
+
+When a User Authenticates to a Server with Unconstrained Delegation turned
+on, the Users TGT get’s cached on the server If you pwn a Server with
+Unconstrained Delegation Turned on it could be littered with TGT's to
+perform a PTT attack The Reason this get's cached is for the obvious
+reason, so the Server can Impersonate the authenticated user to access
+resources said User has access to.  This allows you to retain your
+privilege model and to not have over-privileged servers.
+
+# Constrained Delegation
+
+Once Microsoft realized there Mistake with Unconstrained Delegation
+they came up with a couple of Kerberos extensions namely - S4U2Self &
+S4U2Proxy - Long story short basically Constrained Delegation limits
+what services a particular machine trusted for Delegation can actually
+access on behalf of an authenticated user
+
+Just like Unconstrained Delegation, you can configure Constrained
+Delegation from Active Directory Users and Computers as well as limit
+authentication to Kerberos and/or other protocol's.
+
+FINISH NOTES From here:
+https://m0chan.github.io/2019/07/31/How-To-Attack-Kerberos-101.html#as-rep-roasting
+
 ## Mitigations against Kerberoast attacks
 
 - Check if preauthentication is disabled for some accounts (to prevent asreproasting)
@@ -447,3 +547,38 @@ controller gets rebooted.
 [Kerberos Notes on adsecurity.org](https://adsecurity.org/?p=227)
 [Explain Kerberos like I am 5](file:///home/giuseppe/Notes/windows/Explain%20like%20I%E2%80%99m%205%20%20Kerberos%20%E2%80%93%20roguelynn.html)
 [OWASP Kerberoasting](https://owasp.org/www-pdf-archive/OWASP_Frankfurt_-44_Kerberoasting.pdf)
+
+
+## Appendix A: Kerberos Terminology
+Common Terminology -  
+
+- Ticket Granting Ticket (TGT) - A ticket-granting ticket is an
+  authentication ticket used to request service tickets from the TGS for
+  specific resources from the domain.
+- Key Distribution Center (KDC) - The Key Distribution Center is a service
+  for issuing TGTs and service tickets that consist of the Authentication
+  Service and the Ticket Granting Service.
+- Authentication Service (AS) - The Authentication Service issues TGTs
+  to be used by the TGS in the domain to request access to other machines
+  and service tickets.
+- Ticket Granting Service (TGS) - The Ticket Granting Service takes the
+  TGT and returns a ticket to a machine on the domain.
+- Service Principal Name (SPN) - A Service Principal Name is an identifier
+  given to a service instance to associate a service instance with a domain
+  service account. Windows requires that services have a domain service
+  account which is why a service needs an SPN set.
+- KDC Long Term Secret Key (KDC LT Key) - The KDC key is based on the
+  KRBTGT service account. It is used to encrypt the TGT and sign the PAC.
+- Client Long Term Secret Key (Client LT Key) - The client key is based
+  on the computer or service account. It is used to check the encrypted
+  timestamp and encrypt the session key.
+- Service Long Term Secret Key (Service LT Key) - The service key is
+  based on the service account. It is used to encrypt the service portion
+  of the service ticket and sign the PAC.
+- Session Key - Issued by the KDC when a TGT is issued. The user will
+  provide the session key to the KDC along with the TGT when requesting
+  a service ticket.
+- Privilege Attribute Certificate (PAC) - The PAC holds all of the user's
+  relevant information, it is sent along with the TGT to the KDC to be
+  signed by the Target LT Key and the KDC LT Key in order to validate
+  the user.

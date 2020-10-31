@@ -6,6 +6,9 @@
 # ./configure
 # make clean && make -s
 #
+# NOTE: Sometimes john for specific hashes may give us as result:
+#
+#
 # John the Ripper has different modes:
 # - single:      use GECOS/Full Field of accounts + lots of mangling rules;
 # - wordlist:    use a wordlist;
@@ -144,6 +147,7 @@ john --wordlist=/usr/share/wordlists/passwords/rockyou.txt --rules=jumbo --forma
 ## Extract the hash of the password
 zip2john archive.zip > hashes.txt
 rar2john archive.rar > hashes.txt
+
 ## Crack the hashes
 john hashes.txt --wordlist /usr/share/wordlists/rockyou.txt
 

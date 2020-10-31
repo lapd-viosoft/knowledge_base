@@ -1,0 +1,5 @@
+# enum4linux
+# A tool to enumerate through port 139/445
+
+# Enumerate a Windows Machine
+enum4linux <IP>

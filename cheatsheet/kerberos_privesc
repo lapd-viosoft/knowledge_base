@@ -1,5 +1,15 @@
 # Windows Kerberos Privilege Escalation
 
+# List of kerberos Attacks
+
+# Kerbrute Enumeration - No domain access required 
+# Pass the Ticket - Access as a user to the domain required
+# Kerberoasting - Access as any user required
+# AS-REP Roasting - Access as any user required
+# Golden Ticket - Full domain compromise (domain admin) required 
+# Silver Ticket - Service hash required 
+# Skeleton Key - Full domain compromise (domain admin) required
+
 ## Simple logic for kerberoast is requesting tickets and cracking them(offline, doesn’t produce any logs)
 ## – For kerberos to work, times have to be within 5 minutes between attacker and victim.
 

