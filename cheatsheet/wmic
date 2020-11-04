@@ -1,4 +1,5 @@
 # WMIC
+# Reference: https://www.hacklikeapornstar.com/pentesting-with-wmi-part-1/
 
 # Get local user accounts and domain user accounts
 wmic useraccount

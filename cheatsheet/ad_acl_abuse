@@ -1,0 +1,13 @@
+# Active Directory ACL Abuses
+
+
+## DCSync
+
+If we have credentials of a user who havee DCSync rights (this can happen
+typically with backup users) we can dump all the data from a domain
+controller by doing:
+
+    secretsdump.py -dc-ip <DC_IP> THROWBACK/backup@<DC_IP>
+
+This basically will get all the NTDS.dit database and some kerberos
+stuff.

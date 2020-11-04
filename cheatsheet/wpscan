@@ -1,9 +1,48 @@
-# basic usage
-wpscan --url "target" --verbose
+# wpscan
+# Reference: https://medium.com/@protector47/how-to-hack-wordpress-website-via-xmlrpc-php-61c813fa3740
+# Enumerations:
+# u  ->user
+#
+# p   -> common plugins
+# vp  -> vulnerable plugins
+# ap  -> all plugins
+#
+# t   -> popular themes
+# vt  -> vulnerable themes
+# at  -> all themes
+#
+# cb  -> config backup
+# dbe -> database exports
+# tt  -> timthumbs
+# m   -> media ranges
+#
+# NOTE: Using wpscan now requires API keys which can be freely obtained.
+# So any of these command is always better with --api-token <TOKENHERE>
+# For password attacks I advice the fasttrack password list, with years updated
+# + the first 200 of rockyou should be enough to start with
 
-# enumerate vulnerable plugins, users, vulnerable themes, timthumbs
-wpscan --url "target" --enumerate vp,u,vt,tt --plugins-detection --follow-redirection --verbose --log target.log
 
-# stealthier scan
-wpscan --stealthy --url myblog.com
+# Basic scan (not many info returned)
+wpscan --url "$target" --verbose
+
+# Enumerate users, database exports, timthumbs, media ranges, vulnerable plugins and vulnerable themes (best)
+;; We can also just pass --enumerate without argument, indeed the man says:
+;; Value if no argument supplied: vp,vt,tt,cb,dbe,u,m
+wpscan --url "$target" --enumerate vp,vt,tt,cb,dbe,u,m --api-token <TOKENHERE> --verbose --log target.log
+;; or equivalent
+wpscan --url http://example.com --enumerate --api-token <TOKENHERE>
+
+;; we can also force an aggressive plugins detection mode
+wpscan --url "$target" --enumerate vp,vt,tt,cb,dbe,u,m --api-token <TOKENHERE> --verbose --log target.log --plugins-detection aggressive
+
+# Scan all plugins and themes
+;; useful to find vulnerabilities that are not found by wpscan
+;; especially as a second run of wpscan
+;; Once we find a plugin we generally find notes about the plugin 
+;; in the directory found within the readme.txt file
+wpscan --url "$target" --enumerate ap,at --api-token <TOKENHERE> --verbose --log target.log --plugins-detection aggressive
+
+# Stealthier scan
+wpscan --stealthy --url "$target"
+
 

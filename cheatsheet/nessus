@@ -1,0 +1,27 @@
+# Nessus Vulnerability Scanner
+
+Suggested installation is through docker:
+https://hub.docker.com/r/treadie/nessus/
+
+By doing:
+
+docker run -t --name nessus -p 8834:8834 treadie/nessus
+
+
+Then we have to register for a home license and get the
+activation code that can be inserted in the installation
+procedure.
+
+# Guide
+Be sure to download the user manual to understand how it works.
+
+Anyway it is pretty easy and straightforward.
+
+We have predefined sets of scans that we can perform and in addition
+we can also create our own templates through what is called "Policies".
+
+The basic types of scans are:
+- Basic Scan (Just a simple basic network scan)
+- Advanced Dynamic Scan (A more advanced network scan)
+- Web Application Tests (A web application scan)
+

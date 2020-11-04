@@ -1,4 +1,6 @@
 # pivoting
+# Reference: https://nullsweep.com/pivot-cheatsheet-for-pentesters/
+
 
 PORT FORWARDING "port to port":   
 
@@ -109,3 +111,12 @@ On Target:
 
 On Kali:   
 ./chisel client 127.0.0.1:8001 socks   
+
+
+# Netcat Port Forwarders
+mknod pivot p
+nc -l -p <port_to_listen_on> 0<pivot | nc <ip_to_pivot_to> <port_to_pivot_to> 1>pivot
+
+
+# Netcat HTTP Proxy
+ncat -vv --listen 3128 --proxy-type http

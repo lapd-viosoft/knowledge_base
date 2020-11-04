@@ -130,3 +130,10 @@ run autoroute -h ;; show menu for autoroute
 
 # Add a route for network 172.18.1.0/24
 run autoroute -s 172.18.1.0 -n 255.255.255.0
+
+# Saving current status
+;; If we want to save our current commands so that we can simple restore
+;; the status we can save the issued commands in an rc file by doing:
+makerc <nameoftheoutputfile>
+;; then we can load it by doing:
+msfconsole -r <nameoftheoutputfile>

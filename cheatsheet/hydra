@@ -1,34 +1,35 @@
 # Hydra
-## Hydra does not have a native default wordlist, we can use:
-## Good password lists to use are:
-## - 10_million_password_list_top_1000.txt 
-## - ...
-## - rockyou (this is too much in general for e.g., ssh)
+Hydra does not have a native default wordlist, we can use:
+Good password lists to use are:
+- 10_million_password_list_top_1000.txt 
+- ...
+- rockyou (this is too much in general for e.g., ssh)
 
 ## Example launch
-## hydra -t 1 -l admin -P [path to password.lst] -vV [IPaddress] ftp
-## --> -t # = preform # tasks
-## --> -l NAME = try to log in with NAME
-## --> -P [filepath] = Try password
-## --> -vV = verbose mode, showing the login+pass for each attempt
-## --> -t 10 threads  
-## --> -w 30 Wait for timeout
-## --> -o output.txt generate report
-## Output file = -o hydra-http-post-attack.txt
-## We can add with -e combinations to the already existing combinations provided 
-## from the users and password files in particular we can use `n` or `s` or `r` 
-## or all the combinations of them, their meaning is:
-## * `n` adds for each user also the null password;
-## * `s` adds the combination of credentials username/username for each of the
-##     usernames;
-## * `r` adds for each combination username/password also the reversed
-##     password/username;
-## Where depending on the webpage and on the post we can have after url:
-## - http-get-form, in case of an http page with a get form
-## - https-get-form, in case of an https page with a get form
-## - http-post-form, in case of an http page with a post form
-## - https-post-form, in case of an https page with a post form
+hydra -t 1 -l admin -P [path to password.lst] -vV [IPaddress] ftp
+--> -t <number> = use <number> threads
+--> -l NAME = try to log in with NAME
+--> -P [filepath] = Try password
+--> -vV = verbose mode, showing the login+pass for each attempt
+--> -t 10 threads  
+--> -w 30 Wait for timeout
+--> -o output.txt generate report
+Output file = -o hydra-http-post-attack.txt
+We can add with -e combinations to the already existing combinations provided 
+from the users and password files in particular we can use `n` or `s` or `r` 
+or all the combinations of them, their meaning is:
+* `n` adds for each user also the null password;
+* `s` adds the combination of credentials username/username for each of the
+    usernames;
+* `r` adds for each combination username/password also the reversed
+    password/username;
+Where depending on the webpage and on the post we can have after url:
+- http-get-form, in case of an http page with a get form
+- https-get-form, in case of an https page with a get form
+- http-post-form, in case of an http page with a post form
+- https-post-form, in case of an https page with a post form
 
+NOTE: Whenever possible -vV and -o are very useful everytime!
 
 # HTTP Basic Authentication
 hydra -L users.txt -P words.txt www.site.com http-head /private/

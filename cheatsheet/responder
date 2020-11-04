@@ -14,6 +14,8 @@ responder -I eth0
 ;; we can crack the net-ntlmv2 creds by doing:
 ;; john --format=netntlmv2 --wordlist="/usr/share/wordlists/rockyou.txt" hash.txt 
 ;; it's adviceable to also use the OneRuleToRuleThemAll ruleset.
+;; hashcat.exe -a 0 -m 5600 hashes.txt /usr/share/wordlists/rockyou.txt -r rules/OneRuleToRuleThemAll.rule
+
 
 # Typical suggested usage
 responder -I eth0 -rPv

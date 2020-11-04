@@ -1,0 +1,19 @@
+# Enumeration
+
+Start with a wireshark/tcpdump scan and check out how the others are
+characterized, so what hardware a corporate is using and what kind of
+hostnames are in use.  We should be able to build our camouflage by
+changing MAC addresses and hostnames.
+
+Once we have access on a machine we can also enumerate with
+ARP, for example there is a comfortable arp scanner on metasploit:
+
+    windows/gather/arp_scanner
+
+We should also run avahi passively to get all the data about
+services running on a network passively.
+A cool thing to do is:
+
+    avahi-browse
+
+

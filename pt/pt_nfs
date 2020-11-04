@@ -1,4 +1,5 @@
 # nfs
+# Default Port: 111 (for RPC) and 2049
 In order to enumerate NFS share we can use:
 
 # Show NFS shares available
@@ -46,8 +47,17 @@ SSH_AUTH_SOCK=0 ssh user@192.168.0.20
 
 If you find anything interesting, you can mount it like this:
 
+mkdir /mnt/NFS
 mount INSERTIPADDRESS:/ /tmp/NFS
 mount -t INSERTIPADDRESS:/ /tmp/NFS
+;; or
+mkdir /mnt/NFS
+mount INSERTIPADDRESS:/sharename /tmp/NFS
+mount -t INSERTIPADDRESS:/sharename /tmp/NFS
+
+
+# Enumeration (nmap)
+nmap -p 111 --script=nfs-ls,nfs-statfs,nfs-showmount $IPTARGET
 
 
 # Recommendations

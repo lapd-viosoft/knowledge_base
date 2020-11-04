@@ -9,6 +9,6 @@ https://opendata.rapid7.com/sonar.fdns_v2/
 
 
 wget https://opendata.rapid7.com/sonar.fdns_v2/2019-11-29-1574985929-fdns_a.json.gz
-cat 20170417-fdns.json.gz | pigz -dc | grep ".target.org" | jq`
+cat 20170417-fdns.json.gz | pigz -dc | grep ".target.org" | jq
 
 

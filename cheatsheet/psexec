@@ -1,3 +1,5 @@
+# PsExec
+Reference: https://adamtheautomator.com/psexec-ultimate-guide/#Enabling_PowerShell_Remoting_Remotely
 # NOTE:
 # you'll need to set the key to disable Remote UAC which is a default unless a computer has been joined to a domain.
 # Hence for non domain-joined computers we must do:

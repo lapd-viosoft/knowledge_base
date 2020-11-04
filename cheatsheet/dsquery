@@ -49,3 +49,7 @@ dsquery domainroot -filter "(&(objectCategory=Computer)(objectClass=Computer)(op
 
 # Get Domain Controllers for a Site
 dsquery "CN=Sites,CN=Configuration,DC=forestRootDomain" -filter (objectCategory=Server)
+
+# Get Trusted Domains
+dsquery * -filter "(objectClass=trustedDomain)" -attr *
+

@@ -72,5 +72,5 @@ watch -d -n 2 iptables -nvL
 ;; listening on a privileged port.
 sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 1080
 ;; to remove this rule
-sudo iptables -t nat -L --line-numbers
+sudo iptables -t nat -L --line-numbers -v -n
 sudo iptables -t nat  -D PREROUTING <rule_number>

@@ -62,11 +62,14 @@ net accounts /domain
 # Get File Shares
 net share
 
-# Get Connected Drives
+# Get Connected (Mounted) Drives
 net use
 
 # Mount a Remote Network Share
 net use X: \\<IP_Address>\c$
+
+# Mount Sysinternals tools as a drive
+net use z: \\live.sysinternals.com\tools
 
 # List all host in the current WORKGROUP or Domain
 net view

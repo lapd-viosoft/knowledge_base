@@ -1,34 +1,45 @@
 # Test for common FTP vulnerabilities with nmap
 nmap --script=ftp-anon,ftp-bounce,ftp-libopie,ftp-proftpd-backdoor,ftp-vsftpd-backdoor,ftp-vuln-cve2010-4221,tftp-enum -p 21 <target-ip>
-;; Note
+
+# Alternative Enumeration
+It's worth noting  that some vulnerable versions of in.ftpd and some
+other FTP server variants return different responses to the "cwd" command
+for home directories which exist and those that don’t. This can be
+exploited because you can issue cwd commands before authentication, and
+if there's a home directory- there is more than likely a user account
+to go with it. While this bug is found mainly within legacy systems,
+it's worth knowing about, as a way to exploit FTP.
+
+This vulnerability is documented at: https://www.exploit-db.com/exploits/20745 
 
 # Common commands list:
- cd <directory> - change remote directory
- lcd <directory> - change local directory
- put <file> - upload file
- get <file> - download file
+cd <directory> - change remote directory
+lcd <directory> - change local directory
+put <file> - upload file
+get <file> - download file
+cwd - get working directory (can be used for enumeration in some cases)
 
 # Common FTP commands:
- USER - authentication username
- PASS - authentication password
- QUIT - disconnects
- LIST - list info of a file or dir if specified, else list info of current dir
- NLST - list of file names in a specified directory
- RETR - retrieve a copy of file
- DELE - delete file
- RNTO - rename file
- SYST - system file information
- CDUP - change to parent directory
- CWD - change working directory
- ACCT - account information
- PASV - enter passive mode (client can send data to ports > 1023)
- EPSV - enter extensive passive mode
- LPSV - enter long passive mode
- MKD - make a directory
- RMD - remove a directory
- RMDA - remove a directory tree
- PORT - specify address and port to which the server should connect
- PWD - print working directory
+USER - authentication username
+PASS - authentication password
+QUIT - disconnects
+LIST - list info of a file or dir if specified, else list info of current dir
+NLST - list of file names in a specified directory
+RETR - retrieve a copy of file
+DELE - delete file
+RNTO - rename file
+SYST - system file information
+CDUP - change to parent directory
+CWD - change working directory
+ACCT - account information
+PASV - enter passive mode (client can send data to ports > 1023)
+EPSV - enter extensive passive mode
+LPSV - enter long passive mode
+MKD - make a directory
+RMD - remove a directory
+RMDA - remove a directory tree
+PORT - specify address and port to which the server should connect
+PWD - print working directory
 
 # Discover if anonymous login is enabled, default port is 21
 telnet <FTP_ip_address> <port>

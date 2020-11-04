@@ -1,3 +1,4 @@
 # wmiexec from Impacket
+# Reference: https://www.hacklikeapornstar.com/pentesting-with-wmi-part-1/
 
 python wmiexec.py  Joe@192.168.2.100 "dir C:\Users"

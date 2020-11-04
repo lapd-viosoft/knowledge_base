@@ -6,19 +6,63 @@ whoami
 whoami /all
 whoami /priv
 
-# Get info about a user
+# Get users logged on machine
+quser
+
+# Get name of the computer
+hostname
+
+# Get Windows version
+ver
+
+# Get info about a remote user
 finger <username>
+
+# Get info on RDP sessions
+qwinsta
+
+# Print current directory (pwd)
+chdir
 
 # Remove a file
 del <file>
+
+# Remove an empty directory (rmdir)
+rmdir /s <directory>
+
+# Remove a directory (rm -rf)
+rmdir /s /q <directory>
 
 # Remove a Directory
 rmdir /s .\path\to\dir\
 ;; if we want to bypass confirmation "Y" we can add the /q
 rmdir /q /s .\path\to\dir\
 
+# Get a list of all installed drivers
+driverquery
+
 # List files
 dir
+
+# List files sorted by last modified date
+dir /OD
+dir /O-D ;; reversed
+
+# List files sorted by extension
+dir /OE
+dir /O-E ;; reversed
+
+# List files sorted by extension
+dir /OS
+dir /O-S ;; reversed
+
+# List only directories or simple files
+dir /AD  ;; only dirs
+dir /A-D ;; only simple files
+
+# List only hidden files
+dir /AH  ;; only hidden dirs
+dir /A-H ;; exclude hidden files
 
 # List files with relative owners
 dir /q
@@ -41,8 +85,12 @@ rename Bacon Ham
 # Searches for all files and directories containing "foo" recursively
 dir /s *foo*
 
+# Save into windows clipboard the output of a command (Win8/10)
+<command> | clip
+
 # Searches for all files and directories containing "foo" recursively (with more info)
 dir /s /p *foo*
+dir *.ext /S /B
 
 
 # Get Windows PATH (all the directories loaded for executables)
@@ -57,6 +105,20 @@ color 07
 color ;; sets the default
 color 0A
 
+# Change Prompt (analogous to PS1 in *nix)
+prompt /?  ;; check what you can change
+prompt $P$T$G ;; sets the prompt to have path,current time and a gt (>) symbol
+
+# Get/Set date
+date /t ;; get date
+date    ;; set date
+
+# Get/Set Time
+time /t  ;; get time
+time     ;; set time
+
+# Get TimeZone
+tzutil
 
 # Get attributes related to all files in current directory 
 attrib 
@@ -75,10 +137,13 @@ start <something>
 
 # Get list of processes
 tasklist
+qprocess
+# Print a file on screen
+type file.txt
+more file.txt
 
 # Get a sorted list of lines
 type file.txt | sort
-
 
 # Get differences between two files
 fc file1 file2
@@ -92,3 +157,31 @@ sc qc <servicename>
 sc qtriggerinfo <servicename>
 
 
+# Get current domain
+set
+;; watch out for environment variables related to domain
+
+# Get current Primary Domain Controller
+nslookup -type=any %USERDOMAIN%
+nslookup -type=any %USERDNSDOMAIN%
+nslookup -type=any $env:USERDOMAIN  ;; if in powershell
+
+# Get current Primary Domain Controller (method 2)
+nltest /dclist:<DOMAINNAME>
+nltest /? ;; get help
+nltest /dsgetdc:itdroplets.com /DS_6 /avoidself 
+nltest /dsgetdc:itdroplets.com /DS_6 /avoidself | findstr "DC: "
+
+
+# Get MAC Address
+getmac
+
+# See File Extension/Program Associations
+ftype
+
+# See list of associations
+assoc
+
+# Add a new Association
+assoc .pl=PerlScript
+ftype PerlScript=perl.exe %1 %*

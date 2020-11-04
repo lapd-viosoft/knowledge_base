@@ -1,5 +1,48 @@
 # enum4linux
 # A tool to enumerate through port 139/445
+# Common flags:
+# -v    verbose
+# -a    perform all the types of enumeration (except SMB shares enumeration by dictionary bruteforce)
 
 # Enumerate a Windows Machine
-enum4linux <IP>
+enum4linux -v -a <IP>
+
+# Enumerate a Windows Machine with Credentials (can obtain more info)
+enum4linux -u <username> -p <password> -a $TARGETIP
+
+# Perform a bruteforce of share names with a dictionary
+;; note that enum4linux already contains a dictionary of share names
+enum4linux -s shares_dictionary.txt $TARGETIP
+
+
+## More specific runs
+
+# Get OS information
+enum4linux -v -o $TARGETIP
+
+# Get shares
+enum4linux -S $TARGETIP
+;; or
+enum4linux -u $USERNAME -p $PASSWORD -S $TARGETIP
+
+# Get printers known to the remote machine
+enum4linux -i $TARGETIP
+
+# Get groups
+enum4linux -G $TARGETIP
+;; or
+enum4linux -u $USERNAME -p $PASSWORD -G $TARGETIP
+
+# Get usernames if server allows (RestrictAnonymous=0)
+enum4linux -U target-ip
+
+# Get usernames if valid credentials
+enum4linux -u administrator -p password -U $TARGETIP
+
+# Bruteforce usernames using default RIDs (500-550,1000-1050)
+enum4linux -r $TARGETIP
+
+# Bruteforce usernames using custom RIDs 
+;; NB: *nix Samba servers often seem to have RIDs in the range 3000-3050.
+enum4linux -R 3000-3050 $TARGETIP
+enum4linux -R 600-660 $TARGETIP

@@ -1,0 +1,18 @@
+# FTP Protocol
+Default Port:21 and 20
+RFC: https://www.ietf.org/rfc/rfc959.txt (RFC959)
+
+The FTP server may support either Active or Passive connections, or both. 
+
+- In an Active FTP connection, the client opens a port and listens. The
+  server is required to actively connect to it;
+- In a Passive FTP connection, the server opens a port and listens
+  (passively) and the client connects to it;
+
+
+This separation of command information and data into separate channels
+is a way of being able to send commands to the server without having
+to wait for the current data transfer to finish. If both channels were
+interlinked, you could only enter commands in between data transfers,
+which wouldn't be efficient for either large file transfers, or slow
+internet connections.

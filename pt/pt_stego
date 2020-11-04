@@ -8,10 +8,14 @@
 # displays info about a file whether it has embedded data or not
 steghide info <file>
 
-# extracts embedded data from a file
+# Extracts embedded data from a file (steghide only works on jpg files)
 steghide extract -sf <file>
 OR 
 steghide -xf <filename.jpg>
+
+zsteg is the alternative to steghide for png files.
+
+
 
 # Crack password for image metadata
 pip3 install stegcracker

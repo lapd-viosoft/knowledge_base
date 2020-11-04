@@ -1,3 +1,17 @@
+# FTP
+
+# Connect to an FTP server
+ftp <ip>
+USER <username>  ;; generally the system asks for this
+PASS <password>  ;; generally the system asks for this
+
+# Connect to an FTP server anonymously (if supported)
+ftp <ip>
+USER anonymous
+PASS 
+;; the password is blank
+
+
 # FTP client commands
 binary - set binary transfer type
 cd - change remote working directory

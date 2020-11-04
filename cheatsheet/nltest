@@ -2,3 +2,4 @@
 
 # Get Domain Trusts
 nltest /domain_trusts 
+nltest /trusted_domains

@@ -1,0 +1,11 @@
+# Pivoting with metasploit
+
+use post/multi/manage/autoroute  # or simply `use autoroute`
+set session <ID>
+set subnet 10.10.10.0 # insert the network address
+
+use auxiliary/server/socks4a     # or simply `use socks4a`
+;; set port of proxychains to the same port used by socks4a,
+;; you can view the port used by socks4a by typing:
+show options 
+

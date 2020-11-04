@@ -1,0 +1,23 @@
+# Wireshark
+Sample Captures: https://wiki.wireshark.org/SampleCaptures
+Walkthroughs: 
+    - https://dfirmadness.com/case-001-pcap-analysis/
+
+
+## Getting info from ARP
+With ARP, we can get info on what kind of devices
+are sending data, if there is some MAC address that
+we cannot resolve, this is suspicious from a DFIR
+point of view.
+
+ARP is also useful to check which MAC address to
+IP address association. In this context ARP broadcast
+requests are particularly useful, since in these requests
+we can find where the sender, in case no response
+is received, gets the address.
+
+
+## Getting info from ICMP
+Suspicious packets here are the ones with uncommon
+opcodes (opcodes different from 8 and 0).
+

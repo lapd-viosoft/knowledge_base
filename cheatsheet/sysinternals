@@ -1,2 +1,17 @@
+# Windows Sysinternals
+
+# Download  sysinternals tools
+http://live.sysinternals.com/tools
+
+# Mount Sysinternals as a Drive
+;; sometimes it is necessary to first browse it with a browser
+;; or resolve its DNS name with a ping
+net use x: \\live.sysinternals.com\tools
+
+## Mount sysinternals tools from drive to local drive
+xcopy /s x:\ c:\sysinternals\
+net use x: /d
+
+
 # Dump a Process Memory
 .\procdump64.exe -ma <PID>

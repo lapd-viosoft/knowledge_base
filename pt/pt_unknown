@@ -1,0 +1,51 @@
+# Pentesting Unknown Network Services
+References: 
+    https://medium.com/@gregIT/exploiting-simple-network-services-in-ctfs-ec8735be5eef
+    http://www.rockfishsec.com/2014/01/fuzzing-vulnserver-with-python.html
+
+## With Binary
+Reverse the binary, use tools such as strings, objdump or
+ghidra, radare, gdb.
+
+## Only Network
+
+Try to fuzz the service with simple communications such as:
+
+    import socket
+    def connect(server, port):
+        # open a connection to vulnserver
+        s = socket.socket (socket.AF_INET, socket.SOCK_STREAM)
+        s.connect ((server, port))
+        return s
+    def read_until(s, delim=b':'):
+        buf = b''
+        while not buf.endswith(delim):
+            buf += s.recv(1)
+        return buf
+    if __name__ == "__main__":
+        PORT = 12345
+        SERVER = '<THE HOSTNAME OR IP>'
+        s = connect(SERVER, PORT)
+        print(read_until(s))
+
+We can try to overflow the service, for example with a function
+like this:
+
+def overflow_input(num_chars=128):
+    for i in range(1, num_chars):
+        try:
+            s = connect(SERVER,PORT)
+            read_until(s)
+            data = 'A' * i + '\n'
+            data = bytes(data, encoding='utf-8')
+            s.send(data)
+        except:
+            print(f"Server crashed with input size {i}")
+        finally:
+            s.close()
+
+
+The code will simply loop and feed larger and larger input seeking
+a crash of the server which can give you an intial starting point to
+exploit the service.  By using building blocks such as these you can
+quickly start to test out network services and local binaries.
