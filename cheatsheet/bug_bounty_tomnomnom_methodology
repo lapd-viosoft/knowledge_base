@@ -1,0 +1,27 @@
+# Bug Bounty TomNomNom Methodology
+
+We start from a scope, e.g., *.example.com
+
+
+# Get the attack surface
+assetfinder --subs-only example.com > domains
+
+
+# Get alive endpoints with relative protocol (http/https)
+cat domains | httprobe | tee hosts
+cat domains | httprobe | tee -a hosts   ;; this can be used to append to file
+
+# Get URLs
+meg -d 1000 -v /
+;; or give some paths where the paths are:
+meg paths.txt hosts.txt
+
+Here paths.txt may be a file with quickwins :D
+
+
+# Grep for bounties
+grep -Hnri '<regex>' out/
+
+gf ~/.gf/aws-key.json
+gf aws-key
+gf base64

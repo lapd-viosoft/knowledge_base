@@ -1,0 +1,8 @@
+# Pentesting Joomla Applications
+
+
+# Enumeration (joomscan)
+joomscan -u <URL>
+
+# Enumeration (joomlavs)
+./joomlavs.rb --url <URL> -a -v

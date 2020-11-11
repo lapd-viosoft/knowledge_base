@@ -1,0 +1,5 @@
+# assetfinder
+
+
+# Find assets related to a domain (e.g., example.com)
+assetfinder --subs-only example.com > domains

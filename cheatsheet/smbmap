@@ -1,0 +1,33 @@
+# smbmap
+
+
+# Enumerate SMB shares
+smbmap -u "$USERNAME" -p "$PASSWORD" -H $IPADDRESS
+
+# Enumerate a specific SMB Share
+smbmap -u "$USERNAME" -p "$PASSWORD" -H $IPADDRESS -s "$SHARENAME"
+
+# Execute a command remotely
+smbmap -u "$USERNAME" -p "$PASSWORD" -H $IPADDRESS -x "ipcofig"
+
+# Enumerate SMB Shares
+smbmap -H <ip_address>
+
+# Enumerate an SMB share with a null session
+smbmap -H <ip_address> -u anonymous 
+
+# Enumerate an SMB share with a guest
+smbmap -H <ip_address> -u whateveruser  
+
+# Specify custom domain and credentials
+smbmap -H <ip_address> -d DOMAINNAME.LOCAL -u <username> -p <password>
+
+# Specify no domain at all
+smbmap -H <ip_address> -d localhost -u <username> -p <password>
+
+# List content of share recursively
+smbmap -H <ip_address> -R SYSVOL
+
+# Download a file, wherever it is
+smbmap -R <sharename> -H <ip_address> -A Groups.xml -q
+

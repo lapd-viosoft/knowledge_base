@@ -30,8 +30,19 @@
 ## - A - Use a carriage return (0x0d) as a request spacer
 ## - B - Use binary value 0x0b as a request spacer
 
-# Nikto Basic Scan
+# Update nikto
+nikto -update
+
+# nikto basic scan
 nikto -h <ip-address> -output /tmp/output.txt
+
+# nikto basic scan (without using SSL/TLS)
+;; this speeds up nikto when we are only interested in connecting through plain HTTP
+nikto -h <ip-address> -nossl -output /tmp/output.txt
+
+# nikto basic scan (only using SSL/TLS)
+;; this speeds up nikto when we are only interested in connecting through SSL/TLS
+nikto -h <ip-address> -ssl -output /tmp/output.txt
 
 # Nikto limit scan to  Scan 1 (interesting files) and 2 (misconfig or default files)
 nikto -h <ip-address> -T 12 -output /tmp/output.txt

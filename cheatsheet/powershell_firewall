@@ -6,3 +6,15 @@ Get-NetFirewallRule -All
 
 # Get all Firewall Rules with a filter
 Get-NetFirewallRule -All | where {$_.action -eq 'block' -and $_.displayname -like "*mysql*"}
+
+# Add Firewall Rules (Allow)
+New-NetFirewallRule -DisplayName "Allow Inbound Port 80"
+-Direction Inbound
+-LocalPort 80 -Protocol TCP
+-Action Allow
+
+# Add Firewall Rules (Block)
+New-NetFirewallRule -DisplayName "Block Inbound Port 80"
+-Direction Outbound
+-LocalPort 80 -Protocol TCP
+-Action Block

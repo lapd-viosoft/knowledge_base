@@ -19,7 +19,11 @@ cd Empire/
 
 ## Launch Empire with REST interface
 ;; By using --rest with Empire we start the server as a rest API, which allows us to connect Empire with Starkiller
-./empire --rest
+sudo ./empire --rest
+
+## Launch StarKiller
+;; this is a commonly used web GUI front-end for empire
+sudo ./starkiller --no-sandbox
 
 
 

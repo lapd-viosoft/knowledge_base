@@ -1,4 +1,5 @@
-# DNS service enumeration
+# Pentest DNS
+# Default Port: 53
 
 # DNS Enumeration with metasploit
 msf > use auxiliary/gather/dns_info ;; retrieves basic DNS fields for a domain
@@ -7,9 +8,21 @@ msf > use auxiliary/gather/enum_dns ;; gather information about a domain from a 
                                     ;; reverse lookups, SRV record bruteforcing, and other techniques.
 
 
-# DNS Reverse Lookup on a list of IPs (get domain names from IPs)
+## DNS Reverse Lookup on a list of IPs (get domain names from IPs) (metasploit)
 msf > use auxiliary/gather/dns_reverse_lookup
 
+## Enumeration (dnsenum)
+dnsenum <DOMAIN>
+
+## Enumeration (dnsrecon)
+dnsrecon -d <DOMAIN>
+
+## Zone transfer
+dnsrecon -d <DOMAIN> -a
+dig axfr <DOMAIN> @ns1.test.com
+
+## Bruteforce
+https://github.com/blark/aiodnsbrute
 
 
 ## Check for DNS wildcard configuration

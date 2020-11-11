@@ -1,6 +1,5 @@
 # powershell
 
-
 # Get Powershell Version
 $PSVersionTable.PSVersion
 ;; to get additional info just do
@@ -17,5 +16,5 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.We
 "Set-PSReadlineOption -BellStyle None" | Add-Content $Profile
 .$Profile
 
-# Bypass Execution Policy (allowing to run scripts)
+# Bypass Execution Policy (allowing to import external modules and run scripts)
 powershell -ep bypass

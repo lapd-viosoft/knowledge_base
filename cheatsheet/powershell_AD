@@ -1,3 +1,5 @@
+# Powershell and Active Directory
+
 # Get List of Users
 Get-ADUser -Filter *
 
@@ -35,7 +37,6 @@ Get-DnsServerZoneAging myexampledomain.com
 
 # Get Users whose "logonhours" are set to something (not-null)
 Get-ADUser -Filter * -Property * | Where-Object {$_.LogonHours -ne $null} | Select -Property Name,LogonHours | Format-List
-
 
 # Get all Organizational Units with a subset of the properties
 Get-ADOrganizationalUnit -Filter * -Properties *| Select-Object CanonicalName,DistinguishedName,ProtectedFromAccidentalDeletion

@@ -9,3 +9,9 @@ Get-Module -ListAvailable
 
 # Get Commands for a Module
 Get-Command -Module AppLocker
+
+# Import an external module
+. \path\to\module.ps1
+
+# Import an external module
+Import-Module \path\to\module.ps1

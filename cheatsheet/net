@@ -74,6 +74,9 @@ net use z: \\live.sysinternals.com\tools
 # List all host in the current WORKGROUP or Domain
 net view
 
+# List all shares related to a computername/IP
+net view \\nameorip /all
+
 # List all domains available
 net view /domain
 

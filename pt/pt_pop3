@@ -1,4 +1,5 @@
-# Pentesting POP
+# Pentesting POP3
+# Default Ports: 110 (plain), 995 (encrypted)
 
 # Note that bruteforcing POP3 service is faster than bruteforcing SSH services.
 
@@ -14,9 +15,21 @@ nmap --script=pop3-capabilities <targetIP>
 # Login to a POP3 server
 use auxiliary/scanner/pop3/pop3_login
 
+# Enumeration (telnet)
+telnet <IP> 110
 
-# Bruteforce
+USER <USER>
+PASS <PASSWORD>
+LIST
+RETR <MAIL_NUMBER>
+QUIT
+
+
+# Bruteforce (nmap)
 ;; Tries to log into a POP3 account by guessing usernames and passwords.
 nmap --script=pop3-brute.nse <targetIP>
 
+# Bruteforce (Hydra)
+hydra -l <USER> -P <PASSWORDS_LIST> -f <IP> pop3 -vV -o report-pop3-hydra.txt
+hydra -S -v -l <USER> -P <PASSWORDS_LIST> -s 995 -f <IP> pop3 -vV -o report-pop3-hydra.txt
 

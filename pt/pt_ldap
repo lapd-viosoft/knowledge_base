@@ -1,6 +1,6 @@
 # Pentesting LDAP
-# Default port: 389 and 636(ldaps). Global Catalog (LDAP in
-# ActiveDirectory) is available by default on ports 3268, and 3269 for LDAPS.
+# Default port: 389 (plain), 636(ldaps).
+#               3268 (Global Catalog), 3269 (secure Global Catalog)
 
 # Enumeration (nmap)
 

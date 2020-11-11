@@ -44,9 +44,12 @@ smbmap -R <sharename> -H <ip_address> -A Groups.xml -q
 # -L to list the available shares
 smbclient -N -L '\\<ip_address>'
 
-# Downalod an entire share
+# Downalod an entire share (smbget)
 ;; if you want to login as anonymous just press enter twice
 smbget -R smb://10.10.95.28/<sharename>
+
+# Download an entire share (smbclient)
+smbclient //<IP>/<SHARE> -U <USER> -c "prompt OFF;recurse ON;mget *"
 
 # List shares (creds required)
 smbclient -L '\\<ip_address>'

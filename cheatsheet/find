@@ -174,3 +174,8 @@ done
 ;; using xargs with arguments after each filename (implies one run per filename)
 ;; where command is the program we want to launch on the files
 find . -name \*.txt -print0 | xargs -0 -I{} command {} argument
+
+# Find and grep on many many files
+;; searching for a file containing a string starting with 4bceb and long 32 chars
+;; xdev does not descend into other filesystems
+find / -xdev -type f -print0 2>/dev/null | xargs -0 grep -E '4bceb[[:graph:]]{27}' 2>/dev/null

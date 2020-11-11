@@ -1,0 +1,5 @@
+# Pentest WebDAV
+
+
+# Test a WebDAV endpoint
+davtest -url $URL

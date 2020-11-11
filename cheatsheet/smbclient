@@ -6,6 +6,12 @@
 ## `prompt off`: to disable asking confirmation for each file operation
 
 
+# Run smbclient on a specific IP and Domain
+smbclient -I $IPADDRESS -W $DOMAINNAME
+
+# Run smbclient on a specific IP, Domain, user and password
+smbclient -I $IPADDRESS -W $DOMAINNAME -u $USERNAME -p $PASSWORD
+
 # To display public shares on the server
 smbclient -L '\\192.168.1.220'
 or

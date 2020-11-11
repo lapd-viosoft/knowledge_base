@@ -1,0 +1,66 @@
+# Powershell Network
+
+NOTE: 
+An "Adapter" is a piece of hardware.  A "network interface" is a software
+construct.  Usually, there is one network interface per adapter.
+But there may be network interfaces which are not from an adapter.
+And there may be multiple interfaces per adapter.
+
+# Get Network Adapters
+Get-NetAdapter
+Get-NetAdapter -IncludeHidden
+
+# Get Network Interfaces
+Get-NetIPInterface
+Get-NetIPInterface -AddressFamily IPv6
+
+# Get Network Interfaces with Addresses
+Get-NetIPAddress
+Get-NetIPConfiguration
+
+# Configure IP Address
+New-NetIPAddress -InterfaceAlias "Ethernet"
+-IPAddress 192.168.100.25 -PrefixLength 24
+-DefaultGateway 192.168.100.1
+
+# Get DNS Servers Addresses
+Get-DNSClient               ;; get dns server names
+Get-DNSClientServerAddress  ;; get dns server IPs
+
+# Get DNS Cache Entries
+Get-DNSClientCache
+
+# Configure DNS Server
+Set-DNSClientServerAddress -InterfaceAlias "Ethernet"
+-ServerAddresses 8.8.8.8
+
+# Ping
+Test-NetConnection
+
+# Verify Connectivity/Ping
+Test-Connection 8.8.8.8  # most similar to ping
+Test-NetConnection # new ping, by default uses a microsoft server to check internet connection
+Test-NetConnection 8.8.8.8
+
+# Traceroute
+Test-NetConnection example.com -traceroute
+
+# Port Scan with Test-NetConnection
+Test-NetConnection 192.168.1.100 -Port 25
+
+# Check Open Connections and Ports (ss alternative)
+Get-NetTCPConnection
+Get-NetTCPConnection | ? {$_.State -eq "Listen"}
+Get-NetUDPEndpoint | select LocalAddress,LocalPort,OwningProcess
+
+# Make a Web Request
+Invoke-WebRequest -Uri "www.google.com" 
+
+# Join a Domain
+Add-Computer -DomainName myforest.local
+
+# Add Roles and Features
+Install-WindowsFeature
+-IncludeAllSubfeature
+-IncludeManagementTools File-Services
+

@@ -18,3 +18,7 @@
 `[/]`                - increase/decrease speed of media
 `{/}`                - increase/decrease speed of media exponentially
 
+
+
+## Subtitles
+mpv file.mp4 --sub-files=path/to/sub.srt

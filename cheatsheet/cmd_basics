@@ -1,6 +1,5 @@
 # Windows CMD basics
 
-
 # Who am I?
 whoami
 whoami /all
@@ -82,7 +81,7 @@ move Apples Bacon
 # Rename a file/directory
 rename Bacon Ham
 
-# Searches for all files and directories containing "foo" recursively
+# Searches for all files and directories containing "foo" recursively (find)
 dir /s *foo*
 
 # Save into windows clipboard the output of a command (Win8/10)
@@ -91,7 +90,6 @@ dir /s *foo*
 # Searches for all files and directories containing "foo" recursively (with more info)
 dir /s /p *foo*
 dir *.ext /S /B
-
 
 # Get Windows PATH (all the directories loaded for executables)
 path
@@ -137,7 +135,10 @@ start <something>
 
 # Get list of processes
 tasklist
+tasklist /svc ;; shows in some cases also the service behind that executable
 qprocess
+
+
 # Print a file on screen
 type file.txt
 more file.txt
@@ -149,6 +150,21 @@ type file.txt | sort
 fc file1 file2
 ;; FC can also be used to compare binary files:
 fc /B file1 file2
+
+# Get list of services
+net start
+
+# Get list of running services
+sc query type= service
+sc queryex type= service
+
+# Get list of stopped services
+sc query type= service state= inactive
+sc queryex type= service state= inactive
+
+# Get list of all services (both running and stopped/inactive)
+sc query type= service state= all
+sc queryex type= service state= all
 
 # Get info on a service
 sc qc <servicename>
@@ -185,3 +201,12 @@ assoc
 # Add a new Association
 assoc .pl=PerlScript
 ftype PerlScript=perl.exe %1 %*
+
+# Schedule a tasks (execute something at a certain time)
+schtasks /create /sc once /tn "shutdown" /tr "shutdown -s" /st 15:30
+
+
+# Show history
+doskey /History
+
+

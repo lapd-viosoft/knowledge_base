@@ -19,13 +19,15 @@ mount -t nfs target:/ /mnt/nfs/
 chown root:root sid-shell; chmod +s sid-shell
 
 
-# Mount an NFS share
+# Mount an NFS Share
 $ showmount -e someexample.com
 ;; Export list for someexample.com:
 ;; /backup *
 $ mkdir backup
 $ mount -o ro,noexec someexample.com:/backup backup
-$ ls backup
+
+# Mount an NFS Share (alternative way)
+sudo mount -v -t nfs -o vers=2 <IP>:<SHARE> <DIRECTORY>
 
 
 # User nfspysh to mount share and create .ssh directory

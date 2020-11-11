@@ -38,3 +38,7 @@ Start-MpScan
 
 ## Start a scan only for a path
 Start-MpScan -ScanPath C:\Users\Johndoe\Desktop\Stuff\ -ScanType CustomScan
+
+
+## Disable Defender (old windows)
+sc stop WinDefend

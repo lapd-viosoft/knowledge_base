@@ -1,0 +1,11 @@
+# Pentest Git Repos
+
+
+# Download a /.git/
+mkdir <DESTINATION_FOLDER>
+./gitdumper.sh <URL>/.git/ <DESTINATION_FOLDER>
+
+# Extract content
+mkdir <EXTRACT_FOLDER>
+./extractor.sh <DESTINATION_FOLDER> <EXTRACT_FOLDER>
+
