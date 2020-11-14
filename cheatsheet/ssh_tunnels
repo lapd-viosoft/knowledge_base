@@ -1,4 +1,10 @@
 # SSH Tunnels Notes
+There are three mainn types of tunnels that we can build with ssh:
+- Local (-L)      YOU <-- CLIENT   we get something available only locally on a remote machine
+                                   available locally on our machine
+- Reverse (-R)    YOU --> CLIENT   we put something availably only locally on our machine
+                                   to a remote machine
+- Dynamic (-D)    YOU --> CLIENT --> OUTSIDE 
 
 ## Why do I need an SSH Tunnel
 

@@ -1,3 +1,5 @@
+# sqlmap
+
 # Test URL and POST data and return database banner (if possible)
 ./sqlmap.py --url="<url>" --data="<post-data>" --banner
 
@@ -28,8 +30,8 @@
                                            --count
 # Enumeration flags
 ./sqlmap.py -r <request-file> -D <db-name>
-                              -T <tbl-name>
-                              -C <col-name>
+                              -T <table-name>
+                              -C <column-name>
                               -U <user-name>
 
 # Extract data

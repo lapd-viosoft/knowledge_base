@@ -1,15 +1,22 @@
+# sqlmap part 2
+
 # General parameters
 # --batch (avoids asking user questions, by replying automatically with defaults)
 # --dbms (can be mysql or others if we already know the type of DB, this can
-#         increase chances to perform successful attacks)
+#         increase chances to perform successful attacks and speed up the run)
 # Advices, to check for sqli vulns:
 # 1. when we got a 302 redirect to 'http://172.28.128.17:80/login_success.php?username=admin'. Do you want to follow? [Y/n]
 #    we may both want to try with Y and n, I sometimes found vulnerable targets when not following the 302 location
 # 2. use maximum "risk" and maximum "level" (in feb/2020 risk=3 and level=5)
+# 3. HTTP Request files provided with `-r`  should not contain manual SQL injection attempts
+#    but just normal HTTP requests e.g., when inserting data normally
 
 
 # Simple Scan
 sqlmap.py -u "http://testsite.com/login.php"
+
+# Simple Scan (analyze forms)
+sqlmap.py -u "http://testsite.com/login.php" --forms
 
 # Simple Scan on a GET parameter
 sqlmap.py -u "http://testsite.com/login.php?param1=ciao&param2=it" -p param1
