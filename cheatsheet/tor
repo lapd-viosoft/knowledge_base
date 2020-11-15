@@ -1,9 +1,93 @@
 # tor
-!!! TODO
+There are generally two ways through which we can proxy traffic
+through tor:
+1) using proxies like proxychains
+2) setup the specific application through the network/proxy settings
+
+# Start tor
+sudo systemctl start tor
+sudo systemctl status tor
+
+# Check tor is working
+We can check our IP address once the Tor service is up by doing:
+
+curl http://checkip.amazonaws.com/
+curl --socks5 127.0.0.1:9050 http://checkip.amazonaws.com/ 
+
+We should see two different IP addresses, we can also use another
+website:
+curl ifconfig.me
+curl --socks5 127.0.0.1:9050 ifconfig.me
+
+# Proxy traffic through tor (proxychains)
+;; be sure to copy the tor proxychains config (that is the default)
+;; using dynamic chain and a socks4 proxy on port 9050 (see config/proxychains_tor)
+proxychains curl ifconfig.me
+
+# Proxy traffic through tor (torsocks)
+A good tool to use is torsocks which we should always prefer wrt
+torify (since torify leaks DNS).
+Torify will spawn a shell where all the operations will be done
+through tor:
+
+torsocks --shell 
+;; or
+. torsocks on
+
+# Proxy traffic through tor for some applications (environment variables)
+;; For some software we may need to set environment variables
+export {http,https,ftp,all}_proxy="socks://localhost:9050"
 
 
+
+
+## Change Circuit
+killall -HUP tor 
+
+## Connecting to Freenode Via Tor
+https://freenode.net/news/tor-online
+
+The hidden service requires SASL authentication, as before. In addition,
+due to the abuse that led Tor access to be disabled in the first place,
+we have unfortunately had to add another couple of restrictions:
+
+You must log in using SASL's EXTERNAL or ECDSA-NIST256P-CHALLENGE
+If you haven't set up the requisite SASL authentication, we recommend
+SASL EXTERNAL. You'll need to generate a client certificate:
+
+    openssl req -x509 -sha256 -new -newkey rsa:4096 -days 1000 -nodes -out freenode.pem -keyout <name_of_network>.pem
+
+NOTE: It iss very important to remember the name of the pem file, since it should
+match the one of the TORed network.
+
+Then also save in your clipboard the fingerprint of the key, since we will need
+to add this to our account.
+We can do this, by issuing:
+    
+    openssl x509 -in freenode.pem -outform der | sha1sum -b | cut -d' ' -f1
+
+
+At this point we have to login on clearnet freenode as we would normally do, with any
+kind of authentication we desire.
+Once we have logged in, we can add our fingerprint by doing:
+
+    /msg NickServ CERT ADD <fingerprint>
+
+Now we should just run tor and setup the socks5 proxy in our IRC client
+listening for all connections on localhost:9050 (i.e., the default port).
+As of hexchat, a good config is to:
+- Server: ajnvpgl6prmkb7yktvue6im5wiedlz2w32uhcwaamdiecdrfpwwgnlqd.onion (check if it's still this)
+    (we may avoid to specify the port for the server)
+- Connect to selected server only 
+- Use SSL for all the servers on this network
+- Accept invalid SSL certificates
+- Login Method: SASL EXTERNAL (cert)
+
+NOTE: (AGAIN), remember that the pem certificate file should match the name
+of the network we created.
 
 # Search resources
+https://github.com/DanWin/onion-link-list (scripts to list currently available tor services)
 Excavator search engine
 GRAMS
 Uncensored Hidden Wiki
@@ -11,6 +95,7 @@ Onion City
 Candle search engine - http://gjobqjj7wyczbqie.onion
 Torch search engine  - http://cnkj6nippubgycuj.onion
 Ahmia search engine  - https://ahmia.fi
+
 
 # Other interesting websites Deep Web related
 dark.fail
