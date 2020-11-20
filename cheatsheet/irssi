@@ -11,13 +11,21 @@
 ## Rizon – around 14k users at peak hours
 ## OFTC – around 13k users at peak hours
 ## DALnet – around 8k users at peak hours
+#
+# Undernet and IRCHighway are used a lot for ebooks.
+# To get files, see this:
+# https://askubuntu.com/questions/303237/how-do-i-do-xdcc-downloads-on-the-command-line
+# Other interesting servers for file downloads (XDCC) are:
+# https://www.xdcc.eu/networks.php
 ##
 ## A good tutorial on managing servers and auto joins
 ## is here:
 ## https://joost.vunderink.net/blog/2012/07/01/irssi-tricks-join-channels-automatically/
 
-# Get a list of default public network available
+
+# Get a list of default public networks available
 /network list
+/network
 
 # Connect to a specific network
 /connect Freenode
@@ -26,6 +34,15 @@
 
 # Join a channel
 /join #channelname
+
+# List public channels on a server
+/list
+/list *[Gg]ardening*         ;; search for all channels having gardening or Gardening in their name
+It may be useful to save output to a file by doing:
+/lastlog -file output.txt
+
+# Save output of window to a file
+/lastlog -file output.txt
 
 # Switch between channels
 /1   ;; switch to channel 1

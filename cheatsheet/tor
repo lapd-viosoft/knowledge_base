@@ -44,6 +44,16 @@ export {http,https,ftp,all}_proxy="socks://localhost:9050"
 ## Change Circuit
 killall -HUP tor 
 
+## Firefox does not open .onion links
+Well you should use tor-browser, but if you
+really want to use firefox you should do this:
+
+1. Launch Firefox web browser, type about:config in the address bar and press Enter.
+2. After clicking on the “I’ll be careful, I promise” button, proceed to Firefox advanced settings manager.
+3. In the search box type network.dns.blockDotOnion to find the setting we need.
+4. Make sure the value of this setting is set to false. If the value is true, then double-click on this setting to switch it back to false.
+5. That’s it. Now Firefox will be able to open all sites that operate using the .onion top level domains.
+
 ## Connecting to Freenode Via Tor
 https://freenode.net/news/tor-online
 
@@ -99,3 +109,4 @@ Ahmia search engine  - https://ahmia.fi
 
 # Other interesting websites Deep Web related
 dark.fail
+

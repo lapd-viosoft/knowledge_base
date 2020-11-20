@@ -36,7 +36,9 @@ gpg -d ~/path/to/file.pdf.gpg  > ~/path/to/file.pdf
 # Create a new private key
 gpg --gen-key
 
-# Import other users' public keys
+# Import a key (either private or public)
+This may be other people public key or your own private/public
+key got from another platform/computer.
 sudo gpg --import <key>
 
 # To list all public keys (our friends and us)

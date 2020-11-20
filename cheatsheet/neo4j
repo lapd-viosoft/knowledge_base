@@ -23,6 +23,10 @@
 ## Note on performance:
 ## we can try to configure min/max heap and pagecache in the neo4j.conf.
 
+# Run a neo4j instance from docker
+docker run --publish=7474:7474 --publish=7687:7687 \
+    --volume=$HOME/neo4j/data:/data neo4j
+
 # Show help
 :help
 

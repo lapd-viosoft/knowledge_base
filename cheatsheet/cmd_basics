@@ -209,4 +209,5 @@ schtasks /create /sc once /tn "shutdown" /tr "shutdown -s" /st 15:30
 # Show history
 doskey /History
 
-
+# Compute SHA256 hash of a file
+certUtil -hashfile myfile.zip SHA256

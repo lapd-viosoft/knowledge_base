@@ -2,8 +2,7 @@
 
 
 ## DCSync
-
-If we have credentials of a user who havee DCSync rights (this can happen
+If we have credentials of a user who have DCSync rights (this can happen
 typically with backup users) we can dump all the data from a domain
 controller by doing:
 
@@ -11,3 +10,7 @@ controller by doing:
 
 This basically will get all the NTDS.dit database and some kerberos
 stuff.
+Basically we can perform DCSync is possible whenever a user or a group
+has the following rights with respect to a domain controller:
+- GetChanges
+- GetChangesAll

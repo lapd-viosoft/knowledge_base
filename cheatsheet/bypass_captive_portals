@@ -1,8 +1,31 @@
 # Bypassing Captive Portals
+References:
+    https://www.youtube.com/watch?v=GhUUzGBjhXQ
+
+Before seeing each of the attacks, It is adviceable to have a listening
+proxies on a VPS or remote server on:
+- HTTP ports 80, 443 (for Dumb Simple Proxy Bypass)
+- SSH ports 22, 3128 (squid default port) (for Dumb Simple Proxy Bypass)
+- Iodine on port 53 with an NS record pointing at it (for VPN tunneling)
+
+## Information Gathering
+
+    ifconfig ;; check your IP and subnet
+    route    ;; check who is the gateway
+
+Now port scan the gateway to check which ports
+are open.
+
+Sometimes indeed HTTPS and SSH are not blocked on specific
+ports.
+
+We should at first try to proxy over those ports if possible,
+this hsould never work, but still sometimes works.
 
 
-## Before Installing a DNS Tunnel
+## Before Installing a DNS Tunnel (Dumb Simple Proxy Bypass)
 
+DNS is almost always proxied out for us (DNS recursion).
 Before even going to install a DNS tunnel, we can just try to create an SSH
 tunnel which uses the open ports of the captive portal, so we can check
 them with nmap and then try an ssh tunnel which creates a proxy with:
@@ -16,12 +39,12 @@ ssh -p <ssh_port> -D <localport> -N user@<ip>
 
 
 This should not work, but sometimes it works.
+
+
+## DNS Tunneling
+
 If we see that nslookups are working for basically any domain, we can then use the 
 following solution which is related to the installation of a DNS tunnel.
-
-
-## Install DNS Tunnel
-
 
 At this point the best option is to have a situation like this on our registrar
 or to our DNS system:
@@ -84,33 +107,26 @@ or combination of both:
  sudo iodine -M 110 -r -f -P aSamplePassword998734! tunnel.example.com
 ```
  
-
-
-## Test DNS Tunnel setup
+### Test DNS Tunnel setup
 
 To make sure the DNS tunnel is setup correctly, you can:
 
 Run ifconfig (on your client) and make sure there is a tun0 entry like this:
 
-```sh
- ifconfig
- # check the presence of a tun0 or dns0 interface
-```
+    ifconfig
+    ;; check the presence of a tun0 or dns0 interface
 
 Let's try to ping the other end:
-```sh
- ping 10.0.0.1
-```
+
+    ping 10.0.0.1
 
 At this point we could also ssh to our remote machine or do anything 
 remotely to our machine.
 
-```sh
-ssh -p22 user@10.0.0.1
-```
+    ssh -p22 user@10.0.0.1
 
 
-## Use DNS Tunnel as Web Proxy
+### Use DNS Tunnel as Web Proxy
 
 Next, we are going to setup an SSH tunnel INSIDE of the DNS Tunnel. 
 This will both setup a SOCKS proxy that will allow you to direct your network traffic through,
@@ -131,12 +147,21 @@ executing:
 curl --socks5-hostname 127.0.0.1:5000 http://httpbin.org/ip
 ```
 
-## Additional Note
+## ICMP Tunneling
 
 We can use ICMP tunnels whenever we have situations where we can ping but cannot connect.
 Although these may seem rare, whenever we encounter them we should be able to handle
 the situation through ICMP tunnels. For example:
 [IP over ICMP Tunnel](http://code.gerade.org/hans/)
+
+## Stale MAC Addresses
+We can use airmon-ng to check for IP addresses not used anymore, so people
+who turned of PC or stuff like that.  We can try to change our MAC address
+to one of those MAC addresses.  Some Portals do not have strong ACLs.
+
+## Google App Engine Proxy Bypass
+When google is enabled, we can use this technique.
+https://www.youtube.com/watch?v=GhUUzGBjhXQ
 
 ## References
 

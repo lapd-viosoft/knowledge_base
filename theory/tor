@@ -34,6 +34,19 @@ di sicurezza e stabilità. Il protocollo RFC "istruisce" i vari
 software, quando l'utente cerca un indirizzo .onion, rimbalzare 
 la richiesta non verso la Internet pubblica, ma alla rete tor.
 
+NOTE: Tor seems similar to a VPN, but while a regular VPN focuses
+on privacy, Tor focuses on anonimity.
+This is because in a regular VPN scenario there is a centralized
+authority (the VPN) who can keep track of all the connections
+initiated by the user, hence the VPN provider knows who is
+connecting to what, at what time and maybe other information;
+we don't have full anonimity with the VPN.
+With Tor instead, we are able to hide our identity and nobody
+in a tor path can tell who made the request. Unless
+we send personal or identifying info to a non encrypted target
+website/service (in this case the exit node may understand
+and interpret this info).
+
 ## Theory
 
 The core principle of Tor is onion routing which is a technique 

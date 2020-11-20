@@ -1,0 +1,24 @@
+# Russian Cases
+
+There are 6 cases in russian, which specify the
+role of a (sostantivo) in a sentence:
+
+1. Nominative (default/dictionary case)  
+2. Accusative (complemento oggetto) (che cosa? / chi?) e.g., "Yesterday I saw *Katia*"
+3. Dative (italian "a") when we give/say something to something/someone
+4. Genitive (used in negations or for possessions)
+5. Strumental (used when we want to say "with")
+6. Prepositional (a place, or things that we do abstractly, or about think/talk)
+
+
+## Table of Forms
+
+              |    Masculine     |     Feminine     |     Neuter       |
+Case          |  Word  | Ending  |  Word  | Ending  |  Word  | Ending  | 
+--------------+--------+---------+--------+---------+--------+---------+
+Nominative    | стул   |   -     | Мама   |  -а     | Окно   |  -о     |
+Genitive      | стула  |   -а    | Мамы   |  -ы,и   | Окна   |  -а     |  
+Dative        | стулу  |   -у    | Маме   |  -е     | Окну   |  -у     |            
+Accusative    | стул   |   -     | Маму   |  -у     | Окно   |  -о     |  
+Instrumental  | стулом |   -ом   | Мамой  |  -ой    | Окном  |  -ом    |  
+Prepositional | цтыле  |   -е    | Маме   |  -е     | Окне   |  -е     |  

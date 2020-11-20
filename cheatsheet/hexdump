@@ -1,8 +1,38 @@
+# hexdump
+# -v, --no-squeezing:
+# The -v option causes hexdump to display all input data.  Without the -v option, any number of groups of output lines which  would
+# be  identical  to  the  immediately preceding group of output lines (except for the input offsets), are replaced with a line com‐
+# prised of a single asterisk.
+
 # To get hex of a file
-hexdump <file>
+hexdump -v <file>
 
 # To get hex + ASCII of a file
-hexdump -C <file>
+hexdump -vC <file>
 
 # To get hex + ASCII of a file
-hexdump -C <file>
+hexdump -vC <file>
+
+# To get hex with a specific format
+The `-e` option is quite esoteric, but the general
+format is:
+hexdump -e ' [blocks]/[byte_count] "[format string]" '
+hexdump -e ' [blocks]/[byte_count] "[format string]" "[separator]"'
+for example to print 16 bytes in hex formats on every line separated by space
+we can do:
+hexdump -e '16/1 "%02x " "\n"'
+
+To print 4 blocks per line (4 blocks where each block is a single byte):
+hexdump -e '4/1 "%02x " "\n"'
+
+To print 16 blocks per line where each block is 4 bytes we can do:
+hexdump -e '16/4 "%02x " "\n"'
+
+To print 6 blocks per line each with 4 bytes expressed in the form of 0xbbbbbbbb
+and using a comma as a separator we can do:
+hexdump -v -e '6/4 "0x%08x, "' -e '"\n"'
+
+
+# From hex to binary and back
+hexdump -e '16/1 "%02x " "\n"' .bash_history > myhex
+xxd -r -p myhex > original_file
