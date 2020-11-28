@@ -50,7 +50,7 @@ task add MCC Birthday \
     wait:november
 
 # Add a birthday by also adding a recurring and a "birthday" tab
-task add "Birthday: Diletta Frascerra" due:2020-02-20 wait:2020-02-10 +birthday recur:yearly
+task add "Birthday: Diletta" due:2020-02-22 wait:2020-02-10 +birthday recur:yearly
 
 # List tasks in the "waiting" status
 task waiting

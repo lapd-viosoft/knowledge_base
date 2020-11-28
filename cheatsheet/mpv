@@ -20,5 +20,14 @@
 
 
 
-## Subtitles
+# Subtitles
+
+## Load a subtitle file
 mpv file.mp4 --sub-files=path/to/sub.srt
+
+## Load two subtitle files to play at the same time
+mpv Movie.avi --sub-file="ENG_SUBS.srt" --sub-file="RUS_SUBS.srt" --secondary-sid=2
+
+
+
+

@@ -266,6 +266,9 @@ A summary of the attacks:
 
 ### Bruteforce
 
+Pre-Condition: None or a set of valid users;
+Post-Condition: A set of valid users or a set of valid credentials;
+
 By brute-forcing Kerberos pre-authentication, you do not trigger the
 account failed to log on event which can throw up red flags to blue
 teams. When brute-forcing through Kerberos you can brute-force by only
@@ -364,6 +367,9 @@ Metcalf on ADSecurity.org.
 
 ### Pass The Key (Overpass the Hash)
 
+Precondition: Have NTLM hash or password of one or more users;
+Postcondition: Get TGT tickets;
+
 This attack aims to use user NTLM hash to request Kerberos tickets, as an
 alternative to the common Pass The Hash over NTLM protocol. Therefore,
 this could be especially useful in networks where NTLM protocol is
@@ -377,13 +383,21 @@ access any service or machine where the user account has permissions.
 
 ### Pass the Ticket
 
+Precondition: Have a TGT;
+Postcondition: Authenticate as the owner of the collected/stolen TGTs, request TGSs;
+
 This kind of attack is similar to Pass the Key, but instead of using
 hashes to request for a ticket, the ticket itself is stolen and used to
-authenticate as its owner. The way of recolecting these tickets changes
+authenticate as its owner. The method for collecting these tickets changes
 from Linux to Windows machines, therefore each process will be introduced
 in its own section.
 
+
 ### Golden Tickets [Persistence Method]
+
+Precondition: Have Domain Admin credentials;
+Postcondition: Get the hash of the krbtgt account, we can access
+               any service with any account;
 
 Golden tickets attack are used for persistence purposes once we have
 conquered a domain admin account and are able to dump the hash of
@@ -411,7 +425,12 @@ the domain controller, we can impersonate basically any user with any
 privileges on the domain.  Moreover, note that password changes have no
 effect on this attack.
 
+
 ### Silver Tickets [Persistence Method]
+
+Precondition: Have NTLM hash of a service account;
+Postcondition: Being able to forge TGS tickets for that specific service
+               for any account;
 
 Silver tickets attack are used for persistence for a specific service.
 Basically this is possible if we are able to forge the AP-REQ (step 5)
@@ -429,7 +448,8 @@ Most think that Silver Tickets are nothing compared to Golden Tickets
 but they are mistaken, silver tickets are just as dangerous and even
 more stealthier.
 This is because giving the nature of the attack there is no communication
-with the DC hence the stealth.
+with the DC, this is the reason of their "stealthiness".
+
 
 ### Comparison between Golden and Silver Tickets [Persistence Methods]
 
@@ -443,6 +463,10 @@ TGS for that service with any user detail we want.
 
 
 ### Skeleton Key [Persistence Method]
+
+Precondition: Domain Admin access;
+Postcondition: Access as any user with a single password; 
+
 
 Skeleton key is another persistence technique where it is possible to patch
 a domain controller (lsass process) so that it allows access as any user
@@ -485,11 +509,15 @@ allowing you access to the domain forest.
 
 ## Unconstrained Delegation
 
+Precondition: Access to a computer with unconstrained delegation enabled,
+              with service account or admin;
+Postcondition: Collect a set of TGT tickets;
+
 Just to provide a little bit of a background back in the older days of
-Servers & Authentication probably when I was still a kid and Server
+Servers & Authentication probably when Microsoft Windows Server
 2000 first introduced Active Directory, Microsoft had to find a way
 to allow Servers authenticate to other resources in the context of a
-user. This was called the "Kerberos Double-Hop Issue" - That’s
+user. This was called the "Kerberos Double-Hop Issue" - That's
 where Unconstrained Delegation comes into play.
 
 Unconstrained Delegation is a privilege that can be granted to User
@@ -506,7 +534,7 @@ sending your TGT so that the CRM Server is able to further request a
 TGS on behalf of yourself to access the DB Server in your context.
 
 From an attackers point of view there is a couple of things to bare
-in mind
+in mind.
 
 When a User Authenticates to a Server with Unconstrained Delegation turned
 on, the Users TGT get’s cached on the server If you pwn a Server with
@@ -516,9 +544,21 @@ reason, so the Server can Impersonate the authenticated user to access
 resources said User has access to.  This allows you to retain your
 privilege model and to not have over-privileged servers.
 
+An example to exploiting Unconstrained Delegation would be
+
+- Compromise a Server trusted for Unconstrained Delegation via a admin or service account;
+- Dump tickets e.g., with `Rubeus.exe dump`
+    - If a Domain Admin has authenticated through this Server then RIP;
+    - Social Engineer a Domain Admin to Authenticate to this Server;
+- Perform a PTT attack with recovered TGT;
+
+
 # Constrained Delegation
 
-Once Microsoft realized there Mistake with Unconstrained Delegation
+Precondition: Access to a computer with constrained delegation enabled;
+Postcondition: Collect a set of TGS tickets;
+
+Once Microsoft realized their mistake with Unconstrained Delegation
 they came up with a couple of Kerberos extensions namely - S4U2Self &
 S4U2Proxy - Long story short basically Constrained Delegation limits
 what services a particular machine trusted for Delegation can actually
@@ -529,7 +569,8 @@ Delegation from Active Directory Users and Computers as well as limit
 authentication to Kerberos and/or other protocol's.
 
 FINISH NOTES From here:
-https://m0chan.github.io/2019/07/31/How-To-Attack-Kerberos-101.html#as-rep-roasting
+https://m0chan.github.io/2019/07/31/How-To-Attack-Kerberos-101.html
+
 
 ## Mitigations against Kerberoast attacks
 
