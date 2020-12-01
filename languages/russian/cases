@@ -1,5 +1,8 @@
 # Russian Cases
 
+References:
+https://www.russianforfree.com/grammar-of-russian-language.php
+
 There are 6 cases in russian, which specify the
 role of a (sostantivo) in a sentence:
 
@@ -13,11 +16,27 @@ role of a (sostantivo) in a sentence:
 
 ## Table of Forms
 
+### Singular
+
               |    Masculine     |     Feminine     |     Neuter       |
 Case          |  Word  | Ending  |  Word  | Ending  |  Word  | Ending  | 
 --------------+--------+---------+--------+---------+--------+---------+
 Nominative    | стул   |   -     | Мама   |  -а     | Окно   |  -о     |
 Genitive      | стула  |   -а    | Мамы   |  -ы,и   | Окна   |  -а     |  
+Dative        | стулу  |   -у    | Маме   |  -е     | Окну   |  -у     |            
+Accusative    | стул   |   -     | Маму   |  -у     | Окно   |  -о     |  
+Instrumental  | стулом |   -ом   | Мамой  |  -ой    | Окном  |  -ом    |  
+Prepositional | стyле  |   -е    | Маме   |  -е     | Окне   |  -е     |  
+
+
+
+### Plural (WIP - NOT CORRECT)
+
+              |    Masculine     |     Feminine     |     Neuter       |
+Case          |  Word  | Ending  |  Word  | Ending  |  Word  | Ending  | 
+--------------+--------+---------+--------+---------+--------+---------+
+Nominative    | стул   |   -     | Мама   |  -ы,и   | Окно   |  -о     |
+Genitive      | стула  |   -а    | Мамы   |  -ей    | Окна   |  -а     |  
 Dative        | стулу  |   -у    | Маме   |  -е     | Окну   |  -у     |            
 Accusative    | стул   |   -     | Маму   |  -у     | Окно   |  -о     |  
 Instrumental  | стулом |   -ом   | Мамой  |  -ой    | Окном  |  -ом    |  

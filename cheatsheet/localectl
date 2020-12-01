@@ -1,0 +1,12 @@
+# localectl
+
+To list layouts, variants and keyboard switching options we can do:
+
+# List Available Layouts
+localectl list-x11-keymap-layouts
+
+# List Available Variants for a specific layout (in this case russian)
+localectl list-x11-keymap-variants ru
+
+# List Options for switching between layouts
+localectl list-x11-keymap-options | grep grp:
