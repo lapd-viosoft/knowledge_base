@@ -1,3 +1,14 @@
+# youtube-dl
+
+# Download a video
+youtube-dl -c "<link>"
+
+# Download a video and all available subtitles
+youtube-dl -c --all-subs "<link>"
+
+# To download a video playlist starting from a certain video:
+youtube-dl -c --all-subs --playlist-start 1 <link>
+
 # To download a video in 720p MP4:
 youtube-dl -f 22 example.com/watch?v=id
 
