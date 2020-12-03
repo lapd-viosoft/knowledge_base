@@ -34,3 +34,17 @@ site:http://ideone.com  | site:http://codebeautify.org  | site:http://codeshare.
 
 # Piwik Anonymous Access
 inurl:token_auth inurl:anonymous
+
+# Find SAP Portals
+inurl:50000/irj/portal
+inurl:IciEventService/IciEventConf
+inurl:/wsnavigator/jsps/test.jsp
+inurl:/irj/go/km/docs/
+https://www.shodan.io/search?query=sap+portal
+https://www.shodan.io/search?query=SAP+Netweaver
+https://www.shodan.io/search?query=SAP+J2EE+Engine
+or 
+https://github.com/danielmiessler/SecLists/blob/master/Discovery/Web_Content/URLs/urls_SAP.txt
+https://github.com/danielmiessler/SecLists/blob/master/Discovery/Web_Content/CMS/SAP.fuzz.txt
+https://github.com/danielmiessler/SecLists/blob/master/Discovery/Web_Content/sap.txt
+
